@@ -452,6 +452,7 @@
       <div id="face-panel" class="hidden">
         <h3 data-i18n="faceTitle"></h3>
         <p class="sub" id="face-status"></p>
+        <p class="sub" id="face-diag" style="font-size:.78rem; margin-top:-8px; word-break:break-word"></p>
         <div class="row">
           <button class="btn ghost" id="btn-cam"></button>
           <button class="btn ghost" id="btn-cal" disabled></button>
@@ -1300,7 +1301,8 @@ const FACE = {
   stream: null, landmarker: null, running: false, loading: false, err: null, raf: 0, lastVT: -1,
   present: false, lastSeen: 0,
   nx: 0, ny: 0, rollD: 0, held: "N", pend: null, pendSince: 0, downAt: 0, tiltSince: 0, tiltCool: 0,
-  px: 0.5, py: 0.5, h: {}
+  px: 0.5, py: 0.5, h: {},
+  frames: 0, hits: 0, delegate: "", lastErr: "", triedCpu: false, diagId: null, make: null
 };
 FACE.ready = () => !!(FACE.running && FACE.neutral);
 FACE.video = () => $("cam-video");
@@ -1333,7 +1335,7 @@ FACE.beginCalibration = function () {
 };
 FACE.finishCalibration = function () {
   const c = FACE.calibrating; FACE.calibrating = null;
-  if (!c || c.arr.length < 15) { FACE.calFail = true; updateFaceUI(); return; }
+  if (!c || c.arr.length < 6) { FACE.calFail = true; updateFaceUI(); return; }
   FACE.neutral = { yaw: median(c.arr.map(p => p.yaw)), pr: median(c.arr.map(p => p.pr)), roll: median(c.arr.map(p => p.roll)) };
   FACE.nx = FACE.ny = FACE.rollD = 0; FACE.held = "N"; FACE.pend = null; FACE.tiltSince = 0;
   updateFaceUI();
@@ -1362,7 +1364,8 @@ FACE.feed = function (lm, t, ar) {
 
   if (cal) {
     cal.arr.push(p);
-    if (t - cal.t0 >= FACE.CAL_MS) FACE.finishCalibration();
+    const el = t - cal.t0;
+    if ((el >= FACE.CAL_MS && cal.arr.length >= 15) || el >= FACE.CAL_MS * 2.5) FACE.finishCalibration();
     return;
   }
   const N = FACE.neutral;
@@ -1412,17 +1415,39 @@ FACE.feed = function (lm, t, ar) {
 
 FACE.loop = function () {
   if (!FACE.running) return;
-  const v = FACE.video();
-  if (v.readyState >= 2 && v.currentTime !== FACE.lastVT && FACE.landmarker) {
-    FACE.lastVT = v.currentTime;
-    const t = performance.now();
-    let res = null;
-    try { res = FACE.landmarker.detectForVideo(v, t); } catch (e) {}
-    const lm = res && res.faceLandmarks && res.faceLandmarks[0];
-    FACE.feed(lm || null, t, (v.videoWidth / v.videoHeight) || 1);
-  }
+  try {
+    const v = FACE.video();
+    if (v.readyState >= 2 && v.currentTime !== FACE.lastVT && FACE.landmarker) {
+      FACE.lastVT = v.currentTime;
+      const t = performance.now();
+      let res = null;
+      try { res = FACE.landmarker.detectForVideo(v, t); FACE.lastErr = ""; }
+      catch (e) { FACE.lastErr = (e && e.message) || String(e); }
+      const lm = res && res.faceLandmarks && res.faceLandmarks[0];
+      FACE.frames++; if (lm) FACE.hits++;
+      FACE.feed(lm || null, t, (v.videoWidth / v.videoHeight) || 1);
+      if (FACE.delegate === "GPU" && !FACE.triedCpu && FACE.frames >= 45 && FACE.hits === 0) FACE.fallbackCpu();
+    }
+  } catch (e) { FACE.lastErr = (e && e.message) || String(e); }
   FACE.raf = requestAnimationFrame(FACE.loop);
 };
+// Om grafikläget (GPU) inte hittar något ansikte alls, prova processorläget
+FACE.fallbackCpu = async function () {
+  FACE.triedCpu = true;
+  const old = FACE.landmarker; FACE.landmarker = null;
+  try { old && old.close && old.close(); } catch (e) {}
+  try {
+    FACE.landmarker = await FACE.make("CPU");
+    FACE.delegate = "CPU"; FACE.frames = 0; FACE.hits = 0;
+  } catch (e) { FACE.lastErr = "CPU: " + ((e && e.message) || e); }
+};
+function updateDiag() {
+  const el = $("face-diag");
+  if (!el) return;
+  el.textContent = FACE.running
+    ? "frames " + FACE.frames + " · faces " + FACE.hits + " · " + (FACE.delegate || "?") + (FACE.lastErr ? " · error: " + FACE.lastErr : "")
+    : "";
+}
 
 function playVideo() { try { const pr = FACE.video().play(); pr && pr.catch && pr.catch(() => {}); } catch (e) {} }
 
@@ -1463,18 +1488,21 @@ FACE.start = async function () {
       const make = (delegate) => mod.FaceLandmarker.createFromOptions(fileset, {
         baseOptions: { modelAssetPath: FACE.MODEL, delegate }, runningMode: "VIDEO", numFaces: 1
       });
-      try { FACE.landmarker = await make("GPU"); } catch (e) { FACE.landmarker = await make("CPU"); }
+      FACE.make = make;
+      try { FACE.landmarker = await make("GPU"); FACE.delegate = "GPU"; }
+      catch (e) { FACE.landmarker = await make("CPU"); FACE.delegate = "CPU"; }
     }
   } catch (e) {
     FACE.loading = false; FACE.err = "errmodel"; FACE.stop(true); updateFaceUI(); return;
   }
-  FACE.loading = false; FACE.running = true; FACE.lastVT = -1;
+  FACE.loading = false; FACE.running = true; FACE.lastVT = -1; FACE.frames = 0; FACE.hits = 0; FACE.lastErr = "";
+  clearInterval(FACE.diagId); FACE.diagId = setInterval(updateDiag, 500);
   FACE.loop();
   updateFaceUI();
 };
 
 FACE.stop = function (keepErr) {
-  FACE.running = false; cancelAnimationFrame(FACE.raf);
+  FACE.running = false; cancelAnimationFrame(FACE.raf); clearInterval(FACE.diagId);
   if (FACE.stream) { FACE.stream.getTracks().forEach(tr => tr.stop()); FACE.stream = null; }
   try { FACE.video().srcObject = null; } catch (e) {}
   FACE.neutral = null; FACE.calibrating = null; FACE.calFail = false; FACE.present = false;
