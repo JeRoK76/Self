@@ -250,6 +250,22 @@
     background: conic-gradient(var(--ok) calc(var(--p) * 360deg), rgba(255,255,255,.18) 0);
     box-shadow: 0 0 10px rgba(0,0,0,.6);
   }
+  /* Trace task */
+  #trace-canvas {
+    display: block; width: 100%; height: min(54vh, 460px); border-radius: 16px; margin-bottom: 0;
+    background: rgba(0,0,0,.35); border: 1px dashed rgba(255,255,255,.18); touch-action: none; cursor: crosshair;
+  }
+  body.in-session header, body.in-session .stepper { display: none; }
+  body.in-session main { padding-top: 12px; }
+  @media (max-height: 700px) { #st-session.compact .ring { width: 70px; } #st-session.compact .stat { padding: 4px 12px; } }
+  #st-session.compact .card { padding: 14px; }
+  #st-session.compact .ring { width: 92px; margin: 0 auto 8px; }
+  #st-session.compact .time { font-size: 1.35rem; }
+  #st-session.compact .time-sub, #st-session.compact .phrase { display: none; }
+  #st-session.compact .sub { font-size: .82rem; margin: 0 0 8px; }
+  #st-session.compact .stats { margin: 0 0 8px !important; gap: 8px; }
+  #st-session.compact .stat { padding: 6px 14px; min-width: 96px; }
+  #st-session.compact .stat b { font-size: 1.1rem; }
   .hidden { display: none !important; }
 </style>
 </head>
@@ -355,6 +371,7 @@
           <div class="seg" id="mode-seg">
             <button data-v="time" class="on" data-i18n="modeTime"></button>
             <button data-v="click" data-i18n="modeClick"></button>
+            <button data-v="trace" data-i18n="modeTrace"></button>
           </div>
           <p class="sub" id="mode-hint" style="margin-top:8px"></p>
           <div id="click-opts" class="hidden">
@@ -378,12 +395,27 @@
             </div>
           </div>
 
-          <h3 data-i18n="faceLabel"></h3>
-          <div class="seg" id="face-seg">
+          <div id="trace-opts" class="hidden">
+            <h3 data-i18n="traceSecLabel"></h3>
+            <div class="seg" id="tsec-seg">
+              <button data-v="30">30 s</button>
+              <button data-v="60" class="on">60 s</button>
+              <button data-v="120">120 s</button>
+            </div>
+            <h3 data-i18n="traceWidthLabel"></h3>
+            <div class="seg" id="tw-seg">
+              <button data-v="64" data-i18n="wideW"></button>
+              <button data-v="46" class="on" data-i18n="medW"></button>
+              <button data-v="32" data-i18n="narrowW"></button>
+            </div>
+          </div>
+
+          <h3 class="hidden" data-i18n="faceLabel"></h3>
+          <div class="seg hidden" id="face-seg">
             <button data-v="off" class="on" data-i18n="off"></button>
             <button data-v="on" data-i18n="on"></button>
           </div>
-          <p class="sub" id="face-hint" style="margin-top:8px"></p>
+          <p class="sub hidden" id="face-hint" style="margin-top:8px"></p>
           <div id="face-opts" class="hidden">
             <h3 data-i18n="sensLabel"></h3>
             <div class="seg" id="sens-seg">
@@ -493,6 +525,14 @@
           <div class="stat"><b id="cap-out">--:--</b><small data-i18n="capLabel"></small></div>
         </div>
         <div class="field" id="field"><div class="target" id="target"></div><div class="hp hidden" id="hp"></div></div>
+      </div>
+      <div id="trace-wrap" class="hidden">
+        <p class="sub" id="trace-hint"></p>
+        <div class="stats" style="margin:0 0 12px">
+          <div class="stat"><b id="trace-hits">0</b><small data-i18n="drawingsLabel"></small></div>
+          <div class="stat"><b id="trace-cap">--:--</b><small data-i18n="capLabel"></small></div>
+        </div>
+        <canvas id="trace-canvas"></canvas>
       </div>
       <div class="phrase" id="phrase"></div>
       <div class="checkin" id="checkin">
@@ -621,6 +661,12 @@ const I18N = {
     briefFaceHead: "Pusslet kan besvaras med huvudet: vrid eller luta åt pilens håll och tillbaka till mitten.",
     briefFaceTilt: "Luta huvudet åt sidan, örat mot axeln, i 2 sekunder för att avbryta.",
     briefFacePoint: "I klickuppgiften styr du pekaren med huvudet. Håll den över målet en kort stund för att träffa.",
+    modeTrace: "Spåra ritning",
+    modeHintTrace: (c) => `Tiden står still tills du följer linjen med finger eller nos. Ju längre du följer den, desto mer tid försvinner. Efter högst ${c} minuter avslutas sessionen ändå.`,
+    traceSecLabel: "Tid per hel ritning", traceWidthLabel: "Banans bredd", wideW: "Bred", medW: "Medel", narrowW: "Smal",
+    drawingsLabel: "Ritningar",
+    traceHint: "Följ linjen från den gröna pricken till den röda med finger eller nos och håll kontakt med skärmen. Lyfter du händer inget. Glider du av banan en stund hamnar du ett litet steg tillbaka.",
+    briefTrace: (s, c) => `Spåra ritningen med finger eller nos. En hel ritning tar bort ${s} sekunder. Sessionen tar slut senast efter ${c} minuter.`,
     sos: "⛔ Avbryt / släpp",
     safety: [
       "Jag har en säkerhetssax eller ett annat snabbt sätt att skära mig loss inom räckhåll.",
@@ -728,6 +774,12 @@ const I18N = {
     briefFaceHead: "The puzzle can be answered with your head: turn or tilt in the arrow's direction and back to centre.",
     briefFaceTilt: "Tilt your head sideways, ear towards shoulder, for 2 seconds to stop.",
     briefFacePoint: "In the click task you steer the pointer with your head. Hold it over the target for a moment to hit.",
+    modeTrace: "Trace drawing",
+    modeHintTrace: (c) => `Time stands still until you follow the line with your finger or nose. The further you follow it, the more time disappears. The session ends after ${c} minutes at most regardless.`,
+    traceSecLabel: "Time per full drawing", traceWidthLabel: "Track width", wideW: "Wide", medW: "Medium", narrowW: "Narrow",
+    drawingsLabel: "Drawings",
+    traceHint: "Follow the line from the green dot to the red one with your finger or nose and keep contact with the screen. Lifting does nothing. If you slip off the track for a while you go a small step back.",
+    briefTrace: (s, c) => `Trace the drawing with your finger or nose. A full drawing removes ${s} seconds. The session ends after ${c} minutes at most.`,
     sos: "⛔ Stop / release",
     safety: [
       "I have safety shears or another quick way to cut myself free within reach.",
@@ -886,7 +938,8 @@ const S = {
   mode: "time", hitSec: 10, size: "medium", move: "still",
   remaining: 0, capAt: 0, hits: 0, misses: 0, lifeId: null, moveId: null,
   level: 3, sugg: [], cat: "all", browseOpen: false,
-  face: false, dwellAt: 0, warnId: null
+  face: false, dwellAt: 0, warnId: null,
+  traceSec: 60, traceW: 46, traceId: null
 };
 
 /* ============ Helpers ============ */
@@ -922,6 +975,7 @@ function go(id) {
   S.stage = id;
   document.querySelectorAll(".stage").forEach(s => s.classList.toggle("active", s.id === id));
   $("sos").classList.toggle("show", ["st-session", "st-puzzle"].includes(id));
+  document.body.classList.toggle("in-session", id === "st-session" && hitMode());
   renderStepper();
   const dock = $("cam-dock");
   if (id === "st-brief") { $("face-slot").appendChild(dock); dock.classList.add("inline"); }
@@ -1075,7 +1129,7 @@ function renderSafety() {
   const prev = [...box.querySelectorAll("input")].map(i => i.checked);
   box.innerHTML = "";
   const list = [...t("safety")];
-  if (S.mode === "click") list.push(t("safetyClick"));
+  if (hitMode()) list.push(t("safetyClick"));
   if (S.face) list.push(t("safetyFace"));
   list.forEach((txt, i) => {
     const l = document.createElement("label");
@@ -1118,6 +1172,7 @@ function renderBrief() {
   const posNote = t("positions")[S.position][2];
   if (posNote) lines.splice(2, 0, ["⚠️", posNote]);
   if (S.mode === "click") lines.splice(4, 0, ["🖱️", b.click(S.hitSec, CAP_MIN)]);
+  if (S.mode === "trace") lines.splice(4, 0, ["✍️", t("briefTrace")(S.traceSec, CAP_MIN)]);
   lines.push(["🌬️", b.breathe]);
   if (S.face) {
     lines.push(["🙂", t("briefFaceNod")], ["↔️", t("briefFaceHead")], ["↩️", t("briefFaceTilt")]);
@@ -1132,7 +1187,7 @@ function renderBrief() {
 const CIRC = 2 * Math.PI * 90;
 function clearTimers() {
   clearInterval(S.tickId); clearInterval(S.phraseId); clearTimeout(S.checkinId);
-  clearInterval(S.lifeId); clearInterval(S.moveId);
+  clearInterval(S.lifeId); clearInterval(S.moveId); clearInterval(S.traceId);
   S.tickId = S.phraseId = S.checkinId = S.lifeId = S.moveId = null;
 }
 function startSession() {
@@ -1145,26 +1200,31 @@ function startSession() {
   $("ring-prog").style.strokeDasharray = CIRC;
   $("checkin").classList.remove("show");
   $("field-wrap").classList.toggle("hidden", S.mode !== "click");
+  $("trace-wrap").classList.toggle("hidden", S.mode !== "trace");
+  $("st-session").classList.toggle("compact", hitMode());
   nextPhrase();
   go("st-session");
   if (S.mode === "click") startClickTask();
+  if (S.mode === "trace") startTraceTask();
   tick();
   S.tickId = setInterval(tick, 250);
   S.phraseId = setInterval(nextPhrase, 20000);
   if (S.checkins) scheduleCheckin();
 }
-function leftMs() { return S.mode === "click" ? S.remaining : S.endAt - Date.now(); }
+function hitMode() { return S.mode === "click" || S.mode === "trace"; }
+function leftMs() { return hitMode() ? S.remaining : S.endAt - Date.now(); }
 function tick() {
   const total = S.duration * 60000;
   const left = leftMs();
   $("time-left").textContent = fmt(left);
   const frac = Math.min(1, Math.max(0, 1 - left / total));
   $("ring-prog").style.strokeDashoffset = CIRC * frac;
-  if (S.mode === "click") {
-    $("cap-out").textContent = fmt(S.capAt - Date.now());
-    $("hits-out").textContent = S.hits;
+  if (hitMode()) {
+    const capTxt = fmt(S.capAt - Date.now());
+    if (S.mode === "click") { $("cap-out").textContent = capTxt; $("hits-out").textContent = S.hits; }
+    else { $("trace-cap").textContent = capTxt; $("trace-hits").textContent = S.hits; }
   }
-  if (left <= 0 || (S.mode === "click" && Date.now() >= S.capAt)) { clearTimers(); startPuzzle(); }
+  if (left <= 0 || (hitMode() && Date.now() >= S.capAt)) { clearTimers(); startPuzzle(); }
 }
 function nextPhrase() {
   const el = $("phrase");
@@ -1187,13 +1247,16 @@ function confirmCheckin() {
 /* ============ Click task ============ */
 function updateModeUI() {
   $("click-opts").classList.toggle("hidden", S.mode !== "click");
-  $("mode-hint").textContent = S.mode === "click" ? t("modeHintClick")(CAP_MIN) : t("modeHintTime");
+  $("trace-opts").classList.toggle("hidden", S.mode !== "trace");
+  $("mode-hint").textContent = S.mode === "click" ? t("modeHintClick")(CAP_MIN)
+    : S.mode === "trace" ? t("modeHintTrace")(CAP_MIN) : t("modeHintTime");
 }
 function startClickTask() {
   $("target").onpointerdown = (e) => { e.preventDefault(); e.stopPropagation(); onHit(); };
   $("field").onpointerdown = () => { S.misses++; };   // missar påverkar inte tiden
   $("click-hint").textContent = t("clickHint");
   S.dwellAt = 0;
+  fitAboveSos($("field"), 160, 380);
   placeTarget(true);
   if (S.move === "moving") S.moveId = setInterval(() => placeTarget(false), 1700);
   else S.lifeId = setInterval(() => placeTarget(true), 6000);
@@ -1217,6 +1280,183 @@ function onHit() {
   placeTarget(true);
   tick();
 }
+
+/* ============ Trace task ============ */
+const TRACE_N = 240;
+const SHAPES = {
+  wave: () => Array.from({ length: 160 }, (_, i) => { const u = i / 159; return [0.06 + 0.88 * u, 0.5 + 0.28 * Math.sin(u * Math.PI * 5)]; }),
+  snake: () => {
+    const p = [], rows = 5;
+    for (let r = 0; r < rows; r++) {
+      const y = 0.12 + r * (0.76 / (rows - 1)), a = r % 2 === 0 ? 0.1 : 0.9, b = r % 2 === 0 ? 0.9 : 0.1;
+      p.push([a, y], [b, y]);
+    }
+    return p;
+  },
+  spiral: () => Array.from({ length: 220 }, (_, i) => {
+    const u = i / 219, a = u * 1.8 * 2 * Math.PI, r = 0.44 - 0.34 * u;
+    return [0.5 + r * Math.cos(a), 0.5 + r * Math.sin(a)];
+  }),
+  heart: () => Array.from({ length: 220 }, (_, i) => {
+    const t = Math.PI + (i / 219) * 2 * Math.PI * 0.94;
+    const x = 16 * Math.sin(t) ** 3;
+    const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+    return [0.5 + x / 34, 0.5 - (y + 2.5) / 32];
+  }),
+  eight: () => Array.from({ length: 220 }, (_, i) => {
+    const t = (i / 219) * 2 * Math.PI * 0.94;
+    return [0.5 + 0.42 * Math.sin(t), 0.5 + 0.21 * Math.sin(2 * t)];
+  }),
+  star: () => {
+    const v = (k) => { const a = -Math.PI / 2 + k * 2 * Math.PI / 5; return [0.5 + 0.44 * Math.cos(a), 0.54 + 0.44 * Math.sin(a)]; };
+    const a = v(3), b = v(0);
+    return [v(0), v(2), v(4), v(1), a, [a[0] + (b[0] - a[0]) * 0.85, a[1] + (b[1] - a[1]) * 0.85]];
+  },
+  zig: () => [[0.12, 0.15], [0.88, 0.15], [0.12, 0.85], [0.88, 0.85]]
+};
+// Se till att rit- och klickytan slutar ovanför Avbryt-knappen så att den aldrig hamnar ovanpå
+function fitAboveSos(el, minH, maxH) {
+  const sos = $("sos").getBoundingClientRect();
+  if (!sos.height) return;
+  const top = el.getBoundingClientRect().top + window.scrollY;
+  const room = Math.floor(sos.top + window.scrollY - top - 12);
+  el.style.height = Math.max(minH, Math.min(maxH, room)) + "px";
+}
+// Gör om en linje till n jämnt fördelade punkter längs sin längd
+function resample(pts, n) {
+  const cum = [0];
+  for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+  const total = cum[cum.length - 1], out = [];
+  let j = 1;
+  for (let k = 0; k < n; k++) {
+    const d = (k / (n - 1)) * total;
+    while (j < cum.length - 1 && cum[j] < d) j++;
+    const seg = cum[j] - cum[j - 1] || 1, f = Math.min(1, Math.max(0, (d - cum[j - 1]) / seg));
+    out.push([pts[j - 1][0] + (pts[j][0] - pts[j - 1][0]) * f, pts[j - 1][1] + (pts[j][1] - pts[j - 1][1]) * f]);
+  }
+  return out;
+}
+const TR = { name: "", last: "", norm: [], pts: [], idx: 0, maxIdx: 0, down: false, px: 0, py: 0, on: true, offSince: 0, flashUntil: 0, doneUntil: 0, slips: 0, w: 300, h: 300, dpr: 1 };
+
+function traceNew() {
+  const names = Object.keys(SHAPES).filter((n) => n !== TR.last);
+  TR.name = pick(names); TR.last = TR.name;
+  TR.norm = resample(SHAPES[TR.name](), TRACE_N);
+  TR.idx = 0; TR.maxIdx = 0; TR.offSince = 0; TR.slips = 0; TR.on = true;
+  traceLayout();
+}
+function traceLayout() {
+  const cv = $("trace-canvas");
+  if (!cv) return;
+  fitAboveSos(cv, 180, 480);
+  const dpr = window.devicePixelRatio || 1, w = cv.clientWidth || 300, h = cv.clientHeight || 300;
+  if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
+  // Formen fyller ytan men sträcks högst 40 % åt något håll så att den inte blir förvriden
+  const base = Math.min(w, h) * 0.9, sw = Math.min(w * 0.9, base * 1.4), sh = Math.min(h * 0.9, base * 1.4);
+  const ox = (w - sw) / 2, oy = (h - sh) / 2;
+  TR.pts = TR.norm.map(([x, y]) => [ox + x * sw, oy + y * sh]);
+  TR.w = w; TR.h = h; TR.dpr = dpr;
+  traceDraw();
+}
+// Följ banan: framsteg räknas bara mot punkter strax framför den nuvarande (inga genvägar över korsningar)
+function traceMove(x, y) {
+  if (S.stage !== "st-session" || S.mode !== "trace" || !TR.pts.length) return;
+  TR.px = x; TR.py = y;
+  const n = TR.pts.length, ahead = Math.ceil(n * 0.07);
+  const lo = Math.max(0, TR.idx - 2), hi = Math.min(n - 1, TR.idx + ahead), tol = S.traceW * 0.7;
+  let best = -1, bd = Infinity;
+  for (let i = lo; i <= hi; i++) {
+    const d = Math.hypot(TR.pts[i][0] - x, TR.pts[i][1] - y);
+    if (d < bd) { bd = d; best = i; }
+  }
+  if (bd <= tol) {
+    TR.on = true; TR.offSince = 0;
+    if (best > TR.idx) {
+      TR.idx = best;
+      if (best > TR.maxIdx) {
+        const delta = (best - TR.maxIdx) / (n - 1);
+        S.remaining = Math.max(0, S.remaining - delta * S.traceSec * 1000);   // tiden kan bara minska
+        TR.maxIdx = best;
+        tick();
+        if (S.stage !== "st-session") return;
+      }
+      if (TR.idx >= n - 2) { traceDone(); return; }
+    }
+  } else {
+    TR.on = false;
+    if (!TR.offSince) TR.offSince = Date.now();
+  }
+  traceDraw();
+}
+function traceDone() {
+  const n = TR.pts.length, rest = (n - 1 - TR.maxIdx) / (n - 1);
+  S.remaining = Math.max(0, S.remaining - rest * S.traceSec * 1000);
+  S.hits++;
+  TR.doneUntil = Date.now() + 700;
+  tick();
+  if (S.stage === "st-session") traceNew();
+}
+// Glider du av banan en stund hamnar du ett litet steg tillbaka (ingen tid läggs till)
+function traceTick() {
+  if (S.stage !== "st-session" || S.mode !== "trace") return;
+  if (TR.down && TR.offSince && Date.now() - TR.offSince > 700) {
+    const chk = Math.max(1, Math.floor(TR.pts.length / 8)), to = Math.floor(TR.idx / chk) * chk;
+    if (to < TR.idx) { TR.idx = to; TR.slips++; }
+    TR.offSince = Date.now();
+    TR.flashUntil = Date.now() + 400;
+  }
+  traceDraw();
+}
+function traceDraw() {
+  const cv = $("trace-canvas");
+  if (!cv || !cv.getContext || !TR.pts.length) return;
+  const ctx = cv.getContext("2d");
+  if (!ctx) return;
+  const P = TR.pts, W = S.traceW;
+  ctx.setTransform(TR.dpr, 0, 0, TR.dpr, 0, 0);
+  ctx.clearRect(0, 0, TR.w, TR.h);
+  const path = (a, b) => { ctx.beginPath(); ctx.moveTo(P[a][0], P[a][1]); for (let i = a + 1; i <= b; i++) ctx.lineTo(P[i][0], P[i][1]); };
+  const dot = (q, r, col) => { ctx.beginPath(); ctx.arc(q[0], q[1], r, 0, Math.PI * 2); ctx.fillStyle = col; ctx.fill(); };
+  ctx.lineCap = "round"; ctx.lineJoin = "round";
+  path(0, P.length - 1); ctx.lineWidth = W; ctx.strokeStyle = "rgba(255,255,255,.10)"; ctx.stroke();
+  ctx.setLineDash([2, 9]); ctx.lineWidth = 2; ctx.strokeStyle = "rgba(255,255,255,.35)"; ctx.stroke(); ctx.setLineDash([]);
+  if (TR.idx > 0) { path(0, TR.idx); ctx.lineWidth = W * 0.55; ctx.strokeStyle = Date.now() < TR.doneUntil ? "#ffffff" : "#3ecf8e"; ctx.stroke(); }
+  dot(P[0], W * 0.34, "#3ecf8e");
+  dot(P[P.length - 1], W * 0.34, "#ff4d5e");
+  ctx.beginPath(); ctx.arc(P[TR.idx][0], P[TR.idx][1], W * 0.45, 0, Math.PI * 2);
+  ctx.lineWidth = 3; ctx.strokeStyle = "#ffffff"; ctx.stroke();
+  if (TR.down) {
+    ctx.beginPath(); ctx.arc(TR.px, TR.py, 11, 0, Math.PI * 2);
+    ctx.lineWidth = 3; ctx.strokeStyle = TR.on ? "#ffffff" : "#ff4d5e"; ctx.stroke();
+  }
+  if (Date.now() < TR.flashUntil) { ctx.fillStyle = "rgba(255,77,94,.12)"; ctx.fillRect(0, 0, TR.w, TR.h); }
+}
+function tracePos(e) {
+  const r = $("trace-canvas").getBoundingClientRect();
+  return [e.clientX - r.left, e.clientY - r.top];
+}
+function startTraceTask() {
+  const cv = $("trace-canvas");
+  $("trace-hint").textContent = t("traceHint");
+  TR.down = false; TR.last = "";
+  cv.onpointerdown = (e) => {
+    if (S.stage !== "st-session") return;
+    e.preventDefault();
+    try { cv.setPointerCapture(e.pointerId); } catch (_) {}
+    TR.down = true;
+    const q = tracePos(e); traceMove(q[0], q[1]);
+  };
+  cv.onpointermove = (e) => {
+    if (!TR.down) return;
+    e.preventDefault();
+    const q = tracePos(e); traceMove(q[0], q[1]);
+  };
+  cv.onpointerup = cv.onpointercancel = () => { TR.down = false; TR.offSince = 0; traceDraw(); };
+  traceNew();
+  clearInterval(S.traceId);
+  S.traceId = setInterval(traceTick, 50);
+}
+window.addEventListener("resize", () => { if (S.stage === "st-session" && S.mode === "trace") traceLayout(); });
 
 /* ============ Puzzle ============ */
 function startPuzzle() {
@@ -1262,7 +1502,7 @@ function finish() {
   $("done-stats").innerHTML = [
     [fmt(total), t("stTime")],
     [S.errors, t("stMistakes")],
-    ...(S.mode === "click" ? [[S.hits, t("hitsLabel")]] : []),
+    ...(S.mode === "click" ? [[S.hits, t("hitsLabel")]] : S.mode === "trace" ? [[S.hits, t("drawingsLabel")]] : []),
     [t(S.difficulty), t("stDiff")],
     [t("positions")[S.position][0], t("stPos")]
   ].map(s => `<div class="stat"><b>${esc(s[0])}</b><small>${esc(s[1])}</small></div>`).join("");
@@ -1644,6 +1884,8 @@ document.addEventListener("DOMContentLoaded", () => {
   bindSeg("hit-seg", (v) => S.hitSec = +v);
   bindSeg("size-seg", (v) => S.size = v);
   bindSeg("move-seg", (v) => S.move = v);
+  bindSeg("tsec-seg", (v) => S.traceSec = +v);
+  bindSeg("tw-seg", (v) => S.traceW = +v);
   $("btn-reroll").onclick = rollPosition;
   $("btn-browse").onclick = () => { S.browseOpen = !S.browseOpen; renderBrowse(); };
   bindSeg("level-seg", (v) => { S.level = +v; rollPosition(); });
