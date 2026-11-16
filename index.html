@@ -11,13 +11,13 @@
 <meta name="mobile-web-app-capable" content="yes">
 <style>
   :root {
-    --bg: #0b0b10;
+    --bg: #04151f;
     --glass: rgba(24, 24, 32, 0.62);
     --glass-border: rgba(255, 255, 255, 0.09);
     --text: #f1f1f5;
     --muted: #9a9aab;
-    --accent: #c0264b;
-    --accent-2: #7a1fa2;
+    --accent: #00b8d9;
+    --accent-2: #1f5fd6;
     --ok: #3ecf8e;
     --warn: #ffb020;
     --danger: #ff4d5e;
@@ -35,13 +35,13 @@
   .bg {
     position: fixed; inset: 0; z-index: -2;
     background:
-      radial-gradient(1200px 700px at 15% -10%, rgba(192,38,75,.28), transparent 60%),
-      radial-gradient(1000px 700px at 100% 110%, rgba(122,31,162,.30), transparent 60%),
+      radial-gradient(1200px 700px at 15% -10%, rgba(0,184,217,.38), transparent 60%),
+      radial-gradient(1000px 700px at 100% 110%, rgba(31,95,214,.42), transparent 60%),
       url('Images/dom/dom1.jpg') center / cover no-repeat fixed,
       var(--bg);
     filter: saturate(1.05);
   }
-  .veil { position: fixed; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(8,8,12,.72), rgba(8,8,12,.88)); backdrop-filter: blur(6px); }
+  .veil { position: fixed; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(2,16,28,.62), rgba(2,16,28,.85)); backdrop-filter: blur(6px); }
 
   header {
     display: flex; align-items: center; justify-content: space-between;
@@ -86,9 +86,9 @@
     padding: 13px 24px; border-radius: 12px; color: #fff;
     background: linear-gradient(135deg, var(--accent), var(--accent-2));
     transition: transform .15s ease, box-shadow .2s ease, opacity .2s;
-    box-shadow: 0 8px 24px rgba(192,38,75,.28);
+    box-shadow: 0 8px 24px rgba(0,184,217,.28);
   }
-  button.btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(192,38,75,.4); }
+  button.btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,184,217,.4); }
   button.btn:disabled { opacity: .35; cursor: not-allowed; box-shadow: none; }
   button.btn.ghost { background: rgba(255,255,255,.07); box-shadow: none; border: 1px solid var(--glass-border); }
   button.btn.ghost:hover:not(:disabled) { background: rgba(255,255,255,.12); box-shadow: none; }
@@ -98,7 +98,7 @@
     background: rgba(0,0,0,.35); border: 1px solid var(--glass-border); border-radius: 12px; outline: none;
     transition: border-color .2s, box-shadow .2s;
   }
-  input[type="text"]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(192,38,75,.25); }
+  input[type="text"]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,184,217,.25); }
 
   .chips { display: flex; flex-wrap: wrap; gap: 10px; }
   .chip {
@@ -107,7 +107,7 @@
     font-size: .95rem; transition: all .18s ease; display: inline-flex; align-items: center; gap: 8px;
   }
   .chip:hover { background: rgba(255,255,255,.12); }
-  .chip.on { background: linear-gradient(135deg, rgba(192,38,75,.55), rgba(122,31,162,.55)); border-color: rgba(255,255,255,.3); }
+  .chip.on { background: linear-gradient(135deg, rgba(0,184,217,.55), rgba(31,95,214,.55)); border-color: rgba(255,255,255,.3); }
   .chip .x { opacity: .7; font-weight: 700; }
   .chip .x:hover { opacity: 1; }
 
@@ -126,7 +126,7 @@
     display: flex; gap: 18px; align-items: center; padding: 18px; border-radius: 14px;
     background: rgba(0,0,0,.28); border: 1px solid var(--glass-border);
   }
-  .pos-icon { font-size: 2.2rem; width: 64px; height: 64px; display: grid; place-items: center; border-radius: 14px; background: linear-gradient(135deg, rgba(192,38,75,.4), rgba(122,31,162,.4)); flex: none; }
+  .pos-icon { font-size: 2.2rem; width: 64px; height: 64px; display: grid; place-items: center; border-radius: 14px; background: linear-gradient(135deg, rgba(0,184,217,.4), rgba(31,95,214,.4)); flex: none; }
   .pos-name { font-weight: 700; font-size: 1.15rem; }
   .pos-desc { color: var(--muted); font-size: .92rem; margin-top: 2px; }
 
@@ -143,7 +143,7 @@
   .ring { position: relative; width: min(320px, 78vw); aspect-ratio: 1; margin: 8px auto 20px; }
   .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
   .ring .track { stroke: rgba(255,255,255,.08); }
-  .ring .prog { stroke: url(#grad); stroke-linecap: round; transition: stroke-dashoffset .3s linear; filter: drop-shadow(0 0 8px rgba(192,38,75,.6)); }
+  .ring .prog { stroke: url(#grad); stroke-linecap: round; transition: stroke-dashoffset .3s linear; filter: drop-shadow(0 0 8px rgba(0,184,217,.6)); }
   .ring .center { position: absolute; inset: 0; display: grid; place-content: center; }
   .time { font-size: clamp(2.4rem, 8vw, 3.4rem); font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
   .time-sub { color: var(--muted); font-size: .85rem; text-transform: uppercase; letter-spacing: .1em; }
@@ -154,6 +154,7 @@
     animation: pulse 1.6s infinite;
   }
   .checkin.show { display: flex; gap: 14px; align-items: center; justify-content: space-between; text-align: left; }
+  .checkin.show { position: fixed; top: 10px; left: 10px; right: 10px; margin: 0 auto; z-index: 70; background: #2a1d10; flex-wrap: wrap; box-shadow: 0 10px 30px rgba(0,0,0,.6); }
   @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,176,32,.35); } 50% { box-shadow: 0 0 0 10px rgba(255,176,32,0); } }
 
   /* Puzzle */
@@ -198,8 +199,8 @@
   }
   .target {
     position: absolute; border-radius: 50%; cursor: pointer; touch-action: none;
-    background: radial-gradient(circle at 35% 30%, #ff6b8e, #c0264b 60%, #7a1fa2);
-    box-shadow: 0 0 24px rgba(192,38,75,.7);
+    background: radial-gradient(circle at 35% 30%, #7df3ff, #00b8d9 60%, #1f5fd6);
+    box-shadow: 0 0 24px rgba(0,184,217,.7);
   }
   .target::before { content: ""; position: absolute; inset: -14px; border-radius: 50%; }
   .target.pop { animation: pop .25s; }
@@ -214,7 +215,7 @@
     background: rgba(0,0,0,.25); border: 1px solid var(--glass-border); transition: all .15s ease;
   }
   .sg:hover { background: rgba(255,255,255,.08); }
-  .sg.on { border-color: rgba(255,255,255,.55); background: linear-gradient(135deg, rgba(192,38,75,.35), rgba(122,31,162,.35)); }
+  .sg.on { border-color: rgba(255,255,255,.55); background: linear-gradient(135deg, rgba(0,184,217,.35), rgba(31,95,214,.35)); }
   .sg.dim { opacity: .55; }
   .sg { user-select: none; -webkit-user-select: none; }
   .sg-tx { flex: 1; }
@@ -267,6 +268,24 @@
   #st-session.compact .stat { padding: 6px 14px; min-width: 96px; }
   #st-session.compact .stat b { font-size: 1.1rem; }
   .hidden { display: none !important; }
+  /* Guide overlay */
+  #guide { position: fixed; inset: 0; z-index: 80; display: none; background: rgba(8,4,16,.88); overflow-y: auto; padding: 18px 14px 40px; }
+  #guide.show { display: block; }
+  #guide .gcard { max-width: 760px; margin: 0 auto; background: #1b1230; border: 1px solid var(--glass-border); border-radius: 18px; padding: 22px 20px; text-align: left; }
+  #guide h2 { margin-top: 0; }
+  #guide h3 { margin: 18px 0 6px; font-size: 1rem; }
+  #guide p, #guide li { line-height: 1.55; font-size: .93rem; }
+  #guide ul { padding-left: 20px; margin: 6px 0; }
+  #guide a { color: #9ad0ff; word-break: break-all; }
+  #guide .gnote { color: var(--warn); font-size: .85rem; }
+  .linkbtn { background: none; border: 0; color: #9ad0ff; text-decoration: underline; cursor: pointer; font: inherit; padding: 6px 0; }
+  .lockbox { margin-top: 12px; padding: 14px 16px; border-radius: 12px; background: rgba(62,207,142,.1); border: 1px solid rgba(62,207,142,.5); text-align: center; }
+  .lockbox b { font-size: 1.6rem; letter-spacing: .15em; display: block; margin-top: 4px; }
+  body.alarm { animation: alarmflash .6s infinite; }
+  @keyframes alarmflash { 0%,100% { box-shadow: inset 0 0 0 0 rgba(255,77,94,0); } 50% { box-shadow: inset 0 0 0 14px rgba(255,77,94,.7); } }
+  .checkin .btnrow { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn.danger { background: var(--danger); color: #fff; }
+  .small-note { font-size: .82rem; color: var(--muted); margin: 6px 0 0; }
 </style>
 </head>
 <body>
@@ -274,8 +293,9 @@
 <div class="veil"></div>
 
 <header>
-  <div class="brand"><b>Self-Bondage</b> · Task</div>
+  <div class="brand"><b>Self-Bondage</b> · Task <span style="background:#00b8d9;color:#04151f;border-radius:999px;padding:2px 9px;font-size:.7rem;font-weight:800;margin-left:6px">v2 · SÄKER</span></div>
   <div class="lang">
+    <button id="btn-guide-open" data-i18n="guideBtn"></button>
     <button id="lang-sv" class="active">SV</button>
     <button id="lang-en">EN</button>
   </div>
@@ -367,6 +387,24 @@
             <button data-v="off" data-i18n="off"></button>
           </div>
 
+          <h3 data-i18n="puzzleTypeLabel"></h3>
+          <div class="seg" id="ptype-seg">
+            <button data-v="arrows" class="on" data-i18n="ptArrows"></button>
+            <button data-v="memory" data-i18n="ptMemory"></button>
+          </div>
+
+          <h3 data-i18n="lockLabel"></h3>
+          <div class="seg" id="lock-seg">
+            <button data-v="off" class="on" data-i18n="off"></button>
+            <button data-v="on" data-i18n="lockOn"></button>
+          </div>
+          <div id="lock-opts" class="hidden">
+            <p class="sub" data-i18n="lockHint" style="margin-top:8px"></p>
+            <input type="password" id="lock-code" inputmode="text" autocomplete="off" maxlength="12" data-i18n-ph="lockPh">
+          </div>
+
+          <p class="small-note" id="cap-note"></p>
+
           <h3 data-i18n="modeLabel"></h3>
           <div class="seg" id="mode-seg">
             <button data-v="time" class="on" data-i18n="modeTime"></button>
@@ -402,6 +440,13 @@
               <button data-v="60" class="on">60 s</button>
               <button data-v="120">120 s</button>
             </div>
+            <h3 data-i18n="consLabel"></h3>
+            <div class="seg" id="cons-seg">
+              <button data-v="off" class="on" data-i18n="off"></button>
+              <button data-v="mild" data-i18n="consMild"></button>
+              <button data-v="strong" data-i18n="consStrong"></button>
+            </div>
+            <p class="small-note" data-i18n="consHint"></p>
             <h3 data-i18n="traceWidthLabel"></h3>
             <div class="seg" id="tw-seg">
               <button data-v="64" data-i18n="wideW"></button>
@@ -468,6 +513,7 @@
       <h2 data-i18n="safetyTitle"></h2>
       <p class="sub" data-i18n="safetySub"></p>
       <div id="safety-list"></div>
+      <button class="linkbtn" data-guide data-i18n="guideBtnLong"></button>
       <div class="actions">
         <button class="btn ghost" data-back="st-setup" data-i18n="back"></button>
         <button class="btn" id="btn-safety-next" data-i18n="next" disabled></button>
@@ -506,8 +552,8 @@
         <svg viewBox="0 0 200 200">
           <defs>
             <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#e0305a"/>
-              <stop offset="100%" stop-color="#8a2be2"/>
+              <stop offset="0%" stop-color="#00e5ff"/>
+              <stop offset="100%" stop-color="#2f6bff"/>
             </linearGradient>
           </defs>
           <circle class="track" cx="100" cy="100" r="90" fill="none" stroke-width="8"/>
@@ -537,7 +583,10 @@
       <div class="phrase" id="phrase"></div>
       <div class="checkin" id="checkin">
         <span><span data-i18n="checkinMsg"></span> <b id="checkin-nod"></b></span>
-        <button class="btn" id="btn-checkin" data-i18n="imOk"></button>
+        <span class="btnrow">
+          <button class="btn" id="btn-checkin" data-i18n="imOk"></button>
+          <button class="btn danger" id="btn-numb" data-i18n="numbBtn"></button>
+        </span>
       </div>
     </div>
   </section>
@@ -568,6 +617,10 @@
       <h1 class="release-title" data-i18n="doneTitle"></h1>
       <p id="done-msg"></p>
       <div class="stats" id="done-stats"></div>
+      <div class="lockbox hidden" id="done-lock"></div>
+      <h3 data-i18n="afterTitle" style="margin-top:20px"></h3>
+      <ul class="brief-list" id="after-done" style="text-align:left"></ul>
+      <button class="linkbtn" data-guide data-i18n="guideBtnLong"></button>
       <div class="actions" style="justify-content:center">
         <button class="btn" id="btn-restart" data-i18n="again"></button>
       </div>
@@ -579,11 +632,15 @@
     <div class="card">
       <h1 class="release-title" data-i18n="abortTitle"></h1>
       <p data-i18n="abortMsg"></p>
+      <div class="lockbox hidden" id="abort-lock"></div>
       <ul class="brief-list" style="margin-top:14px">
         <li><span class="ic">1</span><span data-i18n="abort1"></span></li>
         <li><span class="ic">2</span><span data-i18n="abort2"></span></li>
         <li><span class="ic">3</span><span data-i18n="abort3"></span></li>
       </ul>
+      <h3 data-i18n="afterTitle" style="margin-top:20px"></h3>
+      <ul class="brief-list" id="after-abort"></ul>
+      <button class="linkbtn" data-guide data-i18n="guideBtnLong"></button>
       <div class="actions">
         <button class="btn" id="btn-abort-restart" data-i18n="again"></button>
       </div>
@@ -592,6 +649,7 @@
 
 </main>
 
+<div id="guide"><div class="gcard"><div id="guide-body"></div><div class="actions"><button class="btn" id="btn-guide-close" data-i18n="close"></button></div></div></div>
 <div id="cam-dock" class="off"><video id="cam-video" playsinline muted autoplay></video><div id="cam-glyph"></div><div id="cam-state"></div></div>
 <div id="face-warn" class="hidden"></div>
 <button id="sos"></button>
@@ -615,7 +673,7 @@ const I18N = {
     safetyTitle: "Säkerhetskoll", safetySub: "Bocka av allt innan du går vidare. Det här är inte förhandlingsbart.",
     briefSub: "Det här är din uppgift. Läs igenom den noga.",
     ready: "Jag är redo", remaining: "kvar",
-    checkinMsg: "Kontroll: mår du bra? Bekräfta.", imOk: "Jag mår bra",
+    checkinMsg: "Kontroll: rör fingrar och tår. Varma, normal färg, ingen domning? Bekräfta.", imOk: "Jag mår bra",
     puzzleTitle: "Tiden är ute!", puzzleSub: "Upprepa mönstret med piltangenterna eller knapparna för att låsa upp.",
     progress: "Framsteg", mistakes: "Misstag",
     doneTitle: "Frigör dig", again: "Börja om",
@@ -667,13 +725,55 @@ const I18N = {
     drawingsLabel: "Ritningar",
     traceHint: "Följ linjen från den gröna pricken till den röda med finger eller nos och håll kontakt med skärmen. Lyfter du händer inget. Glider du av banan en stund hamnar du ett litet steg tillbaka.",
     briefTrace: (s, c) => `Spåra ritningen med finger eller nos. En hel ritning tar bort ${s} sekunder. Sessionen tar slut senast efter ${c} minuter.`,
+
+    guideBtn: "🛟 Guide", guideBtnLong: "Öppna säkerhetsguiden", close: "Stäng",
+    puzzleTypeLabel: "Typ av pussel", ptArrows: "Pilar", ptMemory: "Minne (pilarna göms)",
+    memHint: "Titta på pilarna. De göms strax. Mata sedan in dem ur minnet. Gör du fel visas de igen.",
+    lockLabel: "Kodlås", lockOn: "Använd kodlås",
+    lockHint: "Ställ in koden på hänglåset, prova att den öppnar, och skriv in den här. Den visas först när pusslet är löst, eller direkt om du avbryter.",
+    lockPh: "Låskod (göms)",
+    lockNeed: "Skriv in låskoden, eller stäng av kodlås.",
+    lockReveal: "Din låskod:", lockRevealAbort: "Avbrutet. Här är din låskod direkt:",
+    consLabel: "Konsekvens vid miss", consMild: "Mild", consStrong: "Hård",
+    consHint: "Mild: vibration och en ton när du halkar av banan. Hård: längre vibration, större tillbakasteg och banan smalnar. Tiden ökar aldrig.",
+    stSlips: "Missar",
+    numbBtn: "Domning/kallt – släpp",
+    alarmMsg: "Bekräfta kontrollen nu, annars avbryts sessionen automatiskt.",
+    capNote: (m) => `Rekommenderat tak för den här positionen i appen: ${m} min (försiktig gräns, inga vetenskapliga tidsgränser finns).`,
+    afterTitle: "Efteråt",
+    after: [
+      ["🐢", "Lossa och rör dig långsamt. Plötsliga rörelser kan ge stukningar."],
+      ["🩸", "Titta på hud, färg och värme. Kalla, bleka eller blåaktiga lemmar ska följas upp direkt."],
+      ["🙌", "Rör fingrar, händer, fötter och tår. Känsel och styrka ska komma tillbaka snabbt."],
+      ["🚫", "Massera inte hårt och gnugga inte på domnade ställen. Höj gärna en svullen lem."],
+      ["💧", "Drick vatten, ät något och håll dig varm. Sätt dig ner en stund innan du reser dig."],
+      ["⚕️", "Domning eller svaghet som varar över 1–2 dygn, svår smärta eller svullnad: kontakta vård. Plötslig förlamning, kall blå lem eller förlorad blås-/tarmkontroll: sök akut vård."],
+      ["💜", "Ta en stund för dig själv. Hur kändes det? Behöver du ändra något till nästa gång?"]
+    ],
+    safetyLock: "Mitt kodlås är inte min enda väg ut. Jag har en rem eller ett band som går att klippa med sax inom räckhåll, och jag vet att koden visas direkt om jag avbryter.",
+    safetyLock2: "Jag har testat att koden öppnar låset, och att jag kan skriva in och nå reservutgången även om händerna domnar.",
+    guide: [
+      ["Kärnan", ["Bunden och ensam är enligt flera källor den vanligaste orsaken till BDSM-relaterade dödsfall. Håll därför det här lätt, kort och med flera vägar ut.", "Ingen alkohol eller droger. Börja enkelt och öka sakta.", "Rådgör med läkare vid diabetes, hjärt-/kärlproblem, epilepsi eller ledskador."]],
+      ["Vägar ut", ["Ha minst två: säkerhetssax inom räckhåll (öva på att använda den) och en reservutgång som fungerar även om händerna domnar.", "Telefon inom räckhåll, och gärna någon som vet när du ska vara klar.", "Fråga dig: vad händer om jag svimmar, ramlar eller mår illa? Är svaret allvarligt ska upplägget ändras."]],
+      ["Lås och tidsstyrning", ["Lås som kräver nyckel ska inte vara enda utgången. Använd kodlås med reservväg, till exempel en rem som kan klippas.", "Nyckel i fryst vatten är enkelt men tiden går inte att förutsäga. Värmebaserade lösningar (lödkolv) är brandrisk, och brandfarliga vätskor som reserv kan göra nödläget värre.", "Domnade händer kan göra en mekanisk utgång oanvändbar. Välj sådant som går att nå ändå."]],
+      ["Nerver", ["Nervskador visar sig snabbt: skarp eller strålande smärta, stickningar, svaghet, domning. Lossa direkt.", "Undvik tryck på armhålor, insidan av armbågen, utsidan av överarmen, handleder, utsidan av knäna och tät lindning kring ankeln.", "Armar över eller bakom huvudet och stretch-/stresspositioner ökar risken. Skador kan ackumuleras."]],
+      ["Cirkulation", ["Cirkulationstecken kommer långsamt: kyla, färgförändring, domning. Kolla regelbundet.", "Minskat blodflöde har ingen fördel och kan dölja nervskador. Håll det löst.", "En blek, kall lem utan puls är ett nödläge."]],
+      ["Andning", ["Inget runt halsen, inget över näsa och mun, och ingen gag som täpper till näsan.", "Undvik framåtböjda eller ansiktet-ner-positioner (risk för positionsbetingad kvävning).", "Kombinera aldrig med andningskontroll. Svårt att andas betyder att du släpper direkt."]],
+      ["Tid", ["Det finns inga vetenskapligt fastställda tidsgränser. Ju längre tid och ju mer kraft, desto större skada.", "Håll solosessioner korta. Greppstyrkan sviktar ofta först, så börja lossa innan du är trött.", "Appen har ett tak per position och en hård maxtid. Det är försiktiga värden, inte garantier."]],
+      ["Efteråt", ["Se Efteråt-listan på avslutssidan. Domning över 1–2 dygn eller svaghet ska bedömas av läkare."]]
+    ],
+    guideTitle: "Säkerhetsguide", guideSrcTitle: "Källor",
+    guideDisc: "Sammanfattning av öppna källor, inte medicinsk rådgivning. Vid skada eller osäkerhet: sök vård.",
     sos: "⛔ Avbryt / släpp",
     safety: [
       "Jag har en säkerhetssax eller ett annat snabbt sätt att skära mig loss inom räckhåll.",
       "Jag har inget som begränsar andning eller blodflöde (inget runt halsen, inga hårda surrningar).",
       "Jag är nykter och mår bra, och jag har tillräckligt med tid.",
       "Jag vet hur jag tar mig ur varje moment utan hjälp, och jag har testat det.",
-      "Jag har kontroll på vad som händer om något går fel, och en telefon eller annan nödkontakt finns nära."
+      "Jag har kontroll på vad som händer om något går fel, och en telefon eller annan nödkontakt finns nära.",
+      "Inget ligger över näsa och mun, och jag ligger inte framåtböjd eller med ansiktet ner.",
+      "Jag har en reservutgång som fungerar även om händerna domnar, och jag vet att jag släpper direkt vid domning, kyla, stickningar eller svaghet.",
+      "Jag har inga hälsoproblem (diabetes, hjärta/kärl, epilepsi, ledskador) som gör det här riskabelt, eller så har jag rådfrågat läkare."
     ],
     ph: [
       "Känn spänningen släppa när du slappnar av.",
@@ -728,7 +828,7 @@ const I18N = {
     safetyTitle: "Safety check", safetySub: "Tick everything before continuing. This is not negotiable.",
     briefSub: "This is your task. Read it carefully.",
     ready: "I am ready", remaining: "remaining",
-    checkinMsg: "Check-in: are you okay? Please confirm.", imOk: "I'm okay",
+    checkinMsg: "Check: move fingers and toes. Warm, normal colour, no numbness? Confirm.", imOk: "I'm okay",
     puzzleTitle: "Time is up!", puzzleSub: "Repeat the pattern with the arrow keys or the buttons to unlock.",
     progress: "Progress", mistakes: "Mistakes",
     doneTitle: "Release yourself", again: "Start over",
@@ -780,13 +880,55 @@ const I18N = {
     drawingsLabel: "Drawings",
     traceHint: "Follow the line from the green dot to the red one with your finger or nose and keep contact with the screen. Lifting does nothing. If you slip off the track for a while you go a small step back.",
     briefTrace: (s, c) => `Trace the drawing with your finger or nose. A full drawing removes ${s} seconds. The session ends after ${c} minutes at most.`,
+
+    guideBtn: "🛟 Guide", guideBtnLong: "Open the safety guide", close: "Close",
+    puzzleTypeLabel: "Puzzle type", ptArrows: "Arrows", ptMemory: "Memory (arrows hide)",
+    memHint: "Watch the arrows. They hide shortly. Then enter them from memory. A mistake shows them again.",
+    lockLabel: "Code padlock", lockOn: "Use code padlock",
+    lockHint: "Set the code on the padlock, test that it opens, and type it here. It is revealed only when the puzzle is solved, or at once if you stop.",
+    lockPh: "Lock code (hidden)",
+    lockNeed: "Enter the lock code, or turn the padlock off.",
+    lockReveal: "Your lock code:", lockRevealAbort: "Stopped. Here is your lock code right away:",
+    consLabel: "Consequence for a miss", consMild: "Mild", consStrong: "Hard",
+    consHint: "Mild: vibration and a tone when you slip off the track. Hard: longer vibration, a bigger step back and a narrowing track. Time never increases.",
+    stSlips: "Misses",
+    numbBtn: "Numb/cold – release",
+    alarmMsg: "Confirm the check now, otherwise the session ends automatically.",
+    capNote: (m) => `Suggested in-app cap for this position: ${m} min (a cautious limit; no scientific time limits exist).`,
+    afterTitle: "Afterwards",
+    after: [
+      ["🐢", "Release and move slowly. Sudden movement can cause sprains."],
+      ["🩸", "Check skin, colour and warmth. Cold, pale or bluish limbs need follow-up right away."],
+      ["🙌", "Move fingers, hands, feet and toes. Feeling and strength should return quickly."],
+      ["🚫", "Do not massage hard or rub numb areas. Elevate a swollen limb."],
+      ["💧", "Drink water, eat something and stay warm. Sit for a while before standing."],
+      ["⚕️", "Numbness or weakness lasting over 1–2 days, severe pain or swelling: see a doctor. Sudden paralysis, a cold blue limb or loss of bladder/bowel control: seek urgent care."],
+      ["💜", "Take a moment for yourself. How did it feel? Anything to change next time?"]
+    ],
+    safetyLock: "My padlock is not my only way out. I have a strap or band I can cut with shears within reach, and I know the code is shown at once if I stop.",
+    safetyLock2: "I have tested that the code opens the lock, and that I can reach the backup release even if my hands go numb.",
+    guide: [
+      ["The core", ["Being bound while alone is named by several sources as the leading cause of BDSM-related deaths. Keep this light, short and with several ways out.", "No alcohol or drugs. Start simple and build up slowly.", "Talk to a doctor if you have diabetes, heart or circulation problems, epilepsy or joint injuries."]],
+      ["Ways out", ["Have at least two: safety shears within reach (practise using them) and a backup that works even if your hands go numb.", "Phone within reach, ideally someone who knows when you should be done.", "Ask yourself: what if I faint, fall or feel sick? If the answer is serious, change the setup."]],
+      ["Locks and timers", ["A lock that needs a key should not be your only exit. Use a code padlock with a backup, such as a strap that can be cut.", "A key frozen in water is simple but the timing is unpredictable. Heat-based releases (soldering iron) are a fire hazard, and flammable liquids as backup can make an emergency worse.", "Numb hands can make a mechanical release unusable. Choose something you can still reach."]],
+      ["Nerves", ["Nerve injury shows up quickly: sharp or shooting pain, tingling, weakness, numbness. Release at once.", "Avoid pressure on armpits, the inner elbow, the outer upper arm, wrists, the outside of the knees and tight wraps around the ankle.", "Arms overhead or behind the head and stretch or stress positions raise the risk. Damage can accumulate."]],
+      ["Circulation", ["Circulation signs come slowly: cold, colour change, numbness. Check regularly.", "Restricting blood flow has no benefit and can mask nerve damage. Keep it loose.", "A pale, cold limb with no pulse is an emergency."]],
+      ["Breathing", ["Nothing around the neck, nothing over nose and mouth, and no gag that blocks the nose.", "Avoid forward-bent or face-down positions (positional asphyxia).", "Never combine with breath control. Trouble breathing means release immediately."]],
+      ["Time", ["There are no scientifically established time limits. More force and more time mean more damage.", "Keep solo sessions short. Grip strength often fails first, so start releasing before you are tired.", "The app has a cap per position and a hard maximum. These are cautious values, not guarantees."]],
+      ["Afterwards", ["See the Afterwards list on the end page. Numbness beyond 1–2 days or weakness needs a doctor."]]
+    ],
+    guideTitle: "Safety guide", guideSrcTitle: "Sources",
+    guideDisc: "Summary of open sources, not medical advice. If injured or unsure: seek care.",
     sos: "⛔ Stop / release",
     safety: [
       "I have safety shears or another quick way to cut myself free within reach.",
       "Nothing restricts my breathing or circulation (nothing around the neck, no hard lashings).",
       "I am sober, feeling well, and have enough time.",
       "I know how to get out of every step by myself, and I have tested it.",
-      "I know what happens if something goes wrong, and a phone or other emergency contact is nearby."
+      "I know what happens if something goes wrong, and a phone or other emergency contact is nearby.",
+      "Nothing covers my nose and mouth, and I am not bent forward or face down.",
+      "I have a backup release that works even if my hands go numb, and I know to release at once at numbness, cold, tingling or weakness.",
+      "I have no health problems (diabetes, heart/circulation, epilepsy, joint injuries) that make this risky, or I have asked a doctor."
     ],
     ph: [
       "Feel the tension release as you relax.",
@@ -919,7 +1061,28 @@ const BINDINGS = [
 const POSITIONS = BINDINGS.map(b => ({ ...b, icon: b.icon || CAT_ICON[b.cat] }));
 BINDINGS.forEach(b => { I18N.sv.positions[b.id] = b.sv; I18N.en.positions[b.id] = b.en; });
 const DIFF = { easy: 4, normal: 6, hard: 8, extreme: 10 };
-const CAP_MIN = 90;                                   // hård maxtid i klickläget
+
+const GUIDE_SRC = [
+  ["Twisted Windows – Self-Bondage Safety Intro", "https://twistedwindows.squarespace.com/articles/self-bondage-safety-intro"],
+  ["Selfsuspend – Introduction and basic risks", "https://selfsuspend.squarespace.com/basic-bondage-safety/introduction-and-basic-risks"],
+  ["Wikipedia – Self-bondage", "https://en.wikipedia.org/wiki/Self-bondage"],
+  ["Pleasure Mechanics – Erotic bondage safety", "https://www.pleasuremechanics.com/erotic-bondage-safety/"],
+  ["Ubie Health – Numbness after bondage", "https://ubiehealth.com/doctors-note/numbness-after-bondage-nerve-compress-tips-care-9223e4"]
+];
+const CAP_MIN = 90;
+const LEVEL_CAP = { 1: 60, 2: 45, 3: 30 };
+function posCap() {
+  const b = (typeof POSITIONS !== "undefined") ? POSITIONS.find(x => x.id === S.position) : null;
+  return LEVEL_CAP[b ? b.level : 1] || 30;
+}
+function capMin() { return Math.min(CAP_MIN, Math.round(posCap() * 1.5)); }
+function applyPosCap() {
+  const cap = Math.min(60, posCap());
+  $("duration").max = cap;
+  if (S.duration > cap) { S.duration = cap; $("duration").value = cap; }
+  updateDurationOut();
+  $("cap-note").textContent = t("capNote")(posCap());
+}                                   // hård maxtid i klickläget
 const SIZES = { large: 120, medium: 84, small: 56 };  // målets diameter i px
 const SYMBOL = { ArrowUp: "⬆️", ArrowRight: "➡️", ArrowDown: "⬇️", ArrowLeft: "⬅️" };
 const ARROW_KEYS = Object.keys(SYMBOL);
@@ -939,7 +1102,8 @@ const S = {
   remaining: 0, capAt: 0, hits: 0, misses: 0, lifeId: null, moveId: null,
   level: 3, sugg: [], cat: "all", browseOpen: false,
   face: false, dwellAt: 0, warnId: null,
-  traceSec: 60, traceW: 46, traceId: null
+  traceSec: 60, traceW: 46, traceId: null,
+  ptype: "arrows", lock: false, lockCode: "", conseq: "off", ciShownAt: 0, alarmId: null, memId: null, slipTotal: 0, showing: false
 };
 
 /* ============ Helpers ============ */
@@ -962,6 +1126,7 @@ function applyI18n() {
   $("sos").textContent = t("sos");
   renderChips(); renderSafety(); updateDurationOut(); renderPosition(); updateModeUI(); renderBrowse(); updateFaceUI();
   if (S.stage === "st-brief") renderBrief();
+  if ($("guide").classList.contains("show")) renderGuide();
 }
 
 /* ============ Navigation ============ */
@@ -1121,6 +1286,7 @@ function renderPosition() {
   $("pos-desc").textContent = data[1];
   $("pos-note").textContent = data[2] ? "⚠️ " + data[2] : "";
   renderSuggestions();
+  applyPosCap();
 }
 
 /* ============ Safety ============ */
@@ -1131,6 +1297,7 @@ function renderSafety() {
   const list = [...t("safety")];
   if (hitMode()) list.push(t("safetyClick"));
   if (S.face) list.push(t("safetyFace"));
+  if (S.lock) list.push(t("safetyLock"), t("safetyLock2"));
   list.forEach((txt, i) => {
     const l = document.createElement("label");
     l.className = "check";
@@ -1171,8 +1338,8 @@ function renderBrief() {
   if (hasPlug || hasDildo) lines.push(["✔️", b.plug(plugName)]);
   const posNote = t("positions")[S.position][2];
   if (posNote) lines.splice(2, 0, ["⚠️", posNote]);
-  if (S.mode === "click") lines.splice(4, 0, ["🖱️", b.click(S.hitSec, CAP_MIN)]);
-  if (S.mode === "trace") lines.splice(4, 0, ["✍️", t("briefTrace")(S.traceSec, CAP_MIN)]);
+  if (S.mode === "click") lines.splice(4, 0, ["🖱️", b.click(S.hitSec, capMin())]);
+  if (S.mode === "trace") lines.splice(4, 0, ["✍️", t("briefTrace")(S.traceSec, capMin())]);
   lines.push(["🌬️", b.breathe]);
   if (S.face) {
     lines.push(["🙂", t("briefFaceNod")], ["↔️", t("briefFaceHead")], ["↩️", t("briefFaceTilt")]);
@@ -1189,14 +1356,17 @@ function clearTimers() {
   clearInterval(S.tickId); clearInterval(S.phraseId); clearTimeout(S.checkinId);
   clearInterval(S.lifeId); clearInterval(S.moveId); clearInterval(S.traceId);
   S.tickId = S.phraseId = S.checkinId = S.lifeId = S.moveId = null;
+  clearTimeout(S.memId); S.memId = null; S.showing = false;
+  stopAlarm();
 }
 function startSession() {
   if (S.face && !FACE.ready()) return;
   clearTimers();
   S.startAt = Date.now();
   S.endAt = S.startAt + S.duration * 60000;
-  S.capAt = S.startAt + CAP_MIN * 60000;
-  S.remaining = S.duration * 60000; S.hits = 0; S.misses = 0;
+  S.capAt = S.startAt + capMin() * 60000;
+  S.remaining = S.duration * 60000; S.hits = 0; S.misses = 0; S.slipTotal = 0;
+  ensureAudio();
   $("ring-prog").style.strokeDasharray = CIRC;
   $("checkin").classList.remove("show");
   $("field-wrap").classList.toggle("hidden", S.mode !== "click");
@@ -1209,7 +1379,7 @@ function startSession() {
   tick();
   S.tickId = setInterval(tick, 250);
   S.phraseId = setInterval(nextPhrase, 20000);
-  if (S.checkins) scheduleCheckin();
+  if (S.checkins || S.lock) scheduleCheckin();
 }
 function hitMode() { return S.mode === "click" || S.mode === "trace"; }
 function leftMs() { return hitMode() ? S.remaining : S.endAt - Date.now(); }
@@ -1224,6 +1394,11 @@ function tick() {
     if (S.mode === "click") { $("cap-out").textContent = capTxt; $("hits-out").textContent = S.hits; }
     else { $("trace-cap").textContent = capTxt; $("trace-hits").textContent = S.hits; }
   }
+  if (S.ciShownAt) {
+    const wait = Date.now() - S.ciShownAt;
+    if (wait > 180000) { abort(); return; }
+    if (wait > 45000) soundAlarm();
+  }
   if (left <= 0 || (hitMode() && Date.now() >= S.capAt)) { clearTimers(); startPuzzle(); }
 }
 function nextPhrase() {
@@ -1237,19 +1412,48 @@ function scheduleCheckin() {
   S.checkinId = setTimeout(() => {
     if (leftMs() < 15000) return;
     $("checkin").classList.add("show");
+    S.ciShownAt = Date.now();
+    buzz([120, 60, 120]); beep(660, 0.18);
   }, delay);
 }
 function confirmCheckin() {
   $("checkin").classList.remove("show");
+  stopAlarm();
   scheduleCheckin();
+}
+/* ---- Ljud, vibration, larm ---- */
+function ensureAudio() {
+  try { if (!S.audio) { const C = window.AudioContext || window.webkitAudioContext; if (C) S.audio = new C(); } if (S.audio && S.audio.state === "suspended") S.audio.resume(); } catch (e) {}
+}
+function beep(freq, dur) {
+  try {
+    if (!S.audio) return;
+    const o = S.audio.createOscillator(), g = S.audio.createGain();
+    o.type = "sine"; o.frequency.value = freq; g.gain.value = 0.15;
+    o.connect(g); g.connect(S.audio.destination);
+    o.start(); o.stop(S.audio.currentTime + dur);
+  } catch (e) {}
+}
+function buzz(pat) { try { if (navigator.vibrate) navigator.vibrate(pat); } catch (e) {} }
+function soundAlarm() {
+  const now = Date.now();
+  if (S.alarmAt && now - S.alarmAt < 2500) return;
+  S.alarmAt = now;
+  document.body.classList.add("alarm");
+  buzz([300, 150, 300, 150, 300]); beep(880, 0.35);
+}
+function stopAlarm() {
+  S.ciShownAt = 0; S.alarmAt = 0;
+  document.body.classList.remove("alarm");
+  buzz(0);
 }
 
 /* ============ Click task ============ */
 function updateModeUI() {
   $("click-opts").classList.toggle("hidden", S.mode !== "click");
   $("trace-opts").classList.toggle("hidden", S.mode !== "trace");
-  $("mode-hint").textContent = S.mode === "click" ? t("modeHintClick")(CAP_MIN)
-    : S.mode === "trace" ? t("modeHintTrace")(CAP_MIN) : t("modeHintTime");
+  $("mode-hint").textContent = S.mode === "click" ? t("modeHintClick")(capMin())
+    : S.mode === "trace" ? t("modeHintTrace")(capMin()) : t("modeHintTime");
 }
 function startClickTask() {
   $("target").onpointerdown = (e) => { e.preventDefault(); e.stopPropagation(); onHit(); };
@@ -1363,7 +1567,7 @@ function traceMove(x, y) {
   if (S.stage !== "st-session" || S.mode !== "trace" || !TR.pts.length) return;
   TR.px = x; TR.py = y;
   const n = TR.pts.length, ahead = Math.ceil(n * 0.07);
-  const lo = Math.max(0, TR.idx - 2), hi = Math.min(n - 1, TR.idx + ahead), tol = S.traceW * 0.7;
+  const lo = Math.max(0, TR.idx - 2), hi = Math.min(n - 1, TR.idx + ahead), tol = effW() * 0.7;
   let best = -1, bd = Infinity;
   for (let i = lo; i <= hi; i++) {
     const d = Math.hypot(TR.pts[i][0] - x, TR.pts[i][1] - y);
@@ -1397,11 +1601,19 @@ function traceDone() {
   if (S.stage === "st-session") traceNew();
 }
 // Glider du av banan en stund hamnar du ett litet steg tillbaka (ingen tid läggs till)
+function effW() { return S.conseq === "strong" ? S.traceW * Math.max(0.6, 1 - 0.08 * TR.slips) : S.traceW; }
+function slipConsequence() {
+  S.slipTotal++;
+  if (S.conseq === "mild") { buzz(90); beep(240, 0.12); }
+  else if (S.conseq === "strong") { buzz([220, 80, 220]); beep(180, 0.3); }
+}
 function traceTick() {
   if (S.stage !== "st-session" || S.mode !== "trace") return;
   if (TR.down && TR.offSince && Date.now() - TR.offSince > 700) {
-    const chk = Math.max(1, Math.floor(TR.pts.length / 8)), to = Math.floor(TR.idx / chk) * chk;
-    if (to < TR.idx) { TR.idx = to; TR.slips++; }
+    const chk = Math.max(1, Math.floor(TR.pts.length / 8));
+    let to = Math.floor(TR.idx / chk) * chk;
+    if (S.conseq === "strong") to = Math.max(0, to - chk);
+    if (to < TR.idx) { TR.idx = to; TR.slips++; slipConsequence(); }
     TR.offSince = Date.now();
     TR.flashUntil = Date.now() + 400;
   }
@@ -1412,7 +1624,7 @@ function traceDraw() {
   if (!cv || !cv.getContext || !TR.pts.length) return;
   const ctx = cv.getContext("2d");
   if (!ctx) return;
-  const P = TR.pts, W = S.traceW;
+  const P = TR.pts, W = effW();
   ctx.setTransform(TR.dpr, 0, 0, TR.dpr, 0, 0);
   ctx.clearRect(0, 0, TR.w, TR.h);
   const path = (a, b) => { ctx.beginPath(); ctx.moveTo(P[a][0], P[a][1]); for (let i = a + 1; i <= b; i++) ctx.lineTo(P[i][0], P[i][1]); };
@@ -1462,8 +1674,15 @@ window.addEventListener("resize", () => { if (S.stage === "st-session" && S.mode
 function startPuzzle() {
   S.target = Array.from({ length: DIFF[S.difficulty] }, () => pick(ARROW_KEYS));
   S.step = 0; S.errors = 0; S.puzzleBusy = false;
+  if (S.ptype === "memory") { showMemory(); if (!S.face) $("puzzle-face").textContent = t("memHint"); }
+  else if (!S.face) $("puzzle-face").textContent = "";
   renderPuzzle();
   go("st-puzzle");
+}
+function showMemory() {
+  clearTimeout(S.memId);
+  S.showing = true;
+  S.memId = setTimeout(() => { S.showing = false; S.memId = null; renderPuzzle(); }, 1500 + S.target.length * 450);
 }
 function renderPuzzle() {
   const box = $("target-arrows");
@@ -1471,14 +1690,14 @@ function renderPuzzle() {
   S.target.forEach((k, i) => {
     const d = document.createElement("div");
     d.className = "arr" + (i < S.step ? " ok" : i === S.step ? " now" : "");
-    d.textContent = SYMBOL[k];
+    d.textContent = (S.ptype === "memory" && !S.showing && i >= S.step) ? "•" : SYMBOL[k];
     box.appendChild(d);
   });
   $("pz-progress").textContent = S.step + "/" + S.target.length;
   $("pz-errors").textContent = S.errors;
 }
 function pressKey(key) {
-  if (S.stage !== "st-puzzle" || S.puzzleBusy) return;
+  if (S.stage !== "st-puzzle" || S.puzzleBusy || S.showing) return;
   if (key === S.target[S.step]) {
     S.step++;
     renderPuzzle();
@@ -1491,6 +1710,7 @@ function pressKey(key) {
     setTimeout(() => {
       box.classList.remove("shake");
       S.step = 0; S.puzzleBusy = false;
+      if (S.ptype === "memory") showMemory();
       renderPuzzle();
     }, 420);
     $("pz-errors").textContent = S.errors;
@@ -1504,9 +1724,22 @@ function finish() {
     [S.errors, t("stMistakes")],
     ...(S.mode === "click" ? [[S.hits, t("hitsLabel")]] : S.mode === "trace" ? [[S.hits, t("drawingsLabel")]] : []),
     [t(S.difficulty), t("stDiff")],
+    ...(S.mode === "trace" && S.conseq !== "off" ? [[S.slipTotal, t("stSlips")]] : []),
     [t("positions")[S.position][0], t("stPos")]
   ].map(s => `<div class="stat"><b>${esc(s[0])}</b><small>${esc(s[1])}</small></div>`).join("");
+  renderLock("done-lock", "lockReveal");
+  renderAfter("after-done");
   go("st-done");
+}
+function renderLock(id, key) {
+  const box = $(id);
+  if (S.lock && S.lockCode) {
+    box.classList.remove("hidden");
+    box.innerHTML = esc(t(key)) + "<b>" + esc(S.lockCode) + "</b>";
+  } else box.classList.add("hidden");
+}
+function renderAfter(id) {
+  $(id).innerHTML = t("after").map(l => `<li><span class="ic">${l[0]}</span><span>${esc(l[1])}</span></li>`).join("");
 }
 
 /* ============ Abort ============ */
@@ -1515,13 +1748,26 @@ function abort() {
   clearTimeout(S.dwellId);
   $("sos").classList.remove("dwell");
   $("checkin").classList.remove("show");
+  renderLock("abort-lock", "lockRevealAbort");
+  renderAfter("after-abort");
   go("st-abort");
 }
+
+/* ============ Guide ============ */
+function renderGuide() {
+  const g = t("guide");
+  $("guide-body").innerHTML = `<h2>${esc(t("guideTitle"))}</h2><p class="gnote">${esc(t("guideDisc"))}</p>` +
+    g.map(sec => `<h3>${esc(sec[0])}</h3><ul>${sec[1].map(x => `<li>${esc(x)}</li>`).join("")}</ul>`).join("") +
+    `<h3>${esc(t("guideSrcTitle"))}</h3><ul>${GUIDE_SRC.map(x => `<li><a href="${x[1]}" target="_blank" rel="noopener noreferrer">${esc(x[0])}</a></li>`).join("")}</ul>`;
+}
+function openGuide() { renderGuide(); $("guide").classList.add("show"); $("guide").scrollTop = 0; }
+function closeGuide() { $("guide").classList.remove("show"); }
 
 /* ============ Reset ============ */
 function restart() {
   clearTimers();
   S.selected.clear(); S.custom = []; S.position = null;
+  S.lockCode = ""; if ($("lock-code")) $("lock-code").value = "";
   renderChips();
   go("st-items");
 }
@@ -1889,13 +2135,24 @@ document.addEventListener("DOMContentLoaded", () => {
   $("btn-reroll").onclick = rollPosition;
   $("btn-browse").onclick = () => { S.browseOpen = !S.browseOpen; renderBrowse(); };
   bindSeg("level-seg", (v) => { S.level = +v; rollPosition(); });
-  $("btn-setup-next").onclick = () => { renderSafety(); go("st-safety"); };
+  $("btn-setup-next").onclick = () => {
+    if (S.lock && !S.lockCode) { $("lock-code").focus(); $("cap-note").textContent = t("lockNeed"); return; }
+    renderSafety(); go("st-safety");
+  };
 
   $("btn-safety-next").onclick = () => { renderBrief(); go("st-brief"); };
   $("btn-start").onclick = startSession;
   $("btn-cam").onclick = () => FACE.start();
   $("btn-cal").onclick = () => FACE.beginCalibration();
   $("btn-checkin").onclick = confirmCheckin;
+  $("btn-numb").onclick = abort;
+  $("btn-guide-open").onclick = openGuide;
+  $("btn-guide-close").onclick = closeGuide;
+  document.querySelectorAll("[data-guide]").forEach(b => b.onclick = openGuide);
+  bindSeg("ptype-seg", (v) => S.ptype = v);
+  bindSeg("cons-seg", (v) => S.conseq = v);
+  bindSeg("lock-seg", (v) => { S.lock = v === "on"; $("lock-opts").classList.toggle("hidden", !S.lock); if (!S.lock) { S.lockCode = ""; $("lock-code").value = ""; } });
+  $("lock-code").addEventListener("input", (e) => { S.lockCode = e.target.value.trim(); });
   $("sos").onclick = abort;
   // Handsfree-avbryt: håll markören/näsan över knappen i 1,5 s, eller tryck Esc
   $("sos").addEventListener("pointerenter", () => {
@@ -1908,6 +2165,7 @@ document.addEventListener("DOMContentLoaded", () => {
     clearTimeout(S.dwellId);
   });
   document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && $("guide").classList.contains("show")) { closeGuide(); return; }
     if (e.key === "Escape" && ["st-session", "st-puzzle"].includes(S.stage)) abort();
   });
   $("btn-restart").onclick = restart;
