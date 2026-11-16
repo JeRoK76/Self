@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Self-Bondage Task</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b0b10">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<style>
+  :root {
+    --bg: #0b0b10;
+    --glass: rgba(24, 24, 32, 0.62);
+    --glass-border: rgba(255, 255, 255, 0.09);
+    --text: #f1f1f5;
+    --muted: #9a9aab;
+    --accent: #c0264b;
+    --accent-2: #7a1fa2;
+    --ok: #3ecf8e;
+    --warn: #ffb020;
+    --danger: #ff4d5e;
+    --radius: 18px;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    color: var(--text);
+    font-family: Inter, "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+    background: var(--bg);
+    overflow-x: hidden;
+  }
+  .bg {
+    position: fixed; inset: 0; z-index: -2;
+    background:
+      radial-gradient(1200px 700px at 15% -10%, rgba(192,38,75,.28), transparent 60%),
+      radial-gradient(1000px 700px at 100% 110%, rgba(122,31,162,.30), transparent 60%),
+      url('Images/dom/dom1.jpg') center / cover no-repeat fixed,
+      var(--bg);
+    filter: saturate(1.05);
+  }
+  .veil { position: fixed; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(8,8,12,.72), rgba(8,8,12,.88)); backdrop-filter: blur(6px); }
+
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; padding: 18px 24px; max-width: 960px; margin: 0 auto;
+  }
+  .brand { font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: .85rem; color: var(--muted); }
+  .brand b { color: var(--text); }
+  .lang { display: flex; gap: 4px; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 999px; padding: 3px; }
+  .lang button { background: transparent; border: 0; color: var(--muted); padding: 5px 12px; border-radius: 999px; cursor: pointer; font-weight: 600; font-size: .8rem; }
+  .lang button.active { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; }
+
+  .stepper { display: flex; gap: 8px; max-width: 960px; margin: 0 auto; padding: 0 24px; }
+  .stepper i { flex: 1; height: 4px; border-radius: 4px; background: rgba(255,255,255,.1); overflow: hidden; position: relative; }
+  .stepper i::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transform: scaleX(0); transform-origin: left; transition: transform .5s ease; }
+  .stepper i.done::after { transform: scaleX(1); }
+
+  main { max-width: 960px; margin: 0 auto; padding: 24px 24px 120px; }
+  .stage { display: none; animation: rise .45s ease both; }
+  .stage.active { display: block; }
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+  .card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    padding: 28px;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 20px 60px rgba(0,0,0,.45);
+  }
+  h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); margin: 0 0 8px; letter-spacing: -.02em; }
+  h2 { font-size: 1.5rem; margin: 0 0 6px; letter-spacing: -.01em; }
+  h3 { font-size: .8rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin: 24px 0 10px; font-weight: 600; }
+  p { line-height: 1.6; color: #d6d6e0; }
+  .sub { color: var(--muted); margin: 0 0 20px; }
+
+  .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+
+  button.btn {
+    border: 0; cursor: pointer; font-weight: 600; font-size: 1rem;
+    padding: 13px 24px; border-radius: 12px; color: #fff;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    transition: transform .15s ease, box-shadow .2s ease, opacity .2s;
+    box-shadow: 0 8px 24px rgba(192,38,75,.28);
+  }
+  button.btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(192,38,75,.4); }
+  button.btn:disabled { opacity: .35; cursor: not-allowed; box-shadow: none; }
+  button.btn.ghost { background: rgba(255,255,255,.07); box-shadow: none; border: 1px solid var(--glass-border); }
+  button.btn.ghost:hover:not(:disabled) { background: rgba(255,255,255,.12); box-shadow: none; }
+
+  input[type="text"] {
+    width: 100%; max-width: 380px; padding: 13px 16px; font-size: 1rem; color: var(--text);
+    background: rgba(0,0,0,.35); border: 1px solid var(--glass-border); border-radius: 12px; outline: none;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  input[type="text"]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(192,38,75,.25); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip {
+    user-select: none; cursor: pointer; padding: 10px 16px; border-radius: 999px;
+    background: rgba(255,255,255,.06); border: 1px solid var(--glass-border);
+    font-size: .95rem; transition: all .18s ease; display: inline-flex; align-items: center; gap: 8px;
+  }
+  .chip:hover { background: rgba(255,255,255,.12); }
+  .chip.on { background: linear-gradient(135deg, rgba(192,38,75,.55), rgba(122,31,162,.55)); border-color: rgba(255,255,255,.3); }
+  .chip .x { opacity: .7; font-weight: 700; }
+  .chip .x:hover { opacity: 1; }
+
+  .seg { display: inline-flex; background: rgba(0,0,0,.3); border: 1px solid var(--glass-border); border-radius: 12px; padding: 4px; gap: 4px; }
+  .seg button { border: 0; background: transparent; color: var(--muted); padding: 9px 18px; border-radius: 9px; cursor: pointer; font-weight: 600; }
+  .seg button.on { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; }
+
+  .slider-wrap { display: flex; align-items: center; gap: 16px; }
+  input[type="range"] { flex: 1; max-width: 420px; accent-color: var(--accent); height: 6px; }
+  .big-num { font-size: 1.6rem; font-weight: 700; min-width: 110px; }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } .card { padding: 20px; } }
+
+  .pos-card {
+    display: flex; gap: 18px; align-items: center; padding: 18px; border-radius: 14px;
+    background: rgba(0,0,0,.28); border: 1px solid var(--glass-border);
+  }
+  .pos-icon { font-size: 2.2rem; width: 64px; height: 64px; display: grid; place-items: center; border-radius: 14px; background: linear-gradient(135deg, rgba(192,38,75,.4), rgba(122,31,162,.4)); flex: none; }
+  .pos-name { font-weight: 700; font-size: 1.15rem; }
+  .pos-desc { color: var(--muted); font-size: .92rem; margin-top: 2px; }
+
+  .check { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border-radius: 12px; background: rgba(0,0,0,.25); border: 1px solid var(--glass-border); margin-bottom: 10px; cursor: pointer; }
+  .check input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--ok); flex: none; }
+  .check span { line-height: 1.5; }
+
+  .brief-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+  .brief-list li { padding: 14px 16px; border-radius: 12px; background: rgba(0,0,0,.28); border: 1px solid var(--glass-border); display: flex; gap: 12px; line-height: 1.5; }
+  .brief-list .ic { flex: none; font-size: 1.2rem; }
+
+  /* Session */
+  .session { text-align: center; }
+  .ring { position: relative; width: min(320px, 78vw); aspect-ratio: 1; margin: 8px auto 20px; }
+  .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .ring .track { stroke: rgba(255,255,255,.08); }
+  .ring .prog { stroke: url(#grad); stroke-linecap: round; transition: stroke-dashoffset .3s linear; filter: drop-shadow(0 0 8px rgba(192,38,75,.6)); }
+  .ring .center { position: absolute; inset: 0; display: grid; place-content: center; }
+  .time { font-size: clamp(2.4rem, 8vw, 3.4rem); font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+  .time-sub { color: var(--muted); font-size: .85rem; text-transform: uppercase; letter-spacing: .1em; }
+  .phrase { min-height: 56px; font-size: 1.1rem; font-style: italic; color: #e6d9ee; transition: opacity .6s; max-width: 560px; margin: 0 auto; }
+  .checkin {
+    display: none; margin: 18px auto 0; max-width: 520px; padding: 14px 18px; border-radius: 14px;
+    background: rgba(255,176,32,.12); border: 1px solid rgba(255,176,32,.5);
+    animation: pulse 1.6s infinite;
+  }
+  .checkin.show { display: flex; gap: 14px; align-items: center; justify-content: space-between; text-align: left; }
+  @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,176,32,.35); } 50% { box-shadow: 0 0 0 10px rgba(255,176,32,0); } }
+
+  /* Puzzle */
+  .arrows { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; min-height: 64px; margin: 14px 0; }
+  .arr {
+    width: 52px; height: 52px; display: grid; place-items: center; border-radius: 12px; font-size: 1.6rem;
+    background: rgba(255,255,255,.07); border: 1px solid var(--glass-border); transition: all .2s;
+  }
+  .arr.ok { background: rgba(62,207,142,.2); border-color: var(--ok); color: var(--ok); transform: scale(.95); }
+  .arr.now { border-color: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,.15); }
+  .shake { animation: shake .4s; }
+  @keyframes shake { 20%,60% { transform: translateX(-8px); } 40%,80% { transform: translateX(8px); } }
+  .dpad { display: grid; grid-template-columns: repeat(3, 68px); grid-template-rows: repeat(2, 68px); gap: 8px; justify-content: center; margin: 18px 0 6px; }
+  .dpad button { font-size: 1.5rem; border-radius: 14px; border: 1px solid var(--glass-border); background: rgba(255,255,255,.08); color: #fff; cursor: pointer; transition: background .15s, transform .1s; }
+  .dpad button:hover { background: rgba(255,255,255,.16); }
+  .dpad button:active { transform: scale(.93); }
+  .dpad .u { grid-column: 2; grid-row: 1; }
+  .dpad .l { grid-column: 1; grid-row: 2; }
+  .dpad .d { grid-column: 2; grid-row: 2; }
+  .dpad .r { grid-column: 3; grid-row: 2; }
+  .stats { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+  .stat { padding: 12px 20px; border-radius: 12px; background: rgba(0,0,0,.28); border: 1px solid var(--glass-border); min-width: 120px; }
+  .stat b { display: block; font-size: 1.4rem; }
+  .stat small { color: var(--muted); text-transform: uppercase; letter-spacing: .08em; font-size: .7rem; }
+
+  .release-title { color: var(--ok); }
+
+  /* Emergency */
+  #sos {
+    position: fixed; right: 18px; bottom: 18px; z-index: 50; display: none; overflow: hidden;
+    background: var(--danger); color: #fff; border: 0; border-radius: 999px; padding: 20px 32px;
+    font-weight: 700; font-size: 1.05rem; cursor: pointer; box-shadow: 0 10px 30px rgba(255,77,94,.45);
+  }
+  #sos::after { content: ""; position: absolute; left: 0; bottom: 0; height: 5px; width: 0; background: #fff; }
+  #sos.dwell::after { width: 100%; transition: width 1.5s linear; }
+
+  /* Click task */
+  .field {
+    position: relative; width: 100%; height: min(46vh, 380px); border-radius: 16px;
+    background: rgba(0,0,0,.35); border: 1px dashed rgba(255,255,255,.18);
+    overflow: hidden; touch-action: none; margin-bottom: 14px; cursor: crosshair;
+  }
+  .target {
+    position: absolute; border-radius: 50%; cursor: pointer; touch-action: none;
+    background: radial-gradient(circle at 35% 30%, #ff6b8e, #c0264b 60%, #7a1fa2);
+    box-shadow: 0 0 24px rgba(192,38,75,.7);
+  }
+  .target::before { content: ""; position: absolute; inset: -14px; border-radius: 50%; }
+  .target.pop { animation: pop .25s; }
+  @keyframes pop { 50% { transform: scale(1.25); } }
+  #sos.show { display: block; }
+  #sos:hover { filter: brightness(1.1); }
+  /* Suggestions / browse */
+  .pos-note { color: var(--warn); font-size: .85rem; margin-top: 6px; line-height: 1.4; }
+  .sugg, .browse-list { display: grid; gap: 8px; }
+  .sg {
+    display: flex; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 12px; cursor: pointer;
+    background: rgba(0,0,0,.25); border: 1px solid var(--glass-border); transition: all .15s ease;
+  }
+  .sg:hover { background: rgba(255,255,255,.08); }
+  .sg.on { border-color: rgba(255,255,255,.55); background: linear-gradient(135deg, rgba(192,38,75,.35), rgba(122,31,162,.35)); }
+  .sg.dim { opacity: .55; }
+  .sg { user-select: none; -webkit-user-select: none; }
+  .sg-tx { flex: 1; }
+  .sg-swap {
+    flex: none; width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--glass-border);
+    background: rgba(255,255,255,.07); color: var(--text); cursor: pointer; font-size: 1.1rem;
+    transition: transform .25s ease, background .15s;
+  }
+  .sg-swap:hover { background: rgba(255,255,255,.16); transform: rotate(180deg); }
+  .sg-ic { font-size: 1.5rem; width: 40px; height: 40px; display: grid; place-items: center; flex: none; }
+  .sg-n { font-weight: 600; }
+  .sg-m { color: var(--muted); font-size: .8rem; margin-top: 2px; }
+  .browse-list { max-height: 360px; overflow: auto; padding-right: 4px; margin-top: 12px; }
+  /* Face control */
+  #cam-dock {
+    position: fixed; left: 14px; bottom: 14px; z-index: 45; width: 140px; border-radius: 14px; overflow: hidden;
+    background: #000; border: 2px solid var(--danger); box-shadow: 0 8px 24px rgba(0,0,0,.5); transition: opacity .2s;
+  }
+  #cam-dock.ok { border-color: var(--ok); }
+  #cam-dock.off { opacity: 0; pointer-events: none; }
+  #cam-dock.inline { position: relative; left: auto; bottom: auto; width: min(320px, 100%); margin: 12px 0; }
+  #cam-video { display: block; width: 100%; transform: scaleX(-1); background: #111; min-height: 60px; }
+  #cam-glyph { position: absolute; top: 6px; right: 8px; font-size: 1.6rem; text-shadow: 0 0 8px #000; }
+  #cam-state { position: absolute; left: 0; right: 0; bottom: 0; padding: 3px 8px; font-size: .72rem; background: rgba(0,0,0,.6); color: var(--warn); }
+  #cam-state:empty { display: none; }
+  #face-warn {
+    position: fixed; top: 12px; left: 50%; transform: translateX(-50%); z-index: 60; max-width: 92vw;
+    background: rgba(255,77,94,.95); color: #fff; padding: 12px 18px; border-radius: 12px; font-weight: 600; text-align: center;
+  }
+  .hp {
+    position: absolute; width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%; pointer-events: none; z-index: 3;
+    border: 3px solid #fff; --p: 0;
+    background: conic-gradient(var(--ok) calc(var(--p) * 360deg), rgba(255,255,255,.18) 0);
+    box-shadow: 0 0 10px rgba(0,0,0,.6);
+  }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="veil"></div>
+
+<header>
+  <div class="brand"><b>Self-Bondage</b> · Task</div>
+  <div class="lang">
+    <button id="lang-sv" class="active">SV</button>
+    <button id="lang-en">EN</button>
+  </div>
+</header>
+<div class="stepper" id="stepper"></div>
+
+<main>
+
+  <!-- 0 Welcome -->
+  <section class="stage active" id="st-welcome">
+    <div class="card">
+      <h1 data-i18n="welcomeTitle"></h1>
+      <p class="sub" data-i18n="welcomeSub"></p>
+      <p data-i18n="welcomeNote"></p>
+      <div class="actions">
+        <button class="btn" id="btn-yes" data-i18n="yes"></button>
+        <button class="btn ghost" id="btn-no" data-i18n="no"></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1 Profile -->
+  <section class="stage" id="st-profile">
+    <div class="card">
+      <h2 data-i18n="profileTitle"></h2>
+      <p class="sub" data-i18n="profileSub"></p>
+      <h3 data-i18n="nameLabel"></h3>
+      <input type="text" id="user-name" data-i18n-ph="namePh" maxlength="30">
+      <h3 data-i18n="genderLabel"></h3>
+      <div class="seg" id="gender-seg">
+        <button data-v="male" data-i18n="male"></button>
+        <button data-v="female" data-i18n="female"></button>
+      </div>
+      <div class="actions">
+        <button class="btn" id="btn-profile-next" data-i18n="next" disabled></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 Items -->
+  <section class="stage" id="st-items">
+    <div class="card">
+      <h2 data-i18n="itemsTitle"></h2>
+      <p class="sub" data-i18n="itemsSub"></p>
+
+      <h3 data-i18n="envLabel"></h3>
+      <div class="chips" id="env-chips"></div>
+
+      <h3 data-i18n="gearLabel"></h3>
+      <div class="chips" id="gear-chips"></div>
+
+      <h3 data-i18n="customLabel"></h3>
+      <div class="row">
+        <input type="text" id="item-input" data-i18n-ph="itemPh" maxlength="40">
+        <button class="btn ghost" id="btn-add-item" data-i18n="addItem"></button>
+      </div>
+      <div class="chips" id="custom-chips" style="margin-top:12px"></div>
+
+      <div class="actions">
+        <button class="btn ghost" data-back="st-profile" data-i18n="back"></button>
+        <button class="btn" id="btn-items-next" data-i18n="next" disabled></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 Setup -->
+  <section class="stage" id="st-setup">
+    <div class="card">
+      <h2 data-i18n="setupTitle"></h2>
+      <p class="sub" data-i18n="setupSub"></p>
+
+      <div class="grid2">
+        <div>
+          <h3 data-i18n="durationLabel"></h3>
+          <div class="slider-wrap">
+            <input type="range" id="duration" min="1" max="60" value="15">
+            <div class="big-num" id="duration-out"></div>
+          </div>
+          <h3 data-i18n="difficultyLabel"></h3>
+          <div class="seg" id="diff-seg">
+            <button data-v="easy" data-i18n="easy"></button>
+            <button data-v="normal" class="on" data-i18n="normal"></button>
+            <button data-v="hard" data-i18n="hard"></button>
+            <button data-v="extreme" data-i18n="extreme"></button>
+          </div>
+          <h3 data-i18n="checkinLabel"></h3>
+          <div class="seg" id="checkin-seg">
+            <button data-v="on" class="on" data-i18n="on"></button>
+            <button data-v="off" data-i18n="off"></button>
+          </div>
+
+          <h3 data-i18n="modeLabel"></h3>
+          <div class="seg" id="mode-seg">
+            <button data-v="time" class="on" data-i18n="modeTime"></button>
+            <button data-v="click" data-i18n="modeClick"></button>
+          </div>
+          <p class="sub" id="mode-hint" style="margin-top:8px"></p>
+          <div id="click-opts" class="hidden">
+            <h3 data-i18n="hitLabel"></h3>
+            <div class="seg" id="hit-seg">
+              <button data-v="5">5 s</button>
+              <button data-v="10" class="on">10 s</button>
+              <button data-v="15">15 s</button>
+              <button data-v="30">30 s</button>
+            </div>
+            <h3 data-i18n="sizeLabel"></h3>
+            <div class="seg" id="size-seg">
+              <button data-v="large" data-i18n="sizeL"></button>
+              <button data-v="medium" class="on" data-i18n="sizeM"></button>
+              <button data-v="small" data-i18n="sizeS"></button>
+            </div>
+            <h3 data-i18n="moveLabel"></h3>
+            <div class="seg" id="move-seg">
+              <button data-v="still" class="on" data-i18n="still"></button>
+              <button data-v="moving" data-i18n="moving"></button>
+            </div>
+          </div>
+
+          <h3 data-i18n="faceLabel"></h3>
+          <div class="seg" id="face-seg">
+            <button data-v="off" class="on" data-i18n="off"></button>
+            <button data-v="on" data-i18n="on"></button>
+          </div>
+          <p class="sub" id="face-hint" style="margin-top:8px"></p>
+          <div id="face-opts" class="hidden">
+            <h3 data-i18n="sensLabel"></h3>
+            <div class="seg" id="sens-seg">
+              <button data-v="0.75" data-i18n="sensLow"></button>
+              <button data-v="1" class="on" data-i18n="sensMid"></button>
+              <button data-v="1.35" data-i18n="sensHigh"></button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 data-i18n="positionLabel"></h3>
+          <div class="pos-card">
+            <div class="pos-icon" id="pos-icon">🎲</div>
+            <div>
+              <div class="pos-name" id="pos-name"></div>
+              <div class="pos-desc" id="pos-desc"></div>
+              <div class="pos-note" id="pos-note"></div>
+            </div>
+          </div>
+          <h3 data-i18n="levelLabel"></h3>
+          <div class="seg" id="level-seg">
+            <button data-v="1" data-i18n="easy"></button>
+            <button data-v="2" data-i18n="normal"></button>
+            <button data-v="3" class="on" data-i18n="hard"></button>
+          </div>
+          <h3 data-i18n="suggestLabel"></h3>
+          <div class="sugg" id="sugg"></div>
+          <p class="sub" data-i18n="swapHint" style="font-size:.82rem; margin:8px 0 0"></p>
+          <div class="actions" style="margin-top:14px">
+            <button class="btn ghost" id="btn-reroll" data-i18n="reroll"></button>
+            <button class="btn ghost" id="btn-browse"></button>
+          </div>
+          <div id="browse" class="hidden">
+            <div class="chips" id="cat-chips" style="margin-top:14px"></div>
+            <div class="browse-list" id="browse-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn ghost" data-back="st-items" data-i18n="back"></button>
+        <button class="btn" id="btn-setup-next" data-i18n="next"></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 Safety -->
+  <section class="stage" id="st-safety">
+    <div class="card">
+      <h2 data-i18n="safetyTitle"></h2>
+      <p class="sub" data-i18n="safetySub"></p>
+      <div id="safety-list"></div>
+      <div class="actions">
+        <button class="btn ghost" data-back="st-setup" data-i18n="back"></button>
+        <button class="btn" id="btn-safety-next" data-i18n="next" disabled></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 Brief -->
+  <section class="stage" id="st-brief">
+    <div class="card">
+      <h2 id="brief-title"></h2>
+      <p class="sub" data-i18n="briefSub"></p>
+      <ul class="brief-list" id="brief-list"></ul>
+      <div id="face-panel" class="hidden">
+        <h3 data-i18n="faceTitle"></h3>
+        <p class="sub" id="face-status"></p>
+        <div class="row">
+          <button class="btn ghost" id="btn-cam"></button>
+          <button class="btn ghost" id="btn-cal" disabled></button>
+        </div>
+        <div id="face-slot"></div>
+        <p class="sub" data-i18n="faceTestHint" style="font-size:.85rem"></p>
+      </div>
+      <div class="actions">
+        <button class="btn ghost" data-back="st-safety" data-i18n="back"></button>
+        <button class="btn" id="btn-start" data-i18n="ready"></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 Session -->
+  <section class="stage" id="st-session">
+    <div class="card session">
+      <div class="ring">
+        <svg viewBox="0 0 200 200">
+          <defs>
+            <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#e0305a"/>
+              <stop offset="100%" stop-color="#8a2be2"/>
+            </linearGradient>
+          </defs>
+          <circle class="track" cx="100" cy="100" r="90" fill="none" stroke-width="8"/>
+          <circle class="prog" id="ring-prog" cx="100" cy="100" r="90" fill="none" stroke-width="8" stroke-dasharray="565.48" stroke-dashoffset="0"/>
+        </svg>
+        <div class="center">
+          <div class="time" id="time-left">00:00</div>
+          <div class="time-sub" data-i18n="remaining"></div>
+        </div>
+      </div>
+      <div id="field-wrap" class="hidden">
+        <p class="sub" id="click-hint"></p>
+        <div class="stats" style="margin:0 0 12px">
+          <div class="stat"><b id="hits-out">0</b><small data-i18n="hitsLabel"></small></div>
+          <div class="stat"><b id="cap-out">--:--</b><small data-i18n="capLabel"></small></div>
+        </div>
+        <div class="field" id="field"><div class="target" id="target"></div><div class="hp hidden" id="hp"></div></div>
+      </div>
+      <div class="phrase" id="phrase"></div>
+      <div class="checkin" id="checkin">
+        <span><span data-i18n="checkinMsg"></span> <b id="checkin-nod"></b></span>
+        <button class="btn" id="btn-checkin" data-i18n="imOk"></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 Puzzle -->
+  <section class="stage" id="st-puzzle">
+    <div class="card session">
+      <h2 data-i18n="puzzleTitle"></h2>
+      <p class="sub" data-i18n="puzzleSub"></p>
+      <p class="sub" id="puzzle-face" style="margin-top:-8px"></p>
+      <div class="arrows" id="target-arrows"></div>
+      <div class="dpad">
+        <button class="u" data-k="ArrowUp">⬆️</button>
+        <button class="l" data-k="ArrowLeft">⬅️</button>
+        <button class="d" data-k="ArrowDown">⬇️</button>
+        <button class="r" data-k="ArrowRight">➡️</button>
+      </div>
+      <div class="stats">
+        <div class="stat"><b id="pz-progress">0/0</b><small data-i18n="progress"></small></div>
+        <div class="stat"><b id="pz-errors">0</b><small data-i18n="mistakes"></small></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 Done -->
+  <section class="stage" id="st-done">
+    <div class="card session">
+      <h1 class="release-title" data-i18n="doneTitle"></h1>
+      <p id="done-msg"></p>
+      <div class="stats" id="done-stats"></div>
+      <div class="actions" style="justify-content:center">
+        <button class="btn" id="btn-restart" data-i18n="again"></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 Aborted -->
+  <section class="stage" id="st-abort">
+    <div class="card">
+      <h1 class="release-title" data-i18n="abortTitle"></h1>
+      <p data-i18n="abortMsg"></p>
+      <ul class="brief-list" style="margin-top:14px">
+        <li><span class="ic">1</span><span data-i18n="abort1"></span></li>
+        <li><span class="ic">2</span><span data-i18n="abort2"></span></li>
+        <li><span class="ic">3</span><span data-i18n="abort3"></span></li>
+      </ul>
+      <div class="actions">
+        <button class="btn" id="btn-abort-restart" data-i18n="again"></button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div id="cam-dock" class="off"><video id="cam-video" playsinline muted autoplay></video><div id="cam-glyph"></div><div id="cam-state"></div></div>
+<div id="face-warn" class="hidden"></div>
+<button id="sos"></button>
+
+<script>
+/* ============ i18n ============ */
+const I18N = {
+  sv: {
+    yes: "Ja", no: "Nej", next: "Nästa", back: "Tillbaka",
+    welcomeTitle: "Välkommen", welcomeSub: "Är du redo att börja din utforskning?",
+    welcomeNote: "Det här är en solosession. Du styr själv tempo och gränser och kan när som helst avbryta med knappen längst ner till höger.",
+    profileTitle: "Berätta lite om dig", profileSub: "Så att jag vet vad jag ska kalla dig.",
+    nameLabel: "Namn", namePh: "Skriv ditt namn", genderLabel: "Kön", male: "Man", female: "Kvinna",
+    itemsTitle: "Vad har du att använda?", itemsSub: "Välj det du har tillgängligt. Lägg gärna till egna saker.",
+    envLabel: "Miljö och fästpunkter", gearLabel: "Utrustning", customLabel: "Egna saker",
+    itemPh: "Lägg till eget föremål", addItem: "Lägg till",
+    setupTitle: "Ställ in sessionen", setupSub: "Anpassa längd, svårighet och position.",
+    durationLabel: "Längd", difficultyLabel: "Pusslets svårighet", checkinLabel: "Regelbundna kontroller",
+    easy: "Lätt", normal: "Normal", hard: "Svår", extreme: "Extrem", on: "På", off: "Av",
+    positionLabel: "Position", reroll: "🎲 Slumpa om", minutes: "min",
+    safetyTitle: "Säkerhetskoll", safetySub: "Bocka av allt innan du går vidare. Det här är inte förhandlingsbart.",
+    briefSub: "Det här är din uppgift. Läs igenom den noga.",
+    ready: "Jag är redo", remaining: "kvar",
+    checkinMsg: "Kontroll: mår du bra? Bekräfta.", imOk: "Jag mår bra",
+    puzzleTitle: "Tiden är ute!", puzzleSub: "Upprepa mönstret med piltangenterna eller knapparna för att låsa upp.",
+    progress: "Framsteg", mistakes: "Misstag",
+    doneTitle: "Frigör dig", again: "Börja om",
+    abortTitle: "Session avbruten", abortMsg: "Bra att du avbröt. Ta hand om dig, det finns ingen anledning att hasta.",
+    abort1: "Lossa dig långsamt och i lugn takt. Använd sax eller nödverktyg om det behövs.",
+    abort2: "Ta bort gag och eventuella föremål försiktigt.",
+    abort3: "Drick lite vatten och kontrollera att inget känns domnat eller fel.",
+    modeLabel: "Hur går tiden ner?", modeTime: "Av sig själv", modeClick: "Klickuppgift",
+    modeHintTime: "Nedräkningen går av sig själv.",
+    modeHintClick: (c) => `Tiden står still tills du träffar mål. Varje träff tar bort tid. Efter högst ${c} minuter avslutas sessionen ändå.`,
+    hitLabel: "Tid per träff", sizeLabel: "Målets storlek", moveLabel: "Rörelse",
+    sizeL: "Stor", sizeM: "Medel", sizeS: "Liten", still: "Stilla", moving: "Rörligt",
+    hitsLabel: "Träffar", capLabel: "Maxtid kvar",
+    clickHint: "Träffa målet med näsa, mun eller finger. Varje träff tar bort tid.",
+    safetyClick: "Jag har testat att jag når Avbryt-knappen utan händer och att min styrning med näsa eller mun fungerar.",
+    suggestLabel: "Förslag", levelLabel: "Högsta nivå", browseShow: "Bläddra bland alla", browseHide: "Dölj listan",
+    needsLabel: "Kräver", noSugg: "Inga positioner passar det du valt. Lägg till rep, handbojor eller en fästpunkt.",
+    swapHint: "Skift+klicka på ett förslag för att byta ut det mot ett nytt, eller tryck på ↻.",
+    cat_all: "Alla", cat_lie: "Liggande", cat_sit: "Sittande", cat_kneel: "Knästående", cat_stand: "Stående",
+    faceLabel: "Styr med ansiktet", faceHintOff: "Kameran används inte.",
+    faceHintOn: "Kameran körs bara i din webbläsare. Bilden sparas eller skickas inte.",
+    sensLabel: "Känslighet", sensLow: "Låg", sensMid: "Normal", sensHigh: "Hög",
+    faceTitle: "Kamera", camStart: "Starta kamera", calStart: "Kalibrera",
+    faceS_idle: "Starta kameran och placera ansiktet i bild.",
+    faceS_loading: "Startar kameran och laddar ansiktsmodellen…",
+    faceS_needcal: "Kameran är igång. Titta rakt fram och tryck på Kalibrera.",
+    faceS_cal: "Titta rakt fram och håll huvudet stilla…",
+    faceS_ready: "Klar. Testa: vrid huvudet åt ett håll, nicka eller luta det. Rutan visar vad som känns igen.",
+    faceS_nofacecal: "Ansiktet syntes inte tillräckligt länge. Försök igen med bättre ljus.",
+    faceS_errcam: "Kameran gick inte att starta. Tillåt kameran i webbläsaren och öppna sidan via https.",
+    faceS_errinsecure: "Webbläsaren tillåter inte kameran här. Det händer när sidan öppnas som en lokal fil på mobilen eller i en förhandsvisning. Lägg upp sidan på en https-adress och öppna den i Chrome eller Samsung Internet.",
+    faceS_errdenied: "Kameran är blockerad för den här sidan. Tillåt kameran via hänglåset i adressfältet och kolla Android-inställningar > Appar > webbläsaren > Behörigheter > Kamera. Ligger sidan i en förhandsvisning saknas ofta kamerabehörighet helt.",
+    faceS_errbusy: "Kameran används av en annan app. Stäng appar som använder kameran och försök igen.",
+    faceS_errnone: "Ingen passande kamera hittades.",
+    faceS_errmodel: "Ansiktsmodellen gick inte att ladda. Kontrollera nätverket och försök igen.",
+    faceS_noface: "Ansiktet syns inte i bild.",
+    faceTestHint: "Bilden är spegelvänd, som i en spegel. Pilen i kamerarutan visar vilken riktning som känns igen.",
+    checkinNod: "Nicka för att bekräfta.",
+    puzzleFace: "Du kan också svara med huvudet: vrid eller luta det åt pilens håll och tillbaka till mitten innan nästa.",
+    safetyFace: "Jag vet att kameran inte är min enda nödlösning. Jag har en fysisk lösning inom räckhåll om kameran tappar mig.",
+    faceWarn: "Ansiktet syns inte i kameran. Ansiktsstyrningen fungerar inte just nu.",
+    briefFaceNod: "Nicka när kontrollrutan visas för att bekräfta att du mår bra.",
+    briefFaceHead: "Pusslet kan besvaras med huvudet: vrid eller luta åt pilens håll och tillbaka till mitten.",
+    briefFaceTilt: "Luta huvudet åt sidan, örat mot axeln, i 2 sekunder för att avbryta.",
+    briefFacePoint: "I klickuppgiften styr du pekaren med huvudet. Håll den över målet en kort stund för att träffa.",
+    sos: "⛔ Avbryt / släpp",
+    safety: [
+      "Jag har en säkerhetssax eller ett annat snabbt sätt att skära mig loss inom räckhåll.",
+      "Jag har inget som begränsar andning eller blodflöde (inget runt halsen, inga hårda surrningar).",
+      "Jag är nykter och mår bra, och jag har tillräckligt med tid.",
+      "Jag vet hur jag tar mig ur varje moment utan hjälp, och jag har testat det.",
+      "Jag har kontroll på vad som händer om något går fel, och en telefon eller annan nödkontakt finns nära."
+    ],
+    ph: [
+      "Känn spänningen släppa när du slappnar av.",
+      "Ta in stunden. Du bestämmer tempot.",
+      "Andas lugnt och jämnt.",
+      "Du är på en trygg plats. Njut av upplevelsen.",
+      "Känn hur kroppen blir tung och avslappnad.",
+      "Fokusera på andningen, in och ut.",
+      "Du gör det här bra.",
+      "Ge dig själv tid. Det finns ingen brådska."
+    ],
+    env: { floor: "Golv", table: "Bord", hook: "Krok i taket", bed: "Säng", chair: "Stol", pole: "Stolpe" },
+    gear: { spreadbar: "Spridarstång", rope: "Rep", ballgag: "Bollgag", ringgag: "Ringgag", tape: "Tejp", plug: "Plugg", dildo: "Dildo", cuffs: "Handbojor", blindfold: "Ögonbindel" },
+    positions: {
+      hogtie: ["Hogtie på golvet", "Ligg på golvet med lugna, kontrollerade rörelser."],
+      chair: ["Stolbindning", "Sitt stadigt och se till att du kan nå din nödlösning."],
+      bedspread: ["Spread eagle på sängen", "Ligg ner med armar och ben utsträckta."],
+      standing: ["Stående spread eagle", "Stå stadigt med utsträckta armar och ben."],
+      table: ["Över bordet", "Luta dig mot bordet i en bekväm och stabil ställning."],
+      pole: ["Mot stolpen", "Stå eller sitt mot stolpen med stöd för ryggen."],
+      free: ["Fri position", "Välj en position du är trygg med utifrån det du har."]
+    },
+    brief: {
+      hello: (n) => `Okej, ${n}. Så här ser din session ut.`,
+      items: (l) => `Utrustning: ${l}`,
+      pos: (p) => `Position: ${p}`,
+      dur: (m) => `Längd: ${m} minuter`,
+      diff: (d) => `Pusselsvårighet: ${d}`,
+      noGag: "Ingen gag används den här gången.",
+      gag: "Sätt på gagget på ett sätt som du själv kan ta av.",
+      plug: (c) => `Applicera ${c} och se till att det sitter säkert.`,
+      breathe: "Fokusera på andningen och slappna av.",
+      sosNote: "Avbryt-knappen längst ner till höger fungerar hela tiden. Du kan också hålla markören över den i 1,5 sekunder eller trycka Esc.",
+      click: (s, c) => `Klickuppgift: träffa målen. Varje träff tar bort ${s} sekunder. Sessionen tar slut senast efter ${c} minuter.`
+    },
+    doneMsg: (n) => `Bra jobbat, ${n}. Du har låst upp pusslet.`,
+    stTime: "Tid", stMistakes: "Misstag", stDiff: "Svårighet", stPos: "Position"
+  },
+  en: {
+    yes: "Yes", no: "No", next: "Next", back: "Back",
+    welcomeTitle: "Welcome", welcomeSub: "Are you ready to begin your exploration?",
+    welcomeNote: "This is a solo session. You set the pace and limits and can stop at any time with the button in the bottom right.",
+    profileTitle: "Tell me about you", profileSub: "So I know what to call you.",
+    nameLabel: "Name", namePh: "Enter your name", genderLabel: "Gender", male: "Male", female: "Female",
+    itemsTitle: "What do you have available?", itemsSub: "Pick what you have. Feel free to add your own.",
+    envLabel: "Environment and anchor points", gearLabel: "Gear", customLabel: "Custom items",
+    itemPh: "Add your own item", addItem: "Add",
+    setupTitle: "Set up the session", setupSub: "Adjust duration, difficulty and position.",
+    durationLabel: "Duration", difficultyLabel: "Puzzle difficulty", checkinLabel: "Regular check-ins",
+    easy: "Easy", normal: "Normal", hard: "Hard", extreme: "Extreme", on: "On", off: "Off",
+    positionLabel: "Position", reroll: "🎲 Reroll", minutes: "min",
+    safetyTitle: "Safety check", safetySub: "Tick everything before continuing. This is not negotiable.",
+    briefSub: "This is your task. Read it carefully.",
+    ready: "I am ready", remaining: "remaining",
+    checkinMsg: "Check-in: are you okay? Please confirm.", imOk: "I'm okay",
+    puzzleTitle: "Time is up!", puzzleSub: "Repeat the pattern with the arrow keys or the buttons to unlock.",
+    progress: "Progress", mistakes: "Mistakes",
+    doneTitle: "Release yourself", again: "Start over",
+    abortTitle: "Session ended", abortMsg: "Good call to stop. Take care of yourself, there is no rush.",
+    abort1: "Release yourself slowly and calmly. Use safety shears or your emergency tool if needed.",
+    abort2: "Remove the gag and any items carefully.",
+    abort3: "Drink some water and check that nothing feels numb or wrong.",
+    modeLabel: "How does time run down?", modeTime: "On its own", modeClick: "Click task",
+    modeHintTime: "The countdown runs on its own.",
+    modeHintClick: (c) => `Time stands still until you hit targets. Each hit removes time. The session ends after ${c} minutes at most regardless.`,
+    hitLabel: "Time per hit", sizeLabel: "Target size", moveLabel: "Movement",
+    sizeL: "Large", sizeM: "Medium", sizeS: "Small", still: "Still", moving: "Moving",
+    hitsLabel: "Hits", capLabel: "Max time left",
+    clickHint: "Hit the target with your nose, mouth or finger. Each hit removes time.",
+    safetyClick: "I have tested that I can reach the Stop button hands-free and that my nose or mouth control works.",
+    suggestLabel: "Suggestions", levelLabel: "Highest level", browseShow: "Browse all", browseHide: "Hide list",
+    needsLabel: "Needs", noSugg: "No positions fit what you picked. Add rope, cuffs or an anchor point.",
+    swapHint: "Shift+click a suggestion to replace it with a new one, or press ↻.",
+    cat_all: "All", cat_lie: "Lying", cat_sit: "Sitting", cat_kneel: "Kneeling", cat_stand: "Standing",
+    faceLabel: "Control with your face", faceHintOff: "The camera is not used.",
+    faceHintOn: "The camera only runs in your browser. Nothing is saved or sent.",
+    sensLabel: "Sensitivity", sensLow: "Low", sensMid: "Normal", sensHigh: "High",
+    faceTitle: "Camera", camStart: "Start camera", calStart: "Calibrate",
+    faceS_idle: "Start the camera and place your face in view.",
+    faceS_loading: "Starting the camera and loading the face model…",
+    faceS_needcal: "The camera is running. Look straight ahead and press Calibrate.",
+    faceS_cal: "Look straight ahead and hold your head still…",
+    faceS_ready: "Ready. Try it: turn your head, nod or tilt it. The box shows what is recognised.",
+    faceS_nofacecal: "Your face was not visible long enough. Try again with better light.",
+    faceS_errcam: "The camera could not start. Allow the camera in the browser and open the page over https.",
+    faceS_errinsecure: "The browser does not allow the camera here. This happens when the page is opened as a local file on a phone or in a preview. Host the page on an https address and open it in Chrome or Samsung Internet.",
+    faceS_errdenied: "The camera is blocked for this page. Allow it via the padlock in the address bar and check Android Settings > Apps > the browser > Permissions > Camera. A page shown in a preview often has no camera permission at all.",
+    faceS_errbusy: "The camera is in use by another app. Close apps that use the camera and try again.",
+    faceS_errnone: "No suitable camera was found.",
+    faceS_errmodel: "The face model could not be loaded. Check the network and try again.",
+    faceS_noface: "Your face is not in view.",
+    faceTestHint: "The image is mirrored, like a mirror. The arrow in the camera box shows which direction is recognised.",
+    checkinNod: "Nod to confirm.",
+    puzzleFace: "You can also answer with your head: turn or tilt it in the arrow's direction and back to centre before the next.",
+    safetyFace: "I know the camera is not my only way out. I have a physical release within reach if the camera loses me.",
+    faceWarn: "Your face is not visible to the camera. Face control is not working right now.",
+    briefFaceNod: "Nod when the check-in box appears to confirm you are okay.",
+    briefFaceHead: "The puzzle can be answered with your head: turn or tilt in the arrow's direction and back to centre.",
+    briefFaceTilt: "Tilt your head sideways, ear towards shoulder, for 2 seconds to stop.",
+    briefFacePoint: "In the click task you steer the pointer with your head. Hold it over the target for a moment to hit.",
+    sos: "⛔ Stop / release",
+    safety: [
+      "I have safety shears or another quick way to cut myself free within reach.",
+      "Nothing restricts my breathing or circulation (nothing around the neck, no hard lashings).",
+      "I am sober, feeling well, and have enough time.",
+      "I know how to get out of every step by myself, and I have tested it.",
+      "I know what happens if something goes wrong, and a phone or other emergency contact is nearby."
+    ],
+    ph: [
+      "Feel the tension release as you relax.",
+      "Take in the moment. You set the pace.",
+      "Breathe calmly and evenly.",
+      "You are in a safe space. Enjoy the experience.",
+      "Feel your body become heavy and relaxed.",
+      "Focus on your breathing, in and out.",
+      "You are doing well.",
+      "Give yourself time. There is no hurry."
+    ],
+    env: { floor: "Floor", table: "Table", hook: "Hook in ceiling", bed: "Bed", chair: "Chair", pole: "Pole" },
+    gear: { spreadbar: "Spread bar", rope: "Rope", ballgag: "Ball gag", ringgag: "Ring gag", tape: "Tape", plug: "Plug", dildo: "Dildo", cuffs: "Cuffs", blindfold: "Blindfold" },
+    positions: {
+      hogtie: ["Hogtie on the floor", "Lie on the floor with calm, controlled movements."],
+      chair: ["Chair tie", "Sit securely and make sure you can reach your quick release."],
+      bedspread: ["Spread eagle on bed", "Lie down with arms and legs extended."],
+      standing: ["Standing spread eagle", "Stand steadily with arms and legs extended."],
+      table: ["Over the table", "Lean on the table in a comfortable, stable stance."],
+      pole: ["Against the pole", "Stand or sit against the pole with back support."],
+      free: ["Free position", "Pick a position you feel safe in based on what you have."]
+    },
+    brief: {
+      hello: (n) => `Alright, ${n}. Here is your session.`,
+      items: (l) => `Gear: ${l}`,
+      pos: (p) => `Position: ${p}`,
+      dur: (m) => `Duration: ${m} minutes`,
+      diff: (d) => `Puzzle difficulty: ${d}`,
+      noGag: "No gag will be used this time.",
+      gag: "Put the gag on in a way you can remove yourself.",
+      plug: (c) => `Apply the ${c} and make sure it is secure.`,
+      breathe: "Focus on your breathing and relax.",
+      sosNote: "The stop button in the bottom right works the whole time. You can also hold the pointer over it for 1.5 seconds or press Esc.",
+      click: (s, c) => `Click task: hit the targets. Each hit removes ${s} seconds. The session ends after ${c} minutes at most.`
+    },
+    doneMsg: (n) => `Well done, ${n}. You unlocked the puzzle.`,
+    stTime: "Time", stMistakes: "Mistakes", stDiff: "Difficulty", stPos: "Position"
+  }
+};
+
+/* ============ Data ============ */
+const ENV_KEYS = ["floor", "table", "hook", "bed", "chair", "pole"];
+const GEAR_KEYS = ["spreadbar", "rope", "ballgag", "ringgag", "tape", "plug", "dildo", "cuffs", "blindfold"];
+const GAGS = ["ballgag", "ringgag", "tape"];
+const CAT_ICON = { lie: "🛏️", sit: "🪑", kneel: "🧎", stand: "🧍" };
+const BINDINGS = [
+  // ---- Liggande ----
+  { id: "side_light", cat: "lie", level: 1, env: ["floor", "bed"], gear: ["rope", "cuffs"],
+    sv: ["Sidoläge, lätt bunden", "Ligg på sidan med handlederna ihop framför dig och fotlederna ihop.", "Du ska kunna röra fingrar och tår. Lossa direkt om något domnar."],
+    en: ["Side position, light", "Lie on your side with wrists together in front and ankles together.", "You should be able to move fingers and toes. Release at once if anything goes numb."] },
+  { id: "ankles_only", cat: "lie", level: 1, env: ["floor", "bed"], gear: ["rope", "cuffs", "spreadbar"],
+    sv: ["Bara fotlederna", "Ligg på rygg med fotlederna ihop eller på spridarstång. Händerna är fria.", ""],
+    en: ["Ankles only", "Lie on your back with ankles together or on a spread bar. Hands stay free.", ""] },
+  { id: "wrists_up", cat: "lie", level: 1, env: ["bed"], gear: ["rope", "cuffs"],
+    sv: ["Armar över huvudet", "Ligg på rygg med handlederna ihop ovanför huvudet.", "Rör fingrarna regelbundet. Lossa direkt om de domnar."],
+    en: ["Arms overhead", "Lie on your back with wrists together above your head.", "Move your fingers regularly. Release at once if they go numb."] },
+  { id: "bedspread", cat: "lie", level: 2, env: ["bed"], gear: ["rope", "cuffs"],
+    sv: ["Spread eagle på sängen", "Ligg på rygg med armar och ben utsträckta mot sängens hörn.", "Se till att du själv kan nå en snabblösning i läget."],
+    en: ["Spread eagle on bed", "Lie on your back with arms and legs extended toward the corners of the bed.", "Make sure you can reach a quick release from this position."] },
+  { id: "floor_x", cat: "lie", level: 2, env: ["floor"], gear: ["rope", "cuffs"],
+    sv: ["X på golvet", "Ligg på rygg på golvet med armar och ben i X-form.", "Ha en filt eller matta under dig så att du inte blir kall."],
+    en: ["X on the floor", "Lie on your back on the floor with arms and legs in an X shape.", "Use a blanket or mat so you do not get cold."] },
+  { id: "frogtie", cat: "lie", level: 2, env: ["floor", "bed"], gear: ["rope"],
+    sv: ["Grodbindning", "Ligg med knäna böjda utåt och vaderna bundna mot låren.", "Håll det kort och kolla känseln i fötterna. Böj inte benen hårdare än det är bekvämt."],
+    en: ["Frog tie", "Lie with knees bent outward and calves tied against the thighs.", "Keep it short and check the feeling in your feet. Do not fold the legs further than is comfortable."] },
+  { id: "hogtie", cat: "lie", level: 3, icon: "🪢", env: ["floor"], gear: ["rope"],
+    sv: ["Hogtie", "Liggande med handleder och fotleder ihopbundna bakom ryggen.", "Den mest riskfyllda positionen här. Ligg helst på sidan, undvik tryck mot bröstkorgen, håll det kort och ha en snabblösning inom räckhåll."],
+    en: ["Hogtie", "Lying with wrists and ankles tied together behind the back.", "The riskiest position here. Prefer lying on your side, avoid pressure on the chest, keep it short and have a quick release within reach."] },
+  // ---- Knästående ----
+  { id: "kneel_behind", cat: "kneel", level: 1, env: ["floor"], gear: ["rope", "cuffs"],
+    sv: ["Knästående, händer bakom ryggen", "Knäa upprätt med handlederna ihop bakom ryggen.", "Lägg något mjukt under knäna."],
+    en: ["Kneeling, hands behind back", "Kneel upright with wrists together behind your back.", "Put something soft under your knees."] },
+  { id: "kneel_head", cat: "kneel", level: 1, env: ["floor"], gear: ["rope", "cuffs"],
+    sv: ["Knästående, händer bakom huvudet", "Knäa upprätt med handlederna ihop bakom nacken och armbågarna utåt.", "Släpp om axlarna knyter sig."],
+    en: ["Kneeling, hands behind head", "Kneel upright with wrists together behind your neck and elbows out.", "Release if your shoulders cramp."] },
+  { id: "bed_edge", cat: "kneel", level: 2, env: ["bed"], gear: ["rope", "cuffs"],
+    sv: ["Knästående vid sängkanten", "Knäa på golvet med överkroppen över sängkanten och handlederna ihop framför dig.", ""],
+    en: ["Kneeling at the bed edge", "Kneel on the floor with your upper body over the edge of the bed and wrists together in front.", ""] },
+  { id: "kneel_bar", cat: "kneel", level: 2, env: ["floor"], gear: ["spreadbar"],
+    sv: ["Knästående med spridarstång", "Knäa med spridarstången mellan fotlederna så att benen hålls isär.", "Sitt eller luta dig mot något så att du inte tappar balansen."],
+    en: ["Kneeling with spread bar", "Kneel with the spread bar between your ankles so your legs stay apart.", "Sit or lean on something so you do not lose your balance."] },
+  { id: "prayer", cat: "kneel", level: 3, env: ["floor"], gear: ["rope", "cuffs"],
+    sv: ["Bönposition", "Knästående med handflatorna ihop bakom ryggen.", "Belastar axlar och handleder. Håll det kort och bind aldrig så hårt att fingrarna tappar känsel."],
+    en: ["Prayer position", "Kneeling with palms together behind your back.", "Strains shoulders and wrists. Keep it short and never tie so tight that the fingers lose feeling."] },
+  // ---- Sittande ----
+  { id: "pole_sit", cat: "sit", level: 1, env: ["pole"], gear: ["rope", "cuffs"],
+    sv: ["Sittande mot stolpen", "Sitt med ryggen mot stolpen och handlederna fästa bakom den.", ""],
+    en: ["Sitting against the pole", "Sit with your back against the pole and wrists fastened behind it.", ""] },
+  { id: "wall_sit", cat: "sit", level: 1, env: ["floor"], gear: ["rope", "cuffs"],
+    sv: ["Ryggen mot väggen", "Sitt med ryggen mot en vägg, handlederna ihop i knät och fotlederna ihop.", ""],
+    en: ["Back to the wall", "Sit with your back to a wall, wrists together in your lap and ankles together.", ""] },
+  { id: "chair_basic", cat: "sit", level: 1, env: ["chair"], gear: ["rope", "cuffs"],
+    sv: ["Stol, händer bakom ryggstödet", "Sitt på stolen med handlederna ihop bakom ryggstödet.", ""],
+    en: ["Chair, hands behind backrest", "Sit on the chair with wrists together behind the backrest.", ""] },
+  { id: "chair_ankles", cat: "sit", level: 1, env: ["chair"], gear: ["rope", "cuffs"],
+    sv: ["Stol, fotleder mot stolsbenen", "Sitt på stolen med fotlederna fästa mot stolsbenen och händerna i knät.", ""],
+    en: ["Chair, ankles to the legs", "Sit on the chair with ankles fastened to the chair legs and hands in your lap.", ""] },
+  { id: "floor_box", cat: "sit", level: 2, env: ["floor"], gear: ["rope"],
+    sv: ["Sittande på golvet, knän ihop", "Sitt med böjda knän, vrister och knän ihop och händerna bundna framför.", "Kolla blodcirkulationen i fötterna med jämna mellanrum."],
+    en: ["Floor sit, knees together", "Sit with knees bent, ankles and knees together and hands tied in front.", "Check the circulation in your feet regularly."] },
+  { id: "chair_full", cat: "sit", level: 2, env: ["chair"], gear: ["rope", "cuffs"],
+    sv: ["Stolbindning", "Händerna bakom ryggstödet och fotlederna mot stolsbenen, överkroppen lätt fäst.", "Sitt stadigt. Luta dig inte så att stolen kan välta."],
+    en: ["Chair tie", "Hands behind the backrest and ankles to the chair legs, upper body lightly fastened.", "Sit steadily. Do not lean so that the chair could tip over."] },
+  { id: "chair_wide", cat: "sit", level: 3, env: ["chair"], gear: ["rope", "cuffs", "spreadbar"],
+    sv: ["Stol med isärspärrade ben", "Fotlederna fästa mot varsitt stolsben fram och händerna bakom ryggstödet.", "Kontrollera stolens stabilitet innan du börjar."],
+    en: ["Chair, legs apart", "Ankles fastened to the front chair legs and hands behind the backrest.", "Check that the chair is stable before you start."] },
+  // ---- Stående ----
+  { id: "bar_stand", cat: "stand", level: 1, env: ["floor"], gear: ["spreadbar"],
+    sv: ["Stående med spridarstång", "Stå med fotlederna vid spridarstångens ändar och händerna bakom ryggen.", "Stå vid en vägg eller möbel som du kan stödja dig mot, så du inte faller."],
+    en: ["Standing with spread bar", "Stand with ankles at the ends of the spread bar and hands behind your back.", "Stand near a wall or furniture you can lean on so you do not fall."] },
+  { id: "pole_stand", cat: "stand", level: 2, env: ["pole"], gear: ["rope", "cuffs"],
+    sv: ["Mot stolpen", "Stå med ryggen mot stolpen och handlederna fästa bakom den.", ""],
+    en: ["Against the pole", "Stand with your back to the pole and wrists fastened behind it.", ""] },
+  { id: "table_over", cat: "stand", level: 2, env: ["table"], gear: ["rope", "cuffs"],
+    sv: ["Över bordet", "Stå och luta överkroppen mot bordet med handlederna fästa framför dig.", "Bordet ska stå stabilt."],
+    en: ["Over the table", "Stand and lean your upper body on the table with wrists fastened in front.", "The table must be stable."] },
+  { id: "hook_hands", cat: "stand", level: 2, env: ["hook"], gear: ["rope", "cuffs"],
+    sv: ["Händer upp mot kroken", "Stå med handlederna ihop ovanför huvudet, fästa i en krok du når med fötterna i golvet.", "Du ska kunna stå fullt ut. Häng aldrig i armarna."],
+    en: ["Hands up to the hook", "Stand with wrists together above your head, fastened to a hook you reach with your feet on the floor.", "You must be able to stand fully. Never hang from your arms."] },
+  { id: "hook_sit", cat: "sit", level: 2, env: ["hook"], env2: ["chair", "bed", "floor"], gear: ["rope", "cuffs"],
+    sv: ["Sittande, händer upp mot kroken", "Sitt på stol, säng eller golv under kroken med handlederna ihop ovanför huvudet, fästa i kroken. Vikten vilar på det du sitter på.", "Fästet ska ligga så att armarna inte sträcks hårt. Du ska aldrig hänga i dem, och stolen ska stå stabilt."],
+    en: ["Sitting, hands up to the hook", "Sit on a chair, bed or the floor under the hook with wrists together above your head, fastened to the hook. Your weight rests on what you sit on.", "The anchor should sit so your arms are not pulled tight. Never hang from them, and make sure the chair is stable."] },
+  { id: "hook_kneel", cat: "kneel", level: 2, env: ["hook"], env2: ["floor", "bed"], gear: ["rope", "cuffs"],
+    sv: ["Knästående, händer upp mot kroken", "Knäa upprätt under kroken med handlederna ihop ovanför huvudet, fästa i kroken.", "Vikten ska ligga på knäna. Häng aldrig i armarna, och lägg något mjukt under knäna."],
+    en: ["Kneeling, hands up to the hook", "Kneel upright under the hook with wrists together above your head, fastened to the hook.", "Your weight stays on your knees. Never hang from your arms, and put something soft under your knees."] },
+  { id: "stand_spread", cat: "stand", level: 3, env: ["hook", "pole"], gear: ["rope", "cuffs", "spreadbar"],
+    sv: ["Stående spread eagle", "Stå med armar och ben utsträckta mot fästpunkter.", "All vikt ska ligga på fötterna. Häng aldrig i armarna."],
+    en: ["Standing spread eagle", "Stand with arms and legs extended toward anchor points.", "All weight stays on your feet. Never hang from your arms."] }
+];
+const POSITIONS = BINDINGS.map(b => ({ ...b, icon: b.icon || CAT_ICON[b.cat] }));
+BINDINGS.forEach(b => { I18N.sv.positions[b.id] = b.sv; I18N.en.positions[b.id] = b.en; });
+const DIFF = { easy: 4, normal: 6, hard: 8, extreme: 10 };
+const CAP_MIN = 90;                                   // hård maxtid i klickläget
+const SIZES = { large: 120, medium: 84, small: 56 };  // målets diameter i px
+const SYMBOL = { ArrowUp: "⬆️", ArrowRight: "➡️", ArrowDown: "⬇️", ArrowLeft: "⬅️" };
+const ARROW_KEYS = Object.keys(SYMBOL);
+const STAGES = ["st-welcome","st-profile","st-items","st-setup","st-safety","st-brief","st-session","st-puzzle","st-done"];
+const STEP_OF = { "st-welcome":0,"st-profile":1,"st-items":2,"st-setup":3,"st-safety":4,"st-brief":5,"st-session":6,"st-puzzle":6,"st-done":6,"st-abort":6 };
+
+/* ============ State ============ */
+const S = {
+  lang: "sv", name: "", gender: "",
+  selected: new Set(), custom: [],
+  duration: 15, difficulty: "normal", checkins: true,
+  position: null,
+  stage: "st-welcome",
+  endAt: 0, startAt: 0, tickId: null, phraseId: null, checkinId: null,
+  target: [], step: 0, errors: 0, puzzleBusy: false,
+  mode: "time", hitSec: 10, size: "medium", move: "still",
+  remaining: 0, capAt: 0, hits: 0, misses: 0, lifeId: null, moveId: null,
+  level: 3, sugg: [], cat: "all", browseOpen: false,
+  face: false, dwellAt: 0, warnId: null
+};
+
+/* ============ Helpers ============ */
+const $ = (id) => document.getElementById(id);
+const t = (k) => I18N[S.lang][k];
+const esc = (s) => String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const pick = (a) => a[Math.floor(Math.random() * a.length)];
+const fmt = (ms) => { const s = Math.max(0, Math.ceil(ms / 1000)); return String(Math.floor(s/60)).padStart(2,"0") + ":" + String(s%60).padStart(2,"0"); };
+
+function store(k, v) { try { localStorage.setItem("sb_" + k, v); } catch (e) {} }
+function load(k) { try { return localStorage.getItem("sb_" + k); } catch (e) { return null; } }
+
+/* ============ i18n apply ============ */
+function applyI18n() {
+  document.documentElement.lang = S.lang;
+  document.querySelectorAll("[data-i18n]").forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll("[data-i18n-ph]").forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
+  $("lang-sv").classList.toggle("active", S.lang === "sv");
+  $("lang-en").classList.toggle("active", S.lang === "en");
+  $("sos").textContent = t("sos");
+  renderChips(); renderSafety(); updateDurationOut(); renderPosition(); updateModeUI(); renderBrowse(); updateFaceUI();
+  if (S.stage === "st-brief") renderBrief();
+}
+
+/* ============ Navigation ============ */
+function renderStepper() {
+  const el = $("stepper");
+  if (!el.children.length) { for (let i = 0; i < 7; i++) el.appendChild(document.createElement("i")); }
+  const cur = STEP_OF[S.stage] ?? 0;
+  [...el.children].forEach((c, i) => c.classList.toggle("done", i <= cur));
+}
+function go(id) {
+  S.stage = id;
+  document.querySelectorAll(".stage").forEach(s => s.classList.toggle("active", s.id === id));
+  $("sos").classList.toggle("show", ["st-session", "st-puzzle"].includes(id));
+  renderStepper();
+  const dock = $("cam-dock");
+  if (id === "st-brief") { $("face-slot").appendChild(dock); dock.classList.add("inline"); }
+  else { document.body.appendChild(dock); dock.classList.remove("inline"); }
+  if (FACE.running) {
+    if (!["st-brief", "st-session", "st-puzzle"].includes(id)) FACE.stop();
+    else playVideo();
+  }
+  updateFaceUI();
+  keepAwake(["st-session", "st-puzzle"].includes(id));
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* ============ Chips ============ */
+function chip(label, on, onClick, removable) {
+  const d = document.createElement("div");
+  d.className = "chip" + (on ? " on" : "");
+  d.innerHTML = esc(label) + (removable ? ' <span class="x">×</span>' : "");
+  d.addEventListener("click", onClick);
+  return d;
+}
+function renderChips() {
+  const env = $("env-chips"), gear = $("gear-chips"), cus = $("custom-chips");
+  env.innerHTML = gear.innerHTML = cus.innerHTML = "";
+  ENV_KEYS.forEach(k => env.appendChild(chip(t("env")[k], S.selected.has(k), () => toggleSel(k))));
+  GEAR_KEYS.forEach(k => gear.appendChild(chip(t("gear")[k], S.selected.has(k), () => toggleSel(k))));
+  S.custom.forEach((c, i) => cus.appendChild(chip(c, true, () => { S.custom.splice(i, 1); renderChips(); validateItems(); }, true)));
+  validateItems();
+}
+function toggleSel(k) {
+  S.selected.has(k) ? S.selected.delete(k) : S.selected.add(k);
+  renderChips();
+}
+function validateItems() {
+  $("btn-items-next").disabled = !(S.selected.size > 0 || S.custom.length > 0);
+}
+function addCustom() {
+  const v = $("item-input").value.trim().toLowerCase();
+  if (v && !S.custom.includes(v)) { S.custom.push(v); renderChips(); }
+  $("item-input").value = "";
+}
+
+/* ============ Positions ============ */
+const ALIAS = {
+  rope: ["rope", "rep", "lina", "snöre"], cuffs: ["cuff", "handboj", "fotboj", "bojor"],
+  spreadbar: ["spread", "spridar"], chair: ["chair", "stol"], bed: ["bed", "säng"],
+  floor: ["floor", "golv"], table: ["table", "bord"], pole: ["pole", "stolpe", "stång"],
+  hook: ["hook", "krok", "ögla"]
+};
+const hasKey = (k) => S.selected.has(k) || S.custom.some(c => (ALIAS[k] || []).some(a => c.includes(a)));
+const nameOf = (k) => t("env")[k] || t("gear")[k] || k;
+function fits(b) {
+  return (!b.env.length || b.env.some(hasKey)) &&
+         (!b.env2 || b.env2.some(hasKey)) &&
+         (!b.gear.length || b.gear.some(hasKey));
+}
+function missingText(b) {
+  const parts = [];
+  if (b.env.length && !b.env.some(hasKey)) parts.push(b.env.map(nameOf).join(" / "));
+  if (b.env2 && !b.env2.some(hasKey)) parts.push(b.env2.map(nameOf).join(" / "));
+  if (b.gear.length && !b.gear.some(hasKey)) parts.push(b.gear.map(nameOf).join(" / "));
+  return parts.join(" + ");
+}
+function availablePositions() { return POSITIONS.filter(b => b.level <= S.level && fits(b)); }
+function rollPosition() {
+  const pool = availablePositions().map(b => b.id);
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  S.sugg = pool.slice(0, 4);
+  S.seen = new Set(S.sugg);
+  S.position = S.sugg[0] || "free";
+  renderPosition();
+  renderBrowse();
+}
+function selectPosition(id) { S.position = id; renderPosition(); renderBrowse(); }
+function swapSuggestion(id) {
+  const idx = S.sugg.indexOf(id);
+  if (idx < 0) return;
+  const pool = availablePositions().map(b => b.id).filter(x => !S.sugg.includes(x));
+  if (!pool.length) return;                       // inga fler passande idéer
+  S.seen = S.seen || new Set(S.sugg);
+  let fresh = pool.filter(x => !S.seen.has(x));
+  if (!fresh.length) { S.seen = new Set(S.sugg); fresh = pool; }   // alla har setts: börja om
+  const next = pick(fresh);
+  S.seen.add(next);
+  S.sugg[idx] = next;
+  if (S.position === id) S.position = next;
+  renderPosition();
+  renderBrowse();
+}
+function posCard(id, dim, swappable) {
+  const b = POSITIONS.find(x => x.id === id);
+  const d = t("positions")[id];
+  const el = document.createElement("div");
+  el.className = "sg" + (S.position === id ? " on" : "") + (dim ? " dim" : "");
+  const lvl = "●".repeat(b.level) + "○".repeat(3 - b.level);
+  el.innerHTML = `<div class="sg-ic">${b.icon}</div><div class="sg-tx"><div class="sg-n">${esc(d[0])}</div><div class="sg-m">${esc(t("cat_" + b.cat))} · ${lvl}${dim ? " · " + esc(t("needsLabel") + ": " + dim) : ""}</div></div>`;
+  if (swappable) {
+    const sw = document.createElement("button");
+    sw.className = "sg-swap"; sw.type = "button"; sw.textContent = "↻";
+    sw.addEventListener("click", (e) => { e.stopPropagation(); swapSuggestion(id); });
+    el.appendChild(sw);
+  }
+  el.addEventListener("click", (e) => {
+    if (swappable && e.shiftKey) { e.preventDefault(); swapSuggestion(id); return; }
+    selectPosition(id);
+  });
+  return el;
+}
+function renderSuggestions() {
+  const box = $("sugg");
+  box.innerHTML = "";
+  if (!S.sugg.length) {
+    const p = document.createElement("p");
+    p.className = "sub"; p.textContent = t("noSugg");
+    box.appendChild(p);
+    return;
+  }
+  S.sugg.forEach(id => box.appendChild(posCard(id, "", true)));
+}
+function renderBrowse() {
+  $("browse").classList.toggle("hidden", !S.browseOpen);
+  $("btn-browse").textContent = S.browseOpen ? t("browseHide") : t("browseShow") + " (" + POSITIONS.length + ")";
+  if (!S.browseOpen) return;
+  const cats = $("cat-chips");
+  cats.innerHTML = "";
+  ["all", "lie", "sit", "kneel", "stand"].forEach(c =>
+    cats.appendChild(chip(t("cat_" + c), S.cat === c, () => { S.cat = c; renderBrowse(); })));
+  const list = $("browse-list");
+  list.innerHTML = "";
+  POSITIONS.filter(b => S.cat === "all" || b.cat === S.cat)
+    .sort((a, b) => (fits(b) - fits(a)) || (a.level - b.level))
+    .forEach(b => list.appendChild(posCard(b.id, fits(b) ? "" : missingText(b))));
+}
+function renderPosition() {
+  if (!S.position) return;
+  const p = POSITIONS.find(x => x.id === S.position);
+  const data = t("positions")[S.position];
+  $("pos-icon").textContent = p ? p.icon : "✨";
+  $("pos-name").textContent = data[0];
+  $("pos-desc").textContent = data[1];
+  $("pos-note").textContent = data[2] ? "⚠️ " + data[2] : "";
+  renderSuggestions();
+}
+
+/* ============ Safety ============ */
+function renderSafety() {
+  const box = $("safety-list");
+  const prev = [...box.querySelectorAll("input")].map(i => i.checked);
+  box.innerHTML = "";
+  const list = [...t("safety")];
+  if (S.mode === "click") list.push(t("safetyClick"));
+  if (S.face) list.push(t("safetyFace"));
+  list.forEach((txt, i) => {
+    const l = document.createElement("label");
+    l.className = "check";
+    l.innerHTML = `<input type="checkbox"><span>${esc(txt)}</span>`;
+    const inp = l.querySelector("input");
+    inp.checked = !!prev[i];
+    inp.addEventListener("change", validateSafety);
+    box.appendChild(l);
+  });
+  validateSafety();
+}
+function validateSafety() {
+  const all = [...$("safety-list").querySelectorAll("input")];
+  $("btn-safety-next").disabled = !all.every(i => i.checked);
+}
+
+/* ============ Brief ============ */
+function allItems() {
+  const keys = [...S.selected].map(k => (t("env")[k] || t("gear")[k] || k));
+  return [...keys, ...S.custom.map(c => c.charAt(0).toUpperCase() + c.slice(1))];
+}
+function renderBrief() {
+  const b = t("brief");
+  $("brief-title").textContent = b.hello(S.name);
+  const gagSel = GAGS.filter(g => S.selected.has(g)).length > 0 || S.custom.some(c => ["rope gag","rep gag","tape","tejp","gag"].includes(c));
+  const hasPlug = S.selected.has("plug") || S.custom.some(c => c.includes("plug"));
+  const hasDildo = S.selected.has("dildo") || S.custom.some(c => c.includes("dildo"));
+  const plugName = hasPlug ? t("gear").plug : t("gear").dildo;
+  const posName = t("positions")[S.position][0];
+
+  const lines = [
+    ["📦", b.items(allItems().join(", "))],
+    ["🎯", b.pos(posName)],
+    ["⏱️", b.dur(S.duration)],
+    ["🧩", b.diff(t(S.difficulty))],
+    ["🔗", gagSel ? b.gag : b.noGag]
+  ];
+  if (hasPlug || hasDildo) lines.push(["✔️", b.plug(plugName)]);
+  const posNote = t("positions")[S.position][2];
+  if (posNote) lines.splice(2, 0, ["⚠️", posNote]);
+  if (S.mode === "click") lines.splice(4, 0, ["🖱️", b.click(S.hitSec, CAP_MIN)]);
+  lines.push(["🌬️", b.breathe]);
+  if (S.face) {
+    lines.push(["🙂", t("briefFaceNod")], ["↔️", t("briefFaceHead")], ["↩️", t("briefFaceTilt")]);
+    if (S.mode === "click") lines.push(["🎯", t("briefFacePoint")]);
+  }
+  lines.push(["⛔", b.sosNote]);
+
+  $("brief-list").innerHTML = lines.map(l => `<li><span class="ic">${l[0]}</span><span>${esc(l[1])}</span></li>`).join("");
+}
+
+/* ============ Session ============ */
+const CIRC = 2 * Math.PI * 90;
+function clearTimers() {
+  clearInterval(S.tickId); clearInterval(S.phraseId); clearTimeout(S.checkinId);
+  clearInterval(S.lifeId); clearInterval(S.moveId);
+  S.tickId = S.phraseId = S.checkinId = S.lifeId = S.moveId = null;
+}
+function startSession() {
+  if (S.face && !FACE.ready()) return;
+  clearTimers();
+  S.startAt = Date.now();
+  S.endAt = S.startAt + S.duration * 60000;
+  S.capAt = S.startAt + CAP_MIN * 60000;
+  S.remaining = S.duration * 60000; S.hits = 0; S.misses = 0;
+  $("ring-prog").style.strokeDasharray = CIRC;
+  $("checkin").classList.remove("show");
+  $("field-wrap").classList.toggle("hidden", S.mode !== "click");
+  nextPhrase();
+  go("st-session");
+  if (S.mode === "click") startClickTask();
+  tick();
+  S.tickId = setInterval(tick, 250);
+  S.phraseId = setInterval(nextPhrase, 20000);
+  if (S.checkins) scheduleCheckin();
+}
+function leftMs() { return S.mode === "click" ? S.remaining : S.endAt - Date.now(); }
+function tick() {
+  const total = S.duration * 60000;
+  const left = leftMs();
+  $("time-left").textContent = fmt(left);
+  const frac = Math.min(1, Math.max(0, 1 - left / total));
+  $("ring-prog").style.strokeDashoffset = CIRC * frac;
+  if (S.mode === "click") {
+    $("cap-out").textContent = fmt(S.capAt - Date.now());
+    $("hits-out").textContent = S.hits;
+  }
+  if (left <= 0 || (S.mode === "click" && Date.now() >= S.capAt)) { clearTimers(); startPuzzle(); }
+}
+function nextPhrase() {
+  const el = $("phrase");
+  el.style.opacity = 0;
+  setTimeout(() => { el.textContent = pick(t("ph")); el.style.opacity = 1; }, 400);
+}
+function scheduleCheckin() {
+  const total = S.duration * 60000;
+  const delay = Math.min(Math.max(60000, total / 4), 240000) * (0.7 + Math.random() * 0.6);
+  S.checkinId = setTimeout(() => {
+    if (leftMs() < 15000) return;
+    $("checkin").classList.add("show");
+  }, delay);
+}
+function confirmCheckin() {
+  $("checkin").classList.remove("show");
+  scheduleCheckin();
+}
+
+/* ============ Click task ============ */
+function updateModeUI() {
+  $("click-opts").classList.toggle("hidden", S.mode !== "click");
+  $("mode-hint").textContent = S.mode === "click" ? t("modeHintClick")(CAP_MIN) : t("modeHintTime");
+}
+function startClickTask() {
+  $("target").onpointerdown = (e) => { e.preventDefault(); e.stopPropagation(); onHit(); };
+  $("field").onpointerdown = () => { S.misses++; };   // missar påverkar inte tiden
+  $("click-hint").textContent = t("clickHint");
+  S.dwellAt = 0;
+  placeTarget(true);
+  if (S.move === "moving") S.moveId = setInterval(() => placeTarget(false), 1700);
+  else S.lifeId = setInterval(() => placeTarget(true), 6000);
+}
+function placeTarget(jump) {
+  const f = $("field"), tg = $("target");
+  const size = SIZES[S.size];
+  const maxX = Math.max(0, f.clientWidth - size);
+  const maxY = Math.max(0, f.clientHeight - size);
+  tg.style.transition = jump ? "none" : "left 1.6s ease-in-out, top 1.6s ease-in-out";
+  tg.style.width = tg.style.height = size + "px";
+  tg.style.left = Math.random() * maxX + "px";
+  tg.style.top = Math.random() * maxY + "px";
+}
+function onHit() {
+  if (S.stage !== "st-session" || S.mode !== "click") return;
+  S.hits++;
+  S.remaining = Math.max(0, S.remaining - S.hitSec * 1000);   // klick kan bara minska tiden
+  const tg = $("target");
+  tg.classList.remove("pop"); void tg.offsetWidth; tg.classList.add("pop");
+  placeTarget(true);
+  tick();
+}
+
+/* ============ Puzzle ============ */
+function startPuzzle() {
+  S.target = Array.from({ length: DIFF[S.difficulty] }, () => pick(ARROW_KEYS));
+  S.step = 0; S.errors = 0; S.puzzleBusy = false;
+  renderPuzzle();
+  go("st-puzzle");
+}
+function renderPuzzle() {
+  const box = $("target-arrows");
+  box.innerHTML = "";
+  S.target.forEach((k, i) => {
+    const d = document.createElement("div");
+    d.className = "arr" + (i < S.step ? " ok" : i === S.step ? " now" : "");
+    d.textContent = SYMBOL[k];
+    box.appendChild(d);
+  });
+  $("pz-progress").textContent = S.step + "/" + S.target.length;
+  $("pz-errors").textContent = S.errors;
+}
+function pressKey(key) {
+  if (S.stage !== "st-puzzle" || S.puzzleBusy) return;
+  if (key === S.target[S.step]) {
+    S.step++;
+    renderPuzzle();
+    if (S.step >= S.target.length) finish();
+  } else {
+    S.errors++;
+    S.puzzleBusy = true;
+    const box = $("target-arrows");
+    box.classList.add("shake");
+    setTimeout(() => {
+      box.classList.remove("shake");
+      S.step = 0; S.puzzleBusy = false;
+      renderPuzzle();
+    }, 420);
+    $("pz-errors").textContent = S.errors;
+  }
+}
+function finish() {
+  const total = Date.now() - S.startAt;
+  $("done-msg").textContent = t("doneMsg")(S.name);
+  $("done-stats").innerHTML = [
+    [fmt(total), t("stTime")],
+    [S.errors, t("stMistakes")],
+    ...(S.mode === "click" ? [[S.hits, t("hitsLabel")]] : []),
+    [t(S.difficulty), t("stDiff")],
+    [t("positions")[S.position][0], t("stPos")]
+  ].map(s => `<div class="stat"><b>${esc(s[0])}</b><small>${esc(s[1])}</small></div>`).join("");
+  go("st-done");
+}
+
+/* ============ Abort ============ */
+function abort() {
+  clearTimers();
+  clearTimeout(S.dwellId);
+  $("sos").classList.remove("dwell");
+  $("checkin").classList.remove("show");
+  go("st-abort");
+}
+
+/* ============ Reset ============ */
+function restart() {
+  clearTimers();
+  S.selected.clear(); S.custom = []; S.position = null;
+  renderChips();
+  go("st-items");
+}
+
+/* ============ Face control ============ */
+const FACE = {
+  MP: "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14",
+  MODEL: "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",
+  TY: 0.11,        // sidled: tröskel i enheter av ögonavstånd
+  TP: 0.05,        // höjdled: tröskel i enheter av andel nos–haka
+  TILT_DEG: 25, TILT_MS: 2000,
+  HOLD_MS: 90,     // så länge en riktning måste hållas för att räknas
+  NOD_MS: 1500,    // en nickning måste vara tillbaka i mitten inom så här lång tid
+  DWELL_MS: 800,   // tid över målet för att träffa med huvudpekaren
+  CAL_MS: 2000,
+  sens: 1, neutral: null, calibrating: null, calFail: false,
+  stream: null, landmarker: null, running: false, loading: false, err: null, raf: 0, lastVT: -1,
+  present: false, lastSeen: 0,
+  nx: 0, ny: 0, rollD: 0, held: "N", pend: null, pendSince: 0, downAt: 0, tiltSince: 0, tiltCool: 0,
+  px: 0.5, py: 0.5, h: {}
+};
+FACE.ready = () => !!(FACE.running && FACE.neutral);
+FACE.video = () => $("cam-video");
+
+// Huvudets läge ur fyra landmärken, i en ögonlinje-justerad koordinatram (tål sidolutning)
+FACE.pose = function (lm, ar) {
+  ar = ar || 1;
+  const a = lm[33], b = lm[263], nose = lm[1], chin = lm[152];
+  if (!a || !b || !nose || !chin) return null;
+  const P = (q) => ({ x: q.x * ar, y: q.y });
+  const A = P(a), B = P(b), N = P(nose), C = P(chin);
+  const L = A.x <= B.x ? A : B, R = A.x <= B.x ? B : A;
+  const roll = Math.atan2(R.y - L.y, R.x - L.x);
+  const eye = Math.hypot(R.x - L.x, R.y - L.y);
+  if (eye < 1e-4) return null;
+  const mx = (L.x + R.x) / 2, my = (L.y + R.y) / 2;
+  const c = Math.cos(roll), s = Math.sin(roll);
+  const rot = (q) => { const dx = q.x - mx, dy = q.y - my; return { u: dx * c + dy * s, v: -dx * s + dy * c }; };
+  const n = rot(N), ch = rot(C);
+  if (Math.abs(ch.v) < 1e-4) return null;
+  return { yaw: n.u / eye, pr: n.v / ch.v, roll };
+};
+
+const median = (a) => { const b = [...a].sort((x, y) => x - y); return b[Math.floor(b.length / 2)]; };
+
+FACE.beginCalibration = function () {
+  FACE.neutral = null; FACE.calFail = false;
+  FACE.calibrating = { t0: null, arr: [] };
+  updateFaceUI();
+};
+FACE.finishCalibration = function () {
+  const c = FACE.calibrating; FACE.calibrating = null;
+  if (!c || c.arr.length < 15) { FACE.calFail = true; updateFaceUI(); return; }
+  FACE.neutral = { yaw: median(c.arr.map(p => p.yaw)), pr: median(c.arr.map(p => p.pr)), roll: median(c.arr.map(p => p.roll)) };
+  FACE.nx = FACE.ny = FACE.rollD = 0; FACE.held = "N"; FACE.pend = null; FACE.tiltSince = 0;
+  updateFaceUI();
+};
+
+FACE.resetGesture = function () {
+  FACE.held = "N"; FACE.pend = null; FACE.tiltSince = 0; FACE.nx = FACE.ny = FACE.rollD = 0;
+};
+
+FACE.feed = function (lm, t, ar) {
+  const h = FACE.h;
+  const cal = FACE.calibrating;
+  if (cal && cal.t0 === null) cal.t0 = t;
+  const p = lm ? FACE.pose(lm, ar) : null;
+
+  if (!p) {
+    if (cal && t - cal.t0 >= FACE.CAL_MS * 2.5) FACE.finishCalibration();
+    if (FACE.present && t - FACE.lastSeen > 400) {
+      FACE.present = false; FACE.resetGesture();
+      h.lost && h.lost();
+    }
+    return;
+  }
+  if (!FACE.present) { FACE.present = true; h.found && h.found(); }
+  FACE.lastSeen = t;
+
+  if (cal) {
+    cal.arr.push(p);
+    if (t - cal.t0 >= FACE.CAL_MS) FACE.finishCalibration();
+    return;
+  }
+  const N = FACE.neutral;
+  if (!N) return;
+
+  const k = 0.5;
+  const rx = -(p.yaw - N.yaw) / (FACE.TY / FACE.sens);   // + = användarens höger
+  const ry = (p.pr - N.pr) / (FACE.TP / FACE.sens);      // + = ner
+  FACE.nx += (rx - FACE.nx) * k;
+  FACE.ny += (ry - FACE.ny) * k;
+  FACE.rollD += ((p.roll - N.roll) * 180 / Math.PI - FACE.rollD) * k;
+
+  // Avbryt: luta huvudet åt sidan en stund
+  if (Math.abs(FACE.rollD) > FACE.TILT_DEG) {
+    if (!FACE.tiltSince) FACE.tiltSince = t;
+    if (t - FACE.tiltSince >= FACE.TILT_MS && t > FACE.tiltCool) {
+      FACE.tiltCool = t + 3000; FACE.tiltSince = 0;
+      h.tilt && h.tilt();
+    }
+  } else FACE.tiltSince = 0;
+
+  // Riktning med hysteres
+  const ax = Math.abs(FACE.nx), ay = Math.abs(FACE.ny), m = Math.max(ax, ay);
+  let cls;
+  if (m >= 1) cls = ax >= ay ? (FACE.nx > 0 ? "right" : "left") : (FACE.ny > 0 ? "down" : "up");
+  else if (m < 0.5) cls = "N";
+  else cls = "M";
+  if (cls === "M") FACE.pend = null;
+  else {
+    if (cls !== FACE.pend) { FACE.pend = cls; FACE.pendSince = t; }
+    if (t - FACE.pendSince >= FACE.HOLD_MS && cls !== FACE.held) {
+      const prev = FACE.held;
+      FACE.held = cls;
+      h.cls && h.cls(cls);
+      if (cls === "down") FACE.downAt = t;
+      if (cls !== "N") h.dir && h.dir(cls);
+      const back = (cls === "N" || cls === "up") && prev === "down" && t - FACE.downAt <= FACE.NOD_MS;
+      if (back) h.nod && h.nod();
+    }
+  }
+
+  // Huvudpekare (0..1 över ytan)
+  const tx = Math.min(1, Math.max(0, 0.5 + FACE.nx / 4)), ty = Math.min(1, Math.max(0, 0.5 + FACE.ny / 4));
+  FACE.px += (tx - FACE.px) * 0.4; FACE.py += (ty - FACE.py) * 0.4;
+  h.point && h.point(FACE.px, FACE.py, t);
+};
+
+FACE.loop = function () {
+  if (!FACE.running) return;
+  const v = FACE.video();
+  if (v.readyState >= 2 && v.currentTime !== FACE.lastVT && FACE.landmarker) {
+    FACE.lastVT = v.currentTime;
+    const t = performance.now();
+    let res = null;
+    try { res = FACE.landmarker.detectForVideo(v, t); } catch (e) {}
+    const lm = res && res.faceLandmarks && res.faceLandmarks[0];
+    FACE.feed(lm || null, t, (v.videoWidth / v.videoHeight) || 1);
+  }
+  FACE.raf = requestAnimationFrame(FACE.loop);
+};
+
+function playVideo() { try { const pr = FACE.video().play(); pr && pr.catch && pr.catch(() => {}); } catch (e) {} }
+
+function camErrKey(e) {
+  const n = (e && e.name) || "";
+  if (n === "InsecureContext") return "errinsecure";
+  if (n === "NotAllowedError" || n === "SecurityError") return "errdenied";
+  if (n === "NotReadableError" || n === "AbortError") return "errbusy";
+  if (n === "NotFoundError" || n === "OverconstrainedError") return "errnone";
+  return "errcam";
+}
+FACE.start = async function () {
+  if (FACE.running || FACE.loading) return;
+  FACE.loading = true; FACE.err = null; updateFaceUI();
+  try {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      const ie = new Error("insecure"); ie.name = "InsecureContext"; throw ie;
+    }
+    const gum = (c) => navigator.mediaDevices.getUserMedia(c);
+    try {
+      FACE.stream = await gum({ video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 480 } }, audio: false });
+    } catch (e1) {
+      if (e1 && (e1.name === "NotAllowedError" || e1.name === "SecurityError")) throw e1;
+      FACE.stream = await gum({ video: true, audio: false });   // enklare reservläge
+    }
+    const v = FACE.video();
+    v.srcObject = FACE.stream;
+    await v.play();
+  } catch (e) {
+    FACE.loading = false;
+    FACE.err = camErrKey(e); FACE.errDetail = (e && e.name) || "";
+    FACE.stop(true); updateFaceUI(); return;
+  }
+  try {
+    if (!FACE.landmarker) {
+      const mod = await import(FACE.MP + "/vision_bundle.mjs");
+      const fileset = await mod.FilesetResolver.forVisionTasks(FACE.MP + "/wasm");
+      const make = (delegate) => mod.FaceLandmarker.createFromOptions(fileset, {
+        baseOptions: { modelAssetPath: FACE.MODEL, delegate }, runningMode: "VIDEO", numFaces: 1
+      });
+      try { FACE.landmarker = await make("GPU"); } catch (e) { FACE.landmarker = await make("CPU"); }
+    }
+  } catch (e) {
+    FACE.loading = false; FACE.err = "errmodel"; FACE.stop(true); updateFaceUI(); return;
+  }
+  FACE.loading = false; FACE.running = true; FACE.lastVT = -1;
+  FACE.loop();
+  updateFaceUI();
+};
+
+FACE.stop = function (keepErr) {
+  FACE.running = false; cancelAnimationFrame(FACE.raf);
+  if (FACE.stream) { FACE.stream.getTracks().forEach(tr => tr.stop()); FACE.stream = null; }
+  try { FACE.video().srcObject = null; } catch (e) {}
+  FACE.neutral = null; FACE.calibrating = null; FACE.calFail = false; FACE.present = false;
+  FACE.resetGesture();
+  if (!keepErr) { FACE.err = null; FACE.errDetail = ""; }
+  clearTimeout(S.warnId); $("face-warn").classList.add("hidden"); $("hp").classList.add("hidden");
+  S.dwellAt = 0;
+};
+
+function faceStatusKey() {
+  if (FACE.err) return "faceS_" + FACE.err;
+  if (FACE.loading) return "faceS_loading";
+  if (!FACE.running) return "faceS_idle";
+  if (FACE.calibrating) return "faceS_cal";
+  if (!FACE.neutral) return FACE.calFail ? "faceS_nofacecal" : "faceS_needcal";
+  return FACE.present ? "faceS_ready" : "faceS_noface";
+}
+function updateFaceUI() {
+  const on = S.face, ready = FACE.ready();
+  $("face-hint").textContent = t(on ? "faceHintOn" : "faceHintOff");
+  $("face-opts").classList.toggle("hidden", !on);
+  $("face-panel").classList.toggle("hidden", !on);
+  $("face-status").textContent = t(faceStatusKey()) + (FACE.err && FACE.errDetail ? " (" + FACE.errDetail + ")" : "");
+  $("btn-cam").textContent = t("camStart"); $("btn-cam").disabled = FACE.running || FACE.loading;
+  $("btn-cal").textContent = t("calStart"); $("btn-cal").disabled = !FACE.running || !!FACE.calibrating;
+  $("btn-start").disabled = on && !ready;
+  const show = on && FACE.running && ["st-brief", "st-session", "st-puzzle"].includes(S.stage);
+  const dock = $("cam-dock");
+  dock.classList.toggle("off", !show);
+  dock.classList.toggle("ok", FACE.present);
+  $("cam-state").textContent = FACE.present ? "" : t("faceS_noface");
+  $("checkin-nod").textContent = on && ready ? t("checkinNod") : "";
+  $("puzzle-face").textContent = on && ready ? t("puzzleFace") : "";
+}
+
+const KEYOF = { up: "ArrowUp", down: "ArrowDown", left: "ArrowLeft", right: "ArrowRight" };
+function flashGlyph(txt, ms) {
+  $("cam-glyph").textContent = txt;
+  if (ms) setTimeout(() => { if ($("cam-glyph").textContent === txt) $("cam-glyph").textContent = ""; }, ms);
+}
+FACE.h.cls = (c) => flashGlyph(SYMBOL[KEYOF[c]] || "", 0);
+FACE.h.dir = (d) => { if (S.stage === "st-puzzle") pressKey(KEYOF[d]); };
+FACE.h.nod = () => {
+  flashGlyph("👍", 900);
+  if (S.stage === "st-session" && $("checkin").classList.contains("show")) confirmCheckin();
+};
+FACE.h.tilt = () => { if (["st-session", "st-puzzle"].includes(S.stage)) abort(); };
+FACE.h.found = () => {
+  clearTimeout(S.warnId); $("face-warn").classList.add("hidden"); updateFaceUI();
+};
+FACE.h.lost = () => {
+  $("hp").classList.add("hidden"); S.dwellAt = 0; updateFaceUI();
+  clearTimeout(S.warnId);
+  S.warnId = setTimeout(() => {
+    if (S.face && !FACE.present && ["st-session", "st-puzzle"].includes(S.stage)) {
+      $("face-warn").textContent = t("faceWarn");
+      $("face-warn").classList.remove("hidden");
+    }
+  }, 2000);
+};
+FACE.h.point = (x, y, tm) => {
+  const hp = $("hp");
+  if (!S.face || S.stage !== "st-session" || S.mode !== "click") { hp.classList.add("hidden"); S.dwellAt = 0; return; }
+  const fr = $("field").getBoundingClientRect(), tr = $("target").getBoundingClientRect();
+  const cx = x * fr.width, cy = y * fr.height;
+  hp.classList.remove("hidden");
+  hp.style.left = cx + "px"; hp.style.top = cy + "px";
+  const tx = tr.left - fr.left + tr.width / 2, ty = tr.top - fr.top + tr.height / 2;
+  const inside = Math.hypot(cx - tx, cy - ty) <= (tr.width / 2) * 1.3;
+  if (inside) {
+    if (!S.dwellAt) S.dwellAt = tm;
+    const pr = Math.min(1, (tm - S.dwellAt) / FACE.DWELL_MS);
+    hp.style.setProperty("--p", pr);
+    if (pr >= 1) { S.dwellAt = 0; hp.style.setProperty("--p", 0); onHit(); }
+  } else { S.dwellAt = 0; hp.style.setProperty("--p", 0); }
+};
+
+/* ============ Håll skärmen vaken + offline ============ */
+let wakeLock = null;
+async function keepAwake(on) {
+  try {
+    if (on) { if (!wakeLock && "wakeLock" in navigator) wakeLock = await navigator.wakeLock.request("screen"); }
+    else if (wakeLock) { await wakeLock.release(); wakeLock = null; }
+  } catch (e) { wakeLock = null; }
+}
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && ["st-session", "st-puzzle"].includes(S.stage)) { wakeLock = null; keepAwake(true); }
+});
+if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+}
+
+/* ============ Events ============ */
+function updateDurationOut() { $("duration-out").textContent = S.duration + " " + t("minutes"); }
+
+function bindSeg(id, onPick) {
+  $(id).addEventListener("click", (e) => {
+    const b = e.target.closest("button");
+    if (!b) return;
+    [...$(id).children].forEach(c => c.classList.toggle("on", c === b));
+    onPick(b.dataset.v);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const savedLang = load("lang");
+  if (savedLang === "sv" || savedLang === "en") S.lang = savedLang;
+  const savedName = load("name"); if (savedName) $("user-name").value = savedName;
+  const savedGender = load("gender");
+  if (savedGender) { S.gender = savedGender; [...$("gender-seg").children].forEach(c => c.classList.toggle("on", c.dataset.v === savedGender)); }
+
+  $("lang-sv").onclick = () => { S.lang = "sv"; store("lang", "sv"); applyI18n(); };
+  $("lang-en").onclick = () => { S.lang = "en"; store("lang", "en"); applyI18n(); };
+
+  $("btn-yes").onclick = () => go("st-profile");
+  $("btn-no").onclick = () => alert(S.lang === "sv" ? "Sessionen avslutad." : "Session ended.");
+
+  const validateProfile = () => {
+    S.name = $("user-name").value.trim();
+    $("btn-profile-next").disabled = !(S.name && S.gender);
+  };
+  $("user-name").addEventListener("input", validateProfile);
+  bindSeg("gender-seg", (v) => { S.gender = v; validateProfile(); });
+  validateProfile();
+  $("btn-profile-next").onclick = () => { store("name", S.name); store("gender", S.gender); go("st-items"); };
+
+  $("btn-add-item").onclick = addCustom;
+  $("item-input").addEventListener("keydown", (e) => { if (e.key === "Enter") addCustom(); });
+  $("btn-items-next").onclick = () => { S.position = null; rollPosition(); go("st-setup"); };
+
+  document.querySelectorAll("[data-back]").forEach(b => b.onclick = () => go(b.dataset.back));
+
+  $("duration").addEventListener("input", (e) => { S.duration = +e.target.value; updateDurationOut(); });
+  bindSeg("diff-seg", (v) => S.difficulty = v);
+  bindSeg("checkin-seg", (v) => S.checkins = v === "on");
+  bindSeg("face-seg", (v) => { S.face = v === "on"; if (!S.face) FACE.stop(); updateFaceUI(); });
+  bindSeg("sens-seg", (v) => { FACE.sens = +v; });
+  bindSeg("mode-seg", (v) => { S.mode = v; updateModeUI(); });
+  bindSeg("hit-seg", (v) => S.hitSec = +v);
+  bindSeg("size-seg", (v) => S.size = v);
+  bindSeg("move-seg", (v) => S.move = v);
+  $("btn-reroll").onclick = rollPosition;
+  $("btn-browse").onclick = () => { S.browseOpen = !S.browseOpen; renderBrowse(); };
+  bindSeg("level-seg", (v) => { S.level = +v; rollPosition(); });
+  $("btn-setup-next").onclick = () => { renderSafety(); go("st-safety"); };
+
+  $("btn-safety-next").onclick = () => { renderBrief(); go("st-brief"); };
+  $("btn-start").onclick = startSession;
+  $("btn-cam").onclick = () => FACE.start();
+  $("btn-cal").onclick = () => FACE.beginCalibration();
+  $("btn-checkin").onclick = confirmCheckin;
+  $("sos").onclick = abort;
+  // Handsfree-avbryt: håll markören/näsan över knappen i 1,5 s, eller tryck Esc
+  $("sos").addEventListener("pointerenter", () => {
+    $("sos").classList.add("dwell");
+    clearTimeout(S.dwellId);
+    S.dwellId = setTimeout(abort, 1500);
+  });
+  $("sos").addEventListener("pointerleave", () => {
+    $("sos").classList.remove("dwell");
+    clearTimeout(S.dwellId);
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && ["st-session", "st-puzzle"].includes(S.stage)) abort();
+  });
+  $("btn-restart").onclick = restart;
+  $("btn-abort-restart").onclick = restart;
+
+  document.querySelectorAll(".dpad button").forEach(b => b.addEventListener("click", () => pressKey(b.dataset.k)));
+  document.addEventListener("keydown", (e) => {
+    if (S.stage !== "st-puzzle") return;
+    if (!SYMBOL[e.key]) return;
+    e.preventDefault();
+    pressKey(e.key);
+  });
+
+  applyI18n();
+  renderStepper();
+});
+</script>
+</body>
+</html>
