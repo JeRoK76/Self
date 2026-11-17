@@ -5,19 +5,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Self-Bondage Task</title>
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#0b0b10">
+<meta name="theme-color" content="#070607">
+<script>
+(function () {
+  var d = "mobile";
+  try {
+    var f = localStorage.getItem("sb_device");
+    if (f === "mobile" || f === "desktop") d = f;
+    else if (typeof matchMedia === "function") d = (matchMedia("(pointer: coarse)").matches || matchMedia("(hover: none)").matches) ? "mobile" : "desktop";
+  } catch (e) {
+    try { if (typeof matchMedia === "function") d = (matchMedia("(pointer: coarse)").matches || matchMedia("(hover: none)").matches) ? "mobile" : "desktop"; } catch (e2) {}
+  }
+  document.documentElement.dataset.device = d;
+})();
+</script>
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 <style>
   :root {
-    --bg: #04151f;
-    --glass: rgba(24, 24, 32, 0.62);
-    --glass-border: rgba(255, 255, 255, 0.09);
+    --bg: #070607;
+    --glass: rgba(16, 14, 15, 0.86);
+    --glass-border: rgba(190, 190, 200, 0.18);
     --text: #f1f1f5;
-    --muted: #9a9aab;
-    --accent: #00b8d9;
-    --accent-2: #1f5fd6;
+    --muted: #a8a3a6;
+    --accent: #b3122b;
+    --accent-2: #5c0a17;
     --ok: #3ecf8e;
     --warn: #ffb020;
     --danger: #ff4d5e;
@@ -35,13 +48,12 @@
   .bg {
     position: fixed; inset: 0; z-index: -2;
     background:
-      radial-gradient(1200px 700px at 15% -10%, rgba(0,184,217,.38), transparent 60%),
-      radial-gradient(1000px 700px at 100% 110%, rgba(31,95,214,.42), transparent 60%),
-      url('Images/dom/dom1.jpg') center / cover no-repeat fixed,
+      radial-gradient(1200px 700px at 15% -10%, rgba(179,18,43,.38), transparent 60%),
+      radial-gradient(1000px 700px at 100% 110%, rgba(92,10,23,.42), transparent 60%),
       var(--bg);
     filter: saturate(1.05);
   }
-  .veil { position: fixed; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(2,16,28,.62), rgba(2,16,28,.85)); backdrop-filter: blur(6px); }
+  .veil { position: fixed; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.7)); backdrop-filter: blur(6px); }
 
   header {
     display: flex; align-items: center; justify-content: space-between;
@@ -86,9 +98,9 @@
     padding: 13px 24px; border-radius: 12px; color: #fff;
     background: linear-gradient(135deg, var(--accent), var(--accent-2));
     transition: transform .15s ease, box-shadow .2s ease, opacity .2s;
-    box-shadow: 0 8px 24px rgba(0,184,217,.28);
+    box-shadow: 0 8px 24px rgba(179,18,43,.28);
   }
-  button.btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,184,217,.4); }
+  button.btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(179,18,43,.4); }
   button.btn:disabled { opacity: .35; cursor: not-allowed; box-shadow: none; }
   button.btn.ghost { background: rgba(255,255,255,.07); box-shadow: none; border: 1px solid var(--glass-border); }
   button.btn.ghost:hover:not(:disabled) { background: rgba(255,255,255,.12); box-shadow: none; }
@@ -98,7 +110,7 @@
     background: rgba(0,0,0,.35); border: 1px solid var(--glass-border); border-radius: 12px; outline: none;
     transition: border-color .2s, box-shadow .2s;
   }
-  input[type="text"]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,184,217,.25); }
+  input[type="text"]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(179,18,43,.25); }
 
   .chips { display: flex; flex-wrap: wrap; gap: 10px; }
   .chip {
@@ -107,7 +119,7 @@
     font-size: .95rem; transition: all .18s ease; display: inline-flex; align-items: center; gap: 8px;
   }
   .chip:hover { background: rgba(255,255,255,.12); }
-  .chip.on { background: linear-gradient(135deg, rgba(0,184,217,.55), rgba(31,95,214,.55)); border-color: rgba(255,255,255,.3); }
+  .chip.on { background: linear-gradient(135deg, rgba(179,18,43,.55), rgba(92,10,23,.55)); border-color: rgba(255,255,255,.3); }
   .chip .x { opacity: .7; font-weight: 700; }
   .chip .x:hover { opacity: 1; }
 
@@ -126,7 +138,7 @@
     display: flex; gap: 18px; align-items: center; padding: 18px; border-radius: 14px;
     background: rgba(0,0,0,.28); border: 1px solid var(--glass-border);
   }
-  .pos-icon { font-size: 2.2rem; width: 64px; height: 64px; display: grid; place-items: center; border-radius: 14px; background: linear-gradient(135deg, rgba(0,184,217,.4), rgba(31,95,214,.4)); flex: none; }
+  .pos-icon { font-size: 2.2rem; width: 64px; height: 64px; display: grid; place-items: center; border-radius: 14px; background: linear-gradient(135deg, rgba(179,18,43,.4), rgba(92,10,23,.4)); flex: none; }
   .pos-name { font-weight: 700; font-size: 1.15rem; }
   .pos-desc { color: var(--muted); font-size: .92rem; margin-top: 2px; }
 
@@ -143,7 +155,7 @@
   .ring { position: relative; width: min(320px, 78vw); aspect-ratio: 1; margin: 8px auto 20px; }
   .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
   .ring .track { stroke: rgba(255,255,255,.08); }
-  .ring .prog { stroke: url(#grad); stroke-linecap: round; transition: stroke-dashoffset .3s linear; filter: drop-shadow(0 0 8px rgba(0,184,217,.6)); }
+  .ring .prog { stroke: url(#grad); stroke-linecap: round; transition: stroke-dashoffset .3s linear; filter: drop-shadow(0 0 8px rgba(179,18,43,.6)); }
   .ring .center { position: absolute; inset: 0; display: grid; place-content: center; }
   .time { font-size: clamp(2.4rem, 8vw, 3.4rem); font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
   .time-sub { color: var(--muted); font-size: .85rem; text-transform: uppercase; letter-spacing: .1em; }
@@ -199,8 +211,8 @@
   }
   .target {
     position: absolute; border-radius: 50%; cursor: pointer; touch-action: none;
-    background: radial-gradient(circle at 35% 30%, #7df3ff, #00b8d9 60%, #1f5fd6);
-    box-shadow: 0 0 24px rgba(0,184,217,.7);
+    background: radial-gradient(circle at 35% 30%, #ff9aa8, #c4112e 55%, #3d050e);
+    box-shadow: 0 0 24px rgba(179,18,43,.7);
   }
   .target::before { content: ""; position: absolute; inset: -14px; border-radius: 50%; }
   .target.pop { animation: pop .25s; }
@@ -215,7 +227,7 @@
     background: rgba(0,0,0,.25); border: 1px solid var(--glass-border); transition: all .15s ease;
   }
   .sg:hover { background: rgba(255,255,255,.08); }
-  .sg.on { border-color: rgba(255,255,255,.55); background: linear-gradient(135deg, rgba(0,184,217,.35), rgba(31,95,214,.35)); }
+  .sg.on { border-color: rgba(255,255,255,.55); background: linear-gradient(135deg, rgba(179,18,43,.35), rgba(92,10,23,.35)); }
   .sg.dim { opacity: .55; }
   .sg { user-select: none; -webkit-user-select: none; }
   .sg-tx { flex: 1; }
@@ -268,6 +280,16 @@
   #st-session.compact .stat { padding: 6px 14px; min-width: 96px; }
   #st-session.compact .stat b { font-size: 1.1rem; }
   .hidden { display: none !important; }
+  .tip-card { display: block; }
+  .tip-head { display: flex; gap: 14px; align-items: center; margin-bottom: 12px; }
+  .tip-label { font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; color: #e08a97; font-weight: 700; }
+  .tip-meta { color: var(--muted); font-size: .82rem; margin-top: 2px; }
+  .tip-lead { margin: 0 0 8px; font-style: italic; color: #f1e6e8; }
+  .tip-p { margin: 0 0 8px; font-size: .93rem; line-height: 1.55; }
+  .tip-p b { color: #f0b3bd; }
+  .tip-need { margin: 8px 0 0; font-size: .85rem; color: var(--muted); border-top: 1px solid var(--glass-border); padding-top: 8px; }
+  html[data-device="desktop"] .tip-label, html[data-device="desktop"] .tip-p b { color: #c9a24a; }
+  html[data-device="desktop"] .tip-lead { color: #f3e2b3; }
   /* Guide overlay */
   #guide { position: fixed; inset: 0; z-index: 80; display: none; background: rgba(8,4,16,.88); overflow-y: auto; padding: 18px 14px 40px; }
   #guide.show { display: block; }
@@ -286,14 +308,207 @@
   .checkin .btnrow { display: flex; gap: 8px; flex-wrap: wrap; }
   .btn.danger { background: var(--danger); color: #fff; }
   .small-note { font-size: .82rem; color: var(--muted); margin: 6px 0 0; }
+
+  /* ===== BDSM-tema: svart läder, sömmar, nitar, krom, blodrött ===== */
+  body {
+    background:
+      radial-gradient(900px 520px at 50% -8%, rgba(179,18,43,.35), transparent 65%),
+      repeating-linear-gradient(45deg, rgba(255,255,255,.028) 0 2px, transparent 2px 5px),
+      repeating-linear-gradient(-45deg, rgba(0,0,0,.35) 0 2px, transparent 2px 5px),
+      #070607;
+  }
+  .bg { background: none; }
+  .ver { display: inline-block; margin-left: 6px; padding: 2px 9px; border-radius: 4px; font-size: .68rem; font-weight: 800; letter-spacing: .12em; color: #111; background: linear-gradient(180deg, #f1f1f6, #8b8b95 55%, #d6d6de); }
+  header { position: relative; padding-bottom: 22px; }
+  header::after {   /* kedja */
+    content: ""; position: absolute; left: 24px; right: 24px; bottom: 6px; height: 8px;
+    background: radial-gradient(ellipse 7px 4px at 7px 4px, transparent 2.6px, #b9b9c4 3px, #6d6d77 4px, transparent 4.5px) 0 0 / 14px 8px repeat-x;
+    opacity: .75;
+  }
+  .brand b { color: #fff; text-shadow: 0 0 12px rgba(179,18,43,.9); }
+  h1, h2 { text-transform: uppercase; letter-spacing: .07em; font-weight: 800; text-shadow: 0 2px 0 rgba(0,0,0,.6); }
+  h1 { color: #f4f0f1; }
+  h3 { color: #d4aab1; letter-spacing: .16em; }
+  .card {
+    position: relative; border-radius: 10px; backdrop-filter: none; -webkit-backdrop-filter: none;
+    background: linear-gradient(160deg, #1b1618 0%, #0e0b0c 70%);
+    border: 1px solid rgba(200,200,212,.28);
+    box-shadow: 0 22px 60px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.07), inset 0 0 40px rgba(0,0,0,.6);
+  }
+  .card::before {   /* sömmar */
+    content: ""; position: absolute; inset: 7px; border: 1.5px dashed rgba(215,205,205,.2); border-radius: 6px; pointer-events: none;
+  }
+  .card::after {    /* nitar i hörnen */
+    content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: 10px;
+    --r: radial-gradient(circle, #fafafd 0 1.4px, #9a9aa5 2.4px, #3b3b43 4px, transparent 4.6px);
+    background:
+      var(--r) 14px 14px / 10px 10px no-repeat,
+      var(--r) calc(100% - 14px) 14px / 10px 10px no-repeat,
+      var(--r) 14px calc(100% - 14px) / 10px 10px no-repeat,
+      var(--r) calc(100% - 14px) calc(100% - 14px) / 10px 10px no-repeat;
+    background-position: 9px 9px, calc(100% - 9px) 9px, 9px calc(100% - 9px), calc(100% - 9px) calc(100% - 9px);
+  }
+  button.btn {
+    border-radius: 6px; text-transform: uppercase; letter-spacing: .1em; font-weight: 800; font-size: .92rem;
+    background: linear-gradient(180deg, #d1203d 0%, #8c0f22 55%, #5c0a17 100%);
+    border: 1px solid rgba(235,225,228,.5);
+    box-shadow: 0 6px 18px rgba(179,18,43,.35), inset 0 1px 0 rgba(255,255,255,.3);
+  }
+  button.btn.ghost { background: rgba(255,255,255,.05); border: 1px solid rgba(200,200,212,.35); }
+  .lang { border-radius: 8px; background: #121011; }
+  .lang button { border-radius: 6px; }
+  .seg { border-radius: 8px; background: #0b0909; }
+  .seg button { border-radius: 5px; text-transform: uppercase; letter-spacing: .06em; font-size: .8rem; }
+  .seg button.on, .lang button.active { background: linear-gradient(180deg, #d1203d, #7a0d1e); box-shadow: inset 0 1px 0 rgba(255,255,255,.28); }
+  .chip { border-radius: 6px; background: #151112; border-color: rgba(200,200,212,.22); }
+  .chip.on { background: linear-gradient(180deg, rgba(209,32,61,.7), rgba(92,10,23,.8)); border-color: rgba(235,225,228,.55); }
+  .pos-card, .brief-list li, .check, .stat, .field { border-radius: 8px; }
+  .pos-icon { border-radius: 8px; border: 1px solid rgba(235,225,228,.35); background: linear-gradient(160deg, #b3122b, #3d050e); }
+  .stepper i { border-radius: 1px; height: 5px; background: rgba(255,255,255,.12); }
+  .stepper i::after { background: linear-gradient(90deg, #e0213f, #7a0d1e); }
+  input[type="text"], input[type="password"] { border-radius: 6px; }
+  .time { text-shadow: 0 0 24px rgba(224,33,63,.55); }
+  #guide .gcard { border-radius: 10px; background: linear-gradient(160deg, #1b1618, #0e0b0c); border-color: rgba(200,200,212,.3); }
+  .seg { flex-wrap: wrap; max-width: 100%; }
+  .seg button { padding: 9px 12px; letter-spacing: .03em; font-size: .76rem; }
+  .card { min-width: 0; overflow-wrap: anywhere; }
+  #guide h3 { color: #e08a97; text-transform: uppercase; letter-spacing: .12em; }
+
+  /* ===== Bakgrundsscener ===== */
+  :root { --u-chain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='96' viewBox='0 0 44 96'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='0'%3E%3Cstop offset='0' stop-color='%23f4f4f9'/%3E%3Cstop offset='.5' stop-color='%237b7b87'/%3E%3Cstop offset='1' stop-color='%23303038'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='9.5' y='3' width='25' height='54' rx='12.5' fill='none' stroke='url(%23g)' stroke-width='5'/%3E%3Crect x='19' y='45' width='6' height='60' rx='3' fill='url(%23g)'/%3E%3Crect x='19' y='-51' width='6' height='60' rx='3' fill='url(%23g)'/%3E%3C/svg%3E"); --u-mesh: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Cpath d='M0 0L30 30M30 0L0 30' stroke='%23cfcfda' stroke-opacity='.16' stroke-width='1.6' fill='none'/%3E%3Ccircle cx='15' cy='15' r='1.4' fill='%23cfcfda' fill-opacity='.22'/%3E%3C/svg%3E"); --u-bars: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='8' viewBox='0 0 64 8' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='b' x1='0' y1='0' x2='1' y2='0'%3E%3Cstop offset='0' stop-color='%2325252c'/%3E%3Cstop offset='.3' stop-color='%23b4b4bf'/%3E%3Cstop offset='.6' stop-color='%235a5a64'/%3E%3Cstop offset='1' stop-color='%231b1b20'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='25' y='0' width='14' height='8' fill='url(%23b)'/%3E%3C/svg%3E"); --u-rail: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='34' viewBox='0 0 8 34' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='r' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%231b1b20'/%3E%3Cstop offset='.3' stop-color='%23c0c0cb'/%3E%3Cstop offset='.6' stop-color='%235a5a64'/%3E%3Cstop offset='1' stop-color='%2317171b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='0' y='6' width='8' height='22' fill='url(%23r)'/%3E%3C/svg%3E"); }
+  .bg { transition: opacity .6s; }
+  .veil { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.35)) !important; }
+  html[data-device="mobile"] body[data-scene="welcome"] .bg {
+    background:
+      linear-gradient(180deg, rgba(7,6,7,.0) 0%, rgba(7,6,7,.55) 100%),
+      var(--u-rail) 0 17% / 100% 34px repeat-x,
+      var(--u-rail) 0 88% / 100% 34px repeat-x,
+      var(--u-bars) 0 0 / 64px 8px repeat-x,
+      var(--u-chain) -6px 0 / 34px 75px repeat-y,
+      var(--u-chain) calc(100% + 6px) 0 / 34px 75px repeat-y;
+    background-size: 100% 100%, 100% 34px, 100% 34px, 64px 100%, 34px 75px, 34px 75px;
+    background-repeat: no-repeat, repeat-x, repeat-x, repeat-x, repeat-y, repeat-y;
+    background-position: 0 0, 0 17%, 0 88%, 0 0, -6px 0, calc(100% + 6px) 0;
+    opacity: .85;
+  }
+  html[data-device="mobile"] body[data-scene="mesh"] .bg {
+    background: var(--u-chain) -8px 0 / 34px 75px repeat-y, var(--u-chain) calc(100% + 8px) 0 / 34px 75px repeat-y, var(--u-mesh) 0 0 / 30px 30px repeat;
+    opacity: .75;
+  }
+  html[data-device="mobile"] body[data-scene="chains"] .bg {
+    background: var(--u-chain) -8px 0 / 34px 75px repeat-y, var(--u-chain) calc(100% + 8px) 0 / 34px 75px repeat-y;
+    opacity: .7;
+  }
+  html[data-device="mobile"] body[data-scene="dim"] .bg { background: var(--u-mesh) 0 0 / 30px 30px repeat; opacity: .45; }
+  /* Värdinna */
+  .host { display: flex; align-items: center; gap: 16px; margin: -6px 0 14px; }
+  .host-svg { width: 150px; flex: none; filter: drop-shadow(0 6px 18px rgba(179,18,43,.5)); border-radius: 8px; }
+  .bubble { position: relative; padding: 14px 16px; border-radius: 10px; background: rgba(179,18,43,.16); border: 1px solid rgba(224,33,63,.5); font-style: italic; line-height: 1.5; color: #f3e6e8; }
+  .bubble::before { content: ""; position: absolute; left: -8px; top: 28px; width: 14px; height: 14px; background: #2a0d13; border-left: 1px solid rgba(224,33,63,.5); border-bottom: 1px solid rgba(224,33,63,.5); transform: rotate(45deg); }
+  @media (max-width: 520px) { .host { flex-direction: column; text-align: center; } .bubble::before { left: calc(50% - 7px); top: -8px; transform: rotate(135deg); } }
+  .field.blind .target { opacity: 0; }
+  .field.blind::after { content: "🙈"; position: absolute; inset: 0; display: grid; place-items: center; font-size: 4rem; opacity: .12; pointer-events: none; }
+
+  /* ===== Enhetsdelning ===== */
+  html[data-device="desktop"] [data-device="mobile"] { display: none !important; }
+  html[data-device="mobile"] [data-device="desktop"] { display: none !important; }
+  .devrow { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+
+  /* ===== DESKTOP: dungeon ===== */
+  :root { --u-wall: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='160'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' seed='7'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='160' fill='%230d0b0a'/%3E%3Crect x='-78.5' y='1.5' width='77' height='37' rx='4' fill='%2334302c'/%3E%3Crect x='1.5' y='1.5' width='77' height='37' rx='4' fill='%233a3631'/%3E%3Crect x='81.5' y='1.5' width='77' height='37' rx='4' fill='%2346403a'/%3E%3Crect x='161.5' y='1.5' width='77' height='37' rx='4' fill='%233a3631'/%3E%3Crect x='241.5' y='1.5' width='77' height='37' rx='4' fill='%233a3631'/%3E%3Crect x='-38.5' y='41.5' width='77' height='37' rx='4' fill='%2334302c'/%3E%3Crect x='41.5' y='41.5' width='77' height='37' rx='4' fill='%2334302c'/%3E%3Crect x='121.5' y='41.5' width='77' height='37' rx='4' fill='%2346403a'/%3E%3Crect x='201.5' y='41.5' width='77' height='37' rx='4' fill='%233a3631'/%3E%3Crect x='281.5' y='41.5' width='77' height='37' rx='4' fill='%2346403a'/%3E%3Crect x='-78.5' y='81.5' width='77' height='37' rx='4' fill='%2337322e'/%3E%3Crect x='1.5' y='81.5' width='77' height='37' rx='4' fill='%2337322e'/%3E%3Crect x='81.5' y='81.5' width='77' height='37' rx='4' fill='%233a3631'/%3E%3Crect x='161.5' y='81.5' width='77' height='37' rx='4' fill='%2346403a'/%3E%3Crect x='241.5' y='81.5' width='77' height='37' rx='4' fill='%2334302c'/%3E%3Crect x='-38.5' y='121.5' width='77' height='37' rx='4' fill='%232f2b28'/%3E%3Crect x='41.5' y='121.5' width='77' height='37' rx='4' fill='%2346403a'/%3E%3Crect x='121.5' y='121.5' width='77' height='37' rx='4' fill='%233a3631'/%3E%3Crect x='201.5' y='121.5' width='77' height='37' rx='4' fill='%2337322e'/%3E%3Crect x='281.5' y='121.5' width='77' height='37' rx='4' fill='%233d3833'/%3E%3Crect width='240' height='160' filter='url(%23n)' opacity='.4' style='mix-blend-mode:overlay'/%3E%3C/svg%3E"); --u-slab: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='p' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='4' seed='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' fill='%231b1713'/%3E%3Crect width='200' height='200' filter='url(%23p)' opacity='.28' style='mix-blend-mode:overlay'/%3E%3C/svg%3E"); }
+  html[data-device="desktop"] { --accent: #8f1d22; --accent-2: #4a0d10; --muted: #b8ab97; --gold: #d9b45c; --text: #efe6d2; }
+  html[data-device="desktop"] body { background: #0b0907; font-family: Georgia, "Palatino Linotype", "Book Antiqua", serif; }
+  html[data-device="desktop"] .bg {
+    opacity: 1; filter: none;
+    background:
+      radial-gradient(ellipse 70% 60% at 50% 40%, rgba(0,0,0,0) 0%, rgba(0,0,0,.55) 70%, rgba(0,0,0,.92) 100%),
+      var(--u-wall) 0 0 / 240px 160px repeat;
+  }
+  html[data-device="desktop"] .veil { background: linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.55)) !important; }
+  html[data-device="desktop"] header::after { display: none; }
+  html[data-device="desktop"] header { padding-bottom: 14px; }
+  html[data-device="desktop"] .brand { font-family: Georgia, serif; letter-spacing: .22em; color: var(--gold); }
+  html[data-device="desktop"] .brand b { color: #f6ecd2; text-shadow: 0 0 14px rgba(255,150,40,.6); }
+  html[data-device="desktop"] .ver { background: linear-gradient(180deg, #e7c872, #8c6a22 60%, #c9a24a); color: #1a1208; border-radius: 2px; }
+  html[data-device="desktop"] h1, html[data-device="desktop"] h2 { font-family: Georgia, "Palatino Linotype", serif; font-variant: small-caps; text-transform: none; letter-spacing: .12em; color: var(--gold); text-shadow: 0 2px 0 #000, 0 0 18px rgba(217,180,92,.25); }
+  html[data-device="desktop"] h3 { color: #c9a24a; letter-spacing: .2em; font-family: Georgia, serif; }
+  html[data-device="desktop"] p { color: #e3d8c0; }
+  html[data-device="desktop"] .sub { color: #b8ab97; }
+  html[data-device="desktop"] .card {
+    border-radius: 4px;
+    background: linear-gradient(180deg, rgba(255,240,200,.04), rgba(0,0,0,.25)), var(--u-slab) 0 0 / 200px 200px repeat;
+    border: 4px solid #3a352f;
+    box-shadow: 0 0 0 2px #0a0907, 0 0 0 4px #6a6258, 0 24px 70px rgba(0,0,0,.85), inset 0 0 60px rgba(0,0,0,.7);
+  }
+  html[data-device="desktop"] .card::before { inset: 10px; border: 1px solid rgba(201,162,74,.35); border-radius: 2px; }
+  html[data-device="desktop"] .card::after {
+    --r: radial-gradient(circle, #f1d98f 0 2px, #9a7a2e 3.5px, #3a2c0c 5.5px, transparent 6.2px);
+    background: var(--r) 8px 8px / 14px 14px no-repeat, var(--r) calc(100% - 8px) 8px / 14px 14px no-repeat, var(--r) 8px calc(100% - 8px) / 14px 14px no-repeat, var(--r) calc(100% - 8px) calc(100% - 8px) / 14px 14px no-repeat;
+    background-position: 8px 8px, calc(100% - 8px) 8px, 8px calc(100% - 8px), calc(100% - 8px) calc(100% - 8px);
+  }
+  html[data-device="desktop"] #st-welcome .card { border-radius: 150px 150px 4px 4px; padding-top: 52px; }
+  html[data-device="desktop"] #st-welcome .card::before { border-radius: 140px 140px 2px 2px; }
+  html[data-device="desktop"] button.btn {
+    border-radius: 2px; font-family: Georgia, serif; letter-spacing: .14em;
+    background: linear-gradient(180deg, #6a1a1f, #35090c); border: 2px solid #b8923f; color: #f3e2b3;
+    box-shadow: 0 6px 18px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,235,170,.3);
+  }
+  html[data-device="desktop"] button.btn:hover:not(:disabled) { filter: brightness(1.25); box-shadow: 0 0 22px rgba(255,150,40,.35); }
+  html[data-device="desktop"] button.btn.ghost { background: rgba(0,0,0,.35); border-color: #6a6258; }
+  html[data-device="desktop"] button.btn.danger { background: linear-gradient(180deg, #a11d27, #5a0a12); }
+  html[data-device="desktop"] .lang, html[data-device="desktop"] .seg { border-radius: 2px; background: rgba(0,0,0,.55); border-color: #6a6258; }
+  html[data-device="desktop"] .seg button, html[data-device="desktop"] .lang button { border-radius: 1px; font-family: Georgia, serif; }
+  html[data-device="desktop"] .seg button.on, html[data-device="desktop"] .lang button.active { background: linear-gradient(180deg, #7a1f25, #3d0b0e); color: #f6e3b0; box-shadow: inset 0 0 0 1px #b8923f; }
+  html[data-device="desktop"] .chip { border-radius: 2px; background: rgba(0,0,0,.45); border-color: #6a6258; }
+  html[data-device="desktop"] .chip.on { background: linear-gradient(180deg, rgba(122,31,37,.85), rgba(61,11,14,.85)); border-color: #b8923f; }
+  html[data-device="desktop"] .pos-card, html[data-device="desktop"] .brief-list li, html[data-device="desktop"] .check, html[data-device="desktop"] .stat, html[data-device="desktop"] .field { border-radius: 2px; background: rgba(0,0,0,.4); border-color: #5a5249; }
+  html[data-device="desktop"] .pos-icon { border-radius: 2px; border-color: #b8923f; background: linear-gradient(160deg, #6a1a1f, #1d0607); }
+  html[data-device="desktop"] .stepper i { border-radius: 0; background: rgba(255,255,255,.1); }
+  html[data-device="desktop"] .stepper i::after { background: linear-gradient(90deg, #b8923f, #6a1a1f); }
+  html[data-device="desktop"] input[type="text"], html[data-device="desktop"] input[type="password"] { border-radius: 2px; background: rgba(0,0,0,.55); border-color: #6a6258; }
+  html[data-device="desktop"] .time { color: #f3e2b3; text-shadow: 0 0 26px rgba(255,150,40,.55); }
+  html[data-device="desktop"] #grad stop:first-child { stop-color: #f3d06a; }
+  html[data-device="desktop"] #grad stop:last-child { stop-color: #9a1f27; }
+  html[data-device="desktop"] .bubble { border-radius: 2px; background: rgba(0,0,0,.45); border-color: #b8923f; color: #f3e2b3; }
+  html[data-device="desktop"] .bubble::before { background: #14100c; border-color: #b8923f; }
+  html[data-device="desktop"] #guide .gcard { border-radius: 4px; background: var(--u-slab); border: 3px solid #6a6258; }
+  html[data-device="desktop"] #guide h3 { color: #c9a24a; }
+  html[data-device="desktop"] .lockbox { border-radius: 2px; }
+  html[data-device="desktop"] .checkin { background: #2a1d10; border-radius: 2px; }
+
+  /* Facklor */
+  .torch { position: fixed; top: 26%; z-index: -1; width: 60px; pointer-events: none; }
+  #torch-l { left: calc(50% - 560px); }
+  #torch-r { right: calc(50% - 560px); }
+  .torch svg { position: relative; display: block; overflow: visible; }
+  .tglow { position: absolute; left: -150px; top: -120px; width: 360px; height: 360px; border-radius: 50%; background: radial-gradient(circle, rgba(255,150,40,.42), rgba(255,110,20,.12) 45%, transparent 68%); animation: flick 2.7s infinite ease-in-out; }
+  #torch-r .tglow { animation-delay: -1.1s; }
+  .torch .flame { transform-box: fill-box; transform-origin: 50% 100%; animation: flame .9s infinite ease-in-out; }
+  .torch .flame2 { transform-box: fill-box; transform-origin: 50% 100%; animation: flame .7s infinite ease-in-out reverse; }
+  @keyframes flame { 0%,100% { transform: scale(1,1) skewX(0); } 30% { transform: scale(.92,1.1) skewX(4deg); } 60% { transform: scale(1.05,.94) skewX(-3deg); } }
+  @keyframes flick { 0%,100% { opacity: .85; } 25% { opacity: 1; } 50% { opacity: .7; } 75% { opacity: .95; } }
+  @media (max-width: 1180px) { .torch { display: none !important; } }
+  @media (prefers-reduced-motion: reduce) { .tglow, .torch .flame, .torch .flame2 { animation: none; } }
 </style>
 </head>
-<body>
+<body data-scene="welcome">
 <div class="bg"></div>
 <div class="veil"></div>
+<div class="torch" id="torch-l" data-device="desktop"><div class="tglow"></div><svg viewBox="0 0 60 150" width="60" height="150" aria-hidden="true"><defs><linearGradient id="fl" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff6a10"/><stop offset=".55" stop-color="#ffc03a"/><stop offset="1" stop-color="#fff3b0"/></linearGradient></defs>
+<rect x="26" y="62" width="9" height="72" rx="3" fill="#4a2f1c"/><rect x="28" y="62" width="2" height="72" fill="#6b4529"/>
+<path d="M14 60h32l-5 16H19z" fill="#2b2b30" stroke="#7a7a85" stroke-width="1.5"/>
+<path d="M12 138h36M30 134v10" stroke="#6d6d77" stroke-width="5" stroke-linecap="round"/>
+<path class="flame" d="M30 6C39 24 48 34 41 54c-3 8-19 8-22 0C12 34 26 26 30 6z" fill="url(#fl)"/>
+<path class="flame2" d="M30 28c5 10 7 16 2 26-3 4-6 0-7-4-1-8 3-14 5-22z" fill="#fff6c8" opacity=".85"/></svg></div>
+<div class="torch" id="torch-r" data-device="desktop"><div class="tglow"></div><svg viewBox="0 0 60 150" width="60" height="150" aria-hidden="true">
+<rect x="26" y="62" width="9" height="72" rx="3" fill="#4a2f1c"/><rect x="28" y="62" width="2" height="72" fill="#6b4529"/>
+<path d="M14 60h32l-5 16H19z" fill="#2b2b30" stroke="#7a7a85" stroke-width="1.5"/>
+<path d="M12 138h36M30 134v10" stroke="#6d6d77" stroke-width="5" stroke-linecap="round"/>
+<path class="flame" d="M30 6C39 24 48 34 41 54c-3 8-19 8-22 0C12 34 26 26 30 6z" fill="url(#fl)"/>
+<path class="flame2" d="M30 28c5 10 7 16 2 26-3 4-6 0-7-4-1-8 3-14 5-22z" fill="#fff6c8" opacity=".85"/></svg></div>
 
 <header>
-  <div class="brand"><b>Self-Bondage</b> · Task <span style="background:#00b8d9;color:#04151f;border-radius:999px;padding:2px 9px;font-size:.7rem;font-weight:800;margin-left:6px">v2 · SÄKER</span></div>
+  <div class="brand">⛓ <b>Self-Bondage</b> · Task <span class="ver" data-device="mobile">v3 · LÄDER</span><span class="ver" data-device="desktop">v4 · DUNGEON</span></div>
   <div class="lang">
     <button id="btn-guide-open" data-i18n="guideBtn"></button>
     <button id="lang-sv" class="active">SV</button>
@@ -307,6 +522,7 @@
   <!-- 0 Welcome -->
   <section class="stage active" id="st-welcome">
     <div class="card">
+      <div class="host"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 280" class="host-svg" role="img" aria-label="Värdinna"><defs><radialGradient id="hg" cx="50%" cy="42%" r="58%"><stop offset="0" stop-color="#b3122b" stop-opacity=".6"/><stop offset="1" stop-color="#b3122b" stop-opacity="0"/></radialGradient><linearGradient id="hs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4dcd2"/><stop offset="1" stop-color="#d7a595"/></linearGradient><linearGradient id="hh" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3a2226"/><stop offset=".5" stop-color="#0d0809"/><stop offset="1" stop-color="#2a1519"/></linearGradient><linearGradient id="hl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2d2528"/><stop offset="1" stop-color="#060405"/></linearGradient><linearGradient id="hm" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f6f6fb"/><stop offset=".5" stop-color="#8a8a96"/><stop offset="1" stop-color="#d9d9e2"/></linearGradient></defs><circle cx="110" cy="120" r="108" fill="url(#hg)"/><path d="M52 112C38 40 78 8 110 8s72 32 58 104c8 60 2 120 16 168H36c14-48 8-108 16-168z" fill="url(#hh)"/><path d="M92 150h36v36c0 12-36 12-36 0z" fill="#d09d8d"/><path d="M14 282c4-58 44-84 80-94 8 16 24 16 32 0 36 10 76 36 80 94z" fill="url(#hl)"/><path d="M94 188c8 16 24 16 32 0l-4 28q-12 18-24 0z" fill="url(#hs)"/><path d="M70 190l-16 92M150 190l16 92" stroke="#4a3a3e" stroke-width="1.5" stroke-dasharray="4 4" fill="none"/><circle cx="64" cy="232" r="5" fill="url(#hm)"/><circle cx="156" cy="232" r="5" fill="url(#hm)"/><path d="M70 100c0-40 20-54 40-54s40 14 40 54c0 32-18 56-40 60-22-4-40-28-40-60z" fill="url(#hs)"/><path d="M66 100C58 50 90 30 114 34c30 2 46 26 38 68-6-28-20-42-44-42-18 4-30 18-42 40z" fill="url(#hh)"/><path d="M66 100c-4 30-2 50 6 70-12-18-16-44-6-70z" fill="url(#hh)"/><g fill="#fff"><path d="M84 101q10-9 20 0q-10 7-20 0z"/><path d="M116 101q10-9 20 0q-10 7-20 0z"/></g><circle cx="94" cy="101" r="3.6" fill="#7a0d1e"/><circle cx="126" cy="101" r="3.6" fill="#7a0d1e"/><circle cx="94" cy="101" r="1.6" fill="#000"/><circle cx="126" cy="101" r="1.6" fill="#000"/><path d="M81 102q13-13 24-1M115 101q11-12 24 1" stroke="#000" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M81 102l-5-5M139 102l5-5" stroke="#000" stroke-width="2.2" stroke-linecap="round"/><path d="M82 88q12-9 24-1M114 87q12-8 24 1" stroke="#150c0d" stroke-width="2.8" fill="none" stroke-linecap="round"/><path d="M110 108q-5 14 0 16" stroke="rgba(120,60,50,.45)" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M95 138q8-7 15-3q7-4 15 3q-15 15-30 0z" fill="#c4112e"/><path d="M100 138q10-3 20 0" stroke="rgba(255,255,255,.35)" stroke-width="1.2" fill="none"/><path d="M92 166q18 10 36 0v9q-18 10-36 0z" fill="url(#hl)" stroke="url(#hm)" stroke-width="1"/><circle cx="110" cy="181" r="5.5" fill="none" stroke="url(#hm)" stroke-width="2.4"/></svg><div class="bubble" data-i18n="hostSay"></div></div>
       <h1 data-i18n="welcomeTitle"></h1>
       <p class="sub" data-i18n="welcomeSub"></p>
       <p data-i18n="welcomeNote"></p>
@@ -433,6 +649,17 @@
             </div>
           </div>
 
+          <div id="blind-opts" class="hidden" data-device="mobile">
+            <h3 data-i18n="blindLabel"></h3>
+            <div class="seg" id="blind-seg">
+              <button data-v="off" class="on" data-i18n="off"></button>
+              <button data-v="on" data-i18n="blindOn"></button>
+            </div>
+            <p class="small-note" data-i18n="blindHint"></p>
+            <div class="row" style="margin-top:8px"><button class="btn ghost" id="btn-vibtest" data-i18n="vibTest"></button></div>
+            <p class="small-note" id="vib-result"></p>
+          </div>
+
           <div id="trace-opts" class="hidden">
             <h3 data-i18n="traceSecLabel"></h3>
             <div class="seg" id="tsec-seg">
@@ -472,13 +699,21 @@
         </div>
         <div>
           <h3 data-i18n="positionLabel"></h3>
-          <div class="pos-card">
-            <div class="pos-icon" id="pos-icon">🎲</div>
-            <div>
-              <div class="pos-name" id="pos-name"></div>
-              <div class="pos-desc" id="pos-desc"></div>
-              <div class="pos-note" id="pos-note"></div>
+          <div class="pos-card tip-card">
+            <div class="tip-head">
+              <div class="pos-icon" id="pos-icon">🎲</div>
+              <div>
+                <div class="tip-label" data-i18n="tipLabel"></div>
+                <div class="pos-name" id="pos-name"></div>
+                <div class="tip-meta" id="pos-meta"></div>
+              </div>
             </div>
+            <p class="tip-lead" id="pos-desc"></p>
+            <p class="tip-p" id="pos-how"></p>
+            <p class="tip-p" id="pos-watch"></p>
+            <div class="pos-note" id="pos-note"></div>
+            <p class="tip-p" id="pos-ease"></p>
+            <p class="tip-need" id="pos-need"></p>
           </div>
           <h3 data-i18n="levelLabel"></h3>
           <div class="seg" id="level-seg">
@@ -486,12 +721,15 @@
             <button data-v="2" data-i18n="normal"></button>
             <button data-v="3" class="on" data-i18n="hard"></button>
           </div>
-          <h3 data-i18n="suggestLabel"></h3>
-          <div class="sugg" id="sugg"></div>
-          <p class="sub" data-i18n="swapHint" style="font-size:.82rem; margin:8px 0 0"></p>
           <div class="actions" style="margin-top:14px">
             <button class="btn ghost" id="btn-reroll" data-i18n="reroll"></button>
+            <button class="btn ghost" id="btn-sugg"></button>
             <button class="btn ghost" id="btn-browse"></button>
+          </div>
+          <div id="sugg-wrap" class="hidden">
+            <h3 data-i18n="suggestLabel"></h3>
+            <div class="sugg" id="sugg"></div>
+            <p class="sub" data-i18n="swapHint" style="font-size:.82rem; margin:8px 0 0"></p>
           </div>
           <div id="browse" class="hidden">
             <div class="chips" id="cat-chips" style="margin-top:14px"></div>
@@ -552,8 +790,8 @@
         <svg viewBox="0 0 200 200">
           <defs>
             <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#00e5ff"/>
-              <stop offset="100%" stop-color="#2f6bff"/>
+              <stop offset="0%" stop-color="#e0213f"/>
+              <stop offset="100%" stop-color="#6a0b1a"/>
             </linearGradient>
           </defs>
           <circle class="track" cx="100" cy="100" r="90" fill="none" stroke-width="8"/>
@@ -581,6 +819,7 @@
         <canvas id="trace-canvas"></canvas>
       </div>
       <div class="phrase" id="phrase"></div>
+      <p class="small-note" data-device="desktop" data-i18n="deskHint"></p>
       <div class="checkin" id="checkin">
         <span><span data-i18n="checkinMsg"></span> <b id="checkin-nod"></b></span>
         <span class="btnrow">
@@ -669,7 +908,7 @@ const I18N = {
     setupTitle: "Ställ in sessionen", setupSub: "Anpassa längd, svårighet och position.",
     durationLabel: "Längd", difficultyLabel: "Pusslets svårighet", checkinLabel: "Regelbundna kontroller",
     easy: "Lätt", normal: "Normal", hard: "Svår", extreme: "Extrem", on: "På", off: "Av",
-    positionLabel: "Position", reroll: "🎲 Slumpa om", minutes: "min",
+    positionLabel: "Position", reroll: "🎲 Ge mig ett annat tips", minutes: "min",
     safetyTitle: "Säkerhetskoll", safetySub: "Bocka av allt innan du går vidare. Det här är inte förhandlingsbart.",
     briefSub: "Det här är din uppgift. Läs igenom den noga.",
     ready: "Jag är redo", remaining: "kvar",
@@ -764,6 +1003,20 @@ const I18N = {
     ],
     guideTitle: "Säkerhetsguide", guideSrcTitle: "Källor",
     guideDisc: "Sammanfattning av öppna källor, inte medicinsk rådgivning. Vid skada eller osäkerhet: sök vård.",
+    blindLabel: "Ögonbindel (känn dig fram)", blindOn: "På",
+    blindHint: "Skärmen göms. Dra fingret över ytan: du får korta pulser och toner bara när du är rätt (ritläge: på banan, klickläge: närmare målet ger tätare pulser). Tvåfingerstryck avbryter alltid.",
+    vibTest: "Testa vibration och ljud",
+    vibOk: "Vibration skickad. Kände du den? Om inte: sätt på Vibration under Inställningar → Ljud och vibration, stäng av batterisparläge och låt Chrome vara öppet i förgrunden. Ljudsignalen fungerar som reserv.",
+    vibNo: "Den här webbläsaren stödjer inte vibration (iPhone/Safari gör det aldrig). Ljudsignaler används i stället.",
+    traceHintBlind: "Skärmen är mörk. Dra fingret så får du pulser när du följer banan. Pulser tystnar när du är av banan. Längre pulser vid 25, 50 och 75 procent. Tvåfingerstryck avbryter.",
+    clickHintBlind: "Skärmen är mörk. Dra fingret över ytan. Tätare pulser och högre ton betyder närmare målet. Träffa målet för att få tiden att gå ner. Tvåfingerstryck avbryter.",
+    briefBlind: "Ögonbindel: när du hör kontrollpipet, dra upp bindeln och kontrollera kropp och färg innan du bekräftar. Tvåfingerstryck på skärmen avbryter alltid.",
+    safetyBlind: "Jag kan ta av mig ögonbindeln själv med en hand, och jag har testat att jag hör pipen och kan trycka med två fingrar för att avbryta.",
+    hostSay: "Välkommen. Jag har väntat på dig. Du bestämmer tempot, och du kan avbryta när du vill. Men så länge du är här gör du som jag säger.",
+    deskHint: "Tangentbord: Esc avbryter alltid. I pusslet används piltangenterna.",
+    devLabel: "Visningsläge", devAuto: "Auto", devMobile: "Mobil", devDesktop: "Desktop (dungeon)",
+    tipLabel: "Dagens tips", tipHow: "Så gör du", tipWatch: "Tänk på", tipEase: "Variant", tipNeed: "Du behöver", tipMax: "tak i appen",
+    suggShow: "Visa andra förslag", suggHide: "Dölj förslag",
     sos: "⛔ Avbryt / släpp",
     safety: [
       "Jag har en säkerhetssax eller ett annat snabbt sätt att skära mig loss inom räckhåll.",
@@ -824,7 +1077,7 @@ const I18N = {
     setupTitle: "Set up the session", setupSub: "Adjust duration, difficulty and position.",
     durationLabel: "Duration", difficultyLabel: "Puzzle difficulty", checkinLabel: "Regular check-ins",
     easy: "Easy", normal: "Normal", hard: "Hard", extreme: "Extreme", on: "On", off: "Off",
-    positionLabel: "Position", reroll: "🎲 Reroll", minutes: "min",
+    positionLabel: "Position", reroll: "🎲 Give me another tip", minutes: "min",
     safetyTitle: "Safety check", safetySub: "Tick everything before continuing. This is not negotiable.",
     briefSub: "This is your task. Read it carefully.",
     ready: "I am ready", remaining: "remaining",
@@ -919,6 +1172,20 @@ const I18N = {
     ],
     guideTitle: "Safety guide", guideSrcTitle: "Sources",
     guideDisc: "Summary of open sources, not medical advice. If injured or unsure: seek care.",
+    blindLabel: "Blindfold (feel your way)", blindOn: "On",
+    blindHint: "The screen is hidden. Drag your finger across it: you get short pulses and tones only when you are right (trace: on the track, click: closer to the target means faster pulses). A two-finger tap always stops the session.",
+    vibTest: "Test vibration and sound",
+    vibOk: "Vibration sent. Did you feel it? If not: turn Vibration on in Settings → Sounds and vibration, turn off battery saver and keep Chrome in the foreground. The sound signal works as a backup.",
+    vibNo: "This browser does not support vibration (iPhone/Safari never does). Sound signals are used instead.",
+    traceHintBlind: "The screen is dark. Drag your finger and you get pulses while you follow the track. Pulses stop when you are off track. Longer pulses at 25, 50 and 75 percent. A two-finger tap stops the session.",
+    clickHintBlind: "The screen is dark. Drag your finger across it. Faster pulses and a higher tone mean closer to the target. Hit the target to bring the time down. A two-finger tap stops the session.",
+    briefBlind: "Blindfold: when you hear the check beep, lift the blindfold and check your body and colour before you confirm. A two-finger tap on the screen always stops the session.",
+    safetyBlind: "I can take off the blindfold myself with one hand, and I have tested that I hear the beeps and can use a two-finger tap to stop.",
+    hostSay: "Welcome. I have been waiting for you. You set the pace, and you can stop whenever you like. But while you are here, you do as I say.",
+    deskHint: "Keyboard: Esc always stops. Use the arrow keys in the puzzle.",
+    devLabel: "Display mode", devAuto: "Auto", devMobile: "Mobile", devDesktop: "Desktop (dungeon)",
+    tipLabel: "Today's tip", tipHow: "How to", tipWatch: "Watch out for", tipEase: "Variation", tipNeed: "You need", tipMax: "cap in the app",
+    suggShow: "Show other suggestions", suggHide: "Hide suggestions",
     sos: "⛔ Stop / release",
     safety: [
       "I have safety shears or another quick way to cut myself free within reach.",
@@ -1058,6 +1325,332 @@ const BINDINGS = [
     sv: ["Stående spread eagle", "Stå med armar och ben utsträckta mot fästpunkter.", "All vikt ska ligga på fötterna. Häng aldrig i armarna."],
     en: ["Standing spread eagle", "Stand with arms and legs extended toward anchor points.", "All weight stays on your feet. Never hang from your arms."] }
 ];
+const TIPS = {
+ "side_light": {
+  "sv": [
+   "Sidoläget är det mest förlåtande utgångsläget och passar som första bindning. Ligg på sidan med en kudde under huvudet och knäna lätt böjda. Bind handlederna ihop framför magen och fotlederna ihop, med band som ligger platt.",
+   "Rör fingrar och tår då och då. Domning eller kyla betyder att du lossar direkt. Lämna plats för ett finger under banden.",
+   "Lättare: bind bara fotlederna. Svårare: handlederna bakom ryggen, men håll det kort."
+  ],
+  "en": [
+   "The side position is the most forgiving starting point and a good first tie. Lie on your side with a pillow under your head and knees slightly bent. Tie wrists together in front of your stomach and ankles together, with flat bands.",
+   "Move fingers and toes now and then. Numbness or cold means release at once. Leave room for a finger under the bands.",
+   "Easier: tie only the ankles. Harder: wrists behind your back, but keep it short."
+  ]
+ },
+ "ankles_only": {
+  "sv": [
+   "Ligg på rygg med fotlederna ihop, eller på en spridarstång om du har en. Händerna är fria, så du når alltid sax och telefon. Ett bra sätt att vänja sig vid känslan av att vara låst utan större risk.",
+   "Fotlederna är känsliga för tryck på utsidan. Använd breda band och kolla att tårna är varma.",
+   "Svårare: lägg till handlederna framför dig."
+  ],
+  "en": [
+   "Lie on your back with ankles together, or on a spread bar if you have one. Your hands stay free, so you can always reach shears and your phone. A good way to get used to the feeling of being restrained with little risk.",
+   "Ankles are sensitive to pressure on the outside. Use wide bands and check that your toes are warm.",
+   "Harder: add the wrists in front of you."
+  ]
+ },
+ "wrists_up": {
+  "sv": [
+   "Ligg på rygg med handlederna ihop ovanför huvudet, fästa i sänggaveln eller en lös ögla. Armarna får vila lätt utan att sträckas ut helt.",
+   "Armar över huvudet kan irritera nerverna i överarmen och axeln. Rör fingrarna ofta och sänk armarna om det börjar sticka.",
+   "Lättare: händerna framför magen i stället."
+  ],
+  "en": [
+   "Lie on your back with wrists together above your head, attached to the headboard or a loose loop. Your arms should rest lightly without being fully stretched.",
+   "Arms overhead can irritate the nerves in the upper arm and shoulder. Move your fingers often and lower your arms if tingling starts.",
+   "Easier: hands in front of your stomach instead."
+  ]
+ },
+ "bedspread": {
+  "sv": [
+   "Du ligger på rygg med armar och ben utsträckta mot sängens hörn, som ett X. Det ger en stark känsla av utsatthet, men kräver fästen som är långa nog att inte dra i kroppen.",
+   "Dra inte så att lederna sträcks. Armbågar och knän ska vara lätt böjda. Planera hur du fäster den sista handleden med en snabblösning du kan öppna själv.",
+   "Lättare: lämna ena handen fri."
+  ],
+  "en": [
+   "You lie on your back with arms and legs stretched toward the corners of the bed, like an X. It gives a strong feeling of exposure but needs ties long enough not to pull on your body.",
+   "Do not stretch your joints. Elbows and knees should stay slightly bent. Plan how you attach the last wrist with a quick release you can open yourself.",
+   "Easier: leave one hand free."
+  ]
+ },
+ "floor_x": {
+  "sv": [
+   "Samma X-form som på sängen men på golvet, som ger fastare underlag och mer kyla. Lägg en filt eller matta under dig och använd fästpunkter som inte kan glida.",
+   "Golvet är kallt, så håll värmen och kolla huden. Testa inte genom att dra hårt i armarna.",
+   "Lättare: Spread eagle på sängen."
+  ],
+  "en": [
+   "The same X shape as on the bed but on the floor, which gives a firmer surface and more cold. Put a blanket or mat under you and use anchor points that cannot slide.",
+   "The floor is cold, so keep warm and check your skin. Do not test by pulling hard on your arms.",
+   "Easier: Spread eagle on the bed."
+  ]
+ },
+ "frogtie": {
+  "sv": [
+   "Grodbindning: knäna böjda utåt och vaderna bundna mot låren så att fötterna hamnar nära rumpan. Positionen är kompakt och svår att ta sig ur, så den bör hållas kort.",
+   "Böj inte hårdare än det är bekvämt och kolla känseln i fötterna ofta. Tryck på utsidan av knäna kan irritera nerver.",
+   "Lättare: bind bara ett ben i taget."
+  ],
+  "en": [
+   "Frog tie: knees bent outward and calves tied against thighs so your feet end up near your backside. The position is compact and hard to get out of, so keep it short.",
+   "Do not fold harder than is comfortable and check the feeling in your feet often. Pressure on the outside of the knees can irritate nerves.",
+   "Easier: tie only one leg at a time."
+  ]
+ },
+ "hogtie": {
+  "sv": [
+   "Hogtie är ett avancerat och riskabelt läge: handleder och fotleder ihopbundna bakom ryggen. Det rekommenderas inte som solobindning, och flera källor varnar för att andningen kan bli ansträngd när kroppen ligger framåtböjd.",
+   "Ligg på sidan, aldrig med ansiktet ner, och undvik tryck mot bröstkorgen. Håll det kort (högst 30 min i appen) och ha sax inom räckhåll. Överväg att välja en annan position.",
+   "Lättare: grodbindning eller sidoläge."
+  ],
+  "en": [
+   "Hogtie is an advanced and risky position: wrists and ankles tied together behind your back. It is not recommended as a solo tie, and several sources warn that breathing can become strained when the body is bent forward.",
+   "Lie on your side, never face down, and avoid pressure on your chest. Keep it short (30 min maximum in the app) and keep shears within reach. Consider choosing another position.",
+   "Easier: frog tie or the side position."
+  ]
+ },
+ "kneel_behind": {
+  "sv": [
+   "Knäa upprätt med handlederna ihop bakom ryggen. Hållningen blir upprätt och spänd, och det är ett bra läge för uppgifter med näsa och mun. Lägg något mjukt under knäna.",
+   "Axlarna tar emot belastningen. Knäa nära en vägg eller säng så att du inte tappar balansen.",
+   "Lättare: händerna ihop framför dig."
+  ],
+  "en": [
+   "Kneel upright with wrists together behind your back. The posture is upright and tense, and it suits tasks with nose and mouth. Put something soft under your knees.",
+   "Your shoulders take the load. Kneel near a wall or bed so you do not lose balance.",
+   "Easier: hands together in front of you."
+  ]
+ },
+ "kneel_head": {
+  "sv": [
+   "Knäa upprätt med handlederna ihop bakom nacken och armbågarna utåt. Positionen öppnar bröstet och låter dig hålla uppsikt över rummet.",
+   "Armar bakom huvudet belastar axlar och nerver. Släpp om axlarna knyter sig eller fingrarna börjar sticka.",
+   "Lättare: händerna ihop framför dig eller bakom ryggen."
+  ],
+  "en": [
+   "Kneel upright with wrists together behind your neck and elbows out. The position opens the chest and lets you keep an eye on the room.",
+   "Arms behind the head strain shoulders and nerves. Release if your shoulders cramp or your fingers start to tingle.",
+   "Easier: hands together in front or behind your back."
+  ]
+ },
+ "bed_edge": {
+  "sv": [
+   "Knäa på golvet med överkroppen över sängkanten och handlederna ihop framför dig på madrassen. Sängen bär upp mycket av vikten, så det går lätt att hålla en stund.",
+   "Låt inte bröstkorgen tryckas mot kanten så att andningen blir ansträngd. Lägg en kudde under bröstet.",
+   "Lättare: sitt på sängkanten."
+  ],
+  "en": [
+   "Kneel on the floor with your upper body over the edge of the bed and wrists together in front of you on the mattress. The bed carries much of the weight, so it is easy to hold for a while.",
+   "Do not let the edge press into your chest so that breathing gets strained. Put a pillow under your chest.",
+   "Easier: sit on the edge of the bed."
+  ]
+ },
+ "kneel_bar": {
+  "sv": [
+   "Knäa med spridarstången mellan fotlederna så att benen hålls isär. Det ger stabilitet nedtill medan överkroppen är fri att bindas på valfritt sätt.",
+   "Balansen kan bli instabil, så sitt eller luta dig mot något. Fotleder är känsliga för tryck, så kolla cirkulationen.",
+   "Lättare: sitt på hälarna mot en vägg."
+  ],
+  "en": [
+   "Kneel with the spread bar between your ankles so your legs are held apart. It gives stability below while your upper body is free to be tied in any way.",
+   "Balance can get shaky, so sit or lean against something. Ankles are sensitive to pressure, so check circulation.",
+   "Easier: sit on your heels against a wall."
+  ]
+ },
+ "prayer": {
+  "sv": [
+   "Bönpositionen: knästående med handflatorna ihop bakom ryggen. Det är en stram och ansträngande position som lätt belastar handleder och axlar.",
+   "Bind aldrig så hårt att fingrarna tappar känsel. Håll den kort (högst 30 min i appen).",
+   "Lättare: händerna bakom ryggen men inte i bönhållning."
+  ],
+  "en": [
+   "Prayer position: kneeling with palms together behind your back. It is a tight and demanding position that easily strains wrists and shoulders.",
+   "Never tie so tight that your fingers lose feeling. Keep it short (30 min maximum in the app).",
+   "Easier: hands behind your back but not in the prayer hold."
+  ]
+ },
+ "pole_sit": {
+  "sv": [
+   "Sitt med ryggen mot en stolpe och handlederna fästa bakom den. Stolpen stöttar ryggen, så du kan hålla en lång stund utan att tröttna.",
+   "Stolpen ska stå stadigt. Håll handlederna i höjd med nedre ryggen i stället för att dra dem uppåt.",
+   "Lättare: händerna i knät."
+  ],
+  "en": [
+   "Sit with your back against a pole and wrists attached behind it. The pole supports your back, so you can hold it for a long time without tiring.",
+   "The pole must be stable. Keep your wrists at lower-back height instead of pulling them upward.",
+   "Easier: hands in your lap."
+  ]
+ },
+ "wall_sit": {
+  "sv": [
+   "Sitt med ryggen mot en vägg, handlederna ihop i knät och fotlederna ihop. Väggen ger stöd, så det är en lugn och stabil nybörjarposition.",
+   "Sitt på något mjukt och kolla att fötterna inte somnar.",
+   "Svårare: händerna bakom ryggen."
+  ],
+  "en": [
+   "Sit with your back against a wall, wrists together in your lap and ankles together. The wall gives support, so it is a calm and stable beginner position.",
+   "Sit on something soft and check that your feet do not fall asleep.",
+   "Harder: hands behind your back."
+  ]
+ },
+ "chair_basic": {
+  "sv": [
+   "Sitt på en stadig stol med handlederna ihop bakom ryggstödet. Klassikern: enkel att sätta upp och lätt att ta sig ur med en snabblösning.",
+   "Stolen ska inte kunna välta. Dra inte armarna bakåt, utan låt handlederna vila mot ryggstödet.",
+   "Lättare: händerna i knät."
+  ],
+  "en": [
+   "Sit on a sturdy chair with wrists together behind the backrest. The classic: easy to set up and easy to get out of with a quick release.",
+   "The chair must not be able to tip. Do not pull your arms backward; let your wrists rest against the backrest.",
+   "Easier: hands in your lap."
+  ]
+ },
+ "chair_ankles": {
+  "sv": [
+   "Sitt på stolen med fotlederna fästa mot stolsbenen och händerna fria eller i knät. Du får en tydlig begränsning nedtill utan att överkroppen blir låst.",
+   "Banden ska ligga platt på fotlederna. Kolla att tårna är varma.",
+   "Svårare: lägg till händerna bakom ryggstödet."
+  ],
+  "en": [
+   "Sit on the chair with ankles attached to the chair legs and hands free or in your lap. You get a clear restriction below without your upper body being locked.",
+   "The bands should lie flat on your ankles. Check that your toes are warm.",
+   "Harder: add the hands behind the backrest."
+  ]
+ },
+ "floor_box": {
+  "sv": [
+   "Sitt på golvet med böjda knän, vrister och knän ihop och händerna bundna framför. Ihopkrupen position som är lätt att hålla men som lätt ger stelhet.",
+   "Kolla cirkulationen i fötter och ben ofta. Byt vinkel om något domnar.",
+   "Lättare: lämna knäna lösa."
+  ],
+  "en": [
+   "Sit on the floor with bent knees, ankles and knees together and hands tied in front. A curled-up position that is easy to hold but easily causes stiffness.",
+   "Check circulation in your feet and legs often. Change angle if anything goes numb.",
+   "Easier: leave the knees loose."
+  ]
+ },
+ "chair_full": {
+  "sv": [
+   "Full stolbindning gör att du sitter helt låst, så förberedelsen är viktig. Börja med fotlederna, sedan överkroppen, och fäst handlederna sist med en snabblösning du själv kan nå.",
+   "Stolen får inte kunna välta, så luta dig inte åt sidan. Överkroppsbanden ska ligga löst och aldrig begränsa andningen.",
+   "Lättare: hoppa över överkroppen."
+  ],
+  "en": [
+   "A full chair tie leaves you completely locked in, so preparation matters. Start with the ankles, then the upper body, and attach the wrists last with a quick release you can reach yourself.",
+   "The chair must not be able to tip, so do not lean sideways. Upper-body bands should lie loosely and never restrict breathing.",
+   "Easier: skip the upper body."
+  ]
+ },
+ "chair_wide": {
+  "sv": [
+   "Fotlederna fästa mot varsitt stolsben framtill och händerna bakom ryggstödet. Isärspärrade ben ger en utsatt känsla och ställer höga krav på stabilitet.",
+   "Kontrollera att stolen står stadigt innan du börjar, och att benen inte pressas isär i ett obekvämt läge.",
+   "Lättare: fötterna ihop eller vanlig stolbindning."
+  ],
+  "en": [
+   "Ankles attached to a chair leg each at the front and hands behind the backrest. Legs held wide apart give an exposed feeling and demand high stability.",
+   "Check that the chair is stable before you start, and that your legs are not pushed apart into an uncomfortable position.",
+   "Easier: feet together or the regular chair tie."
+  ]
+ },
+ "bar_stand": {
+  "sv": [
+   "Stå med fotlederna vid spridarstångens ändar och händerna bakom ryggen. Benen hålls isär och balansen blir vacklande.",
+   "Stå vid en vägg eller möbel så att du kan stödja dig. Fallrisken är verklig med bundna händer.",
+   "Lättare: sitt på kanten av en säng."
+  ],
+  "en": [
+   "Stand with ankles at the ends of the spread bar and hands behind your back. Your legs are held apart and balance becomes shaky.",
+   "Stand next to a wall or furniture so you can lean on it. The risk of falling is real with bound hands.",
+   "Easier: sit on the edge of a bed."
+  ]
+ },
+ "pole_stand": {
+  "sv": [
+   "Stå med ryggen mot en stolpe och handlederna fästa bakom den. Du står upprätt men stöttad, vilket passar en kort uppgift.",
+   "Stå inte kvar länge: låsta knän kan ge yrsel. Böj dem lätt och byt tyngdpunkt ofta.",
+   "Lättare: sitt vid stolpen."
+  ],
+  "en": [
+   "Stand with your back against a pole and wrists attached behind it. You stand upright but supported, which suits a short task.",
+   "Do not stay long: locked knees can cause dizziness. Bend them slightly and shift your weight often.",
+   "Easier: sit by the pole."
+  ]
+ },
+ "table_over": {
+  "sv": [
+   "Stå och luta överkroppen mot ett bord med handlederna fästa framför dig. Bordet bär upp en del av vikten och ger en tydligt utlämnad position.",
+   "Bordet ska stå stabilt. Undvik tryck mot bröstkorgen så att du inte får svårt att andas. Lägg något mjukt under.",
+   "Lättare: stå upprätt mot bordet."
+  ],
+  "en": [
+   "Stand and lean your upper body on a table with wrists attached in front of you. The table carries part of the weight and gives a clearly exposed position.",
+   "The table must be stable. Avoid pressure on your chest so you do not struggle to breathe. Put something soft underneath.",
+   "Easier: stand upright against the table."
+  ]
+ },
+ "hook_hands": {
+  "sv": [
+   "Stå med handlederna ihop ovanför huvudet, fästa i en krok du når med fötterna i golvet. Spänningen kommer från armarnas position, inte från att hänga.",
+   "Häng aldrig i armarna, du ska stå fullt ut. Armar över huvudet ger nervrisk, så sänk dem vid stickningar.",
+   "Lättare: sittande mot kroken."
+  ],
+  "en": [
+   "Stand with wrists together above your head, attached to a hook you reach with your feet on the floor. The tension comes from your arm position, not from hanging.",
+   "Never hang from your arms; you should stand fully. Arms overhead carry nerve risk, so lower them if you feel tingling.",
+   "Easier: seated under the hook."
+  ]
+ },
+ "hook_sit": {
+  "sv": [
+   "Sitt på stol, säng eller golv under kroken med handlederna ihop ovanför huvudet. Vikten vilar på det du sitter på, så det är den säkraste krokvarianten.",
+   "Fästet ska ligga så att armarna inte sträcks hårt. Hänger du är det fel. Se till att sätet står stadigt.",
+   "Svårare: knäa under kroken."
+  ],
+  "en": [
+   "Sit on a chair, bed or floor under the hook with wrists together above your head. Your weight rests on what you sit on, so this is the safest hook variant.",
+   "The anchor should be placed so your arms are not stretched hard. If you hang, it is wrong. Make sure the seat is stable.",
+   "Harder: kneel under the hook."
+  ]
+ },
+ "hook_kneel": {
+  "sv": [
+   "Knäa upprätt under kroken med handlederna ihop ovanför huvudet. Du står på knäna, vilket ger en lägre och mer underkastad hållning.",
+   "Vikten ska ligga på knäna. Lägg något mjukt under dem och sänk armarna vid minsta stickning.",
+   "Lättare: sittande under kroken."
+  ],
+  "en": [
+   "Kneel upright under the hook with wrists together above your head. You are on your knees, which gives a lower and more submissive posture.",
+   "Your weight should be on your knees. Put something soft under them and lower your arms at the slightest tingling.",
+   "Easier: seated under the hook."
+  ]
+ },
+ "stand_spread": {
+  "sv": [
+   "Stå med armar och ben utsträckta mot fästpunkter. Det kräver flera fästpunkter och är den mest krävande stående positionen.",
+   "All vikt ska ligga på fötterna. Hänger du i armarna är den för hög eller för stram. Håll den kort (högst 30 min i appen).",
+   "Lättare: Spread eagle liggande."
+  ],
+  "en": [
+   "Stand with arms and legs stretched toward anchor points. It needs several anchor points and is the most demanding standing position.",
+   "All weight should be on your feet. If you hang from your arms it is too high or too tight. Keep it short (30 min maximum in the app).",
+   "Easier: Spread eagle lying down."
+  ]
+ },
+ "free": {
+  "sv": [
+   "Fri position: välj något du är trygg med utifrån det du har och börja lätt.",
+   "Börja med en nivå lägre än du tror att du klarar.",
+   ""
+  ],
+  "en": [
+   "Free position: choose something you feel safe in based on what you have and start light.",
+   "Start one level lower than you think you can handle.",
+   ""
+  ]
+ }
+};
 const POSITIONS = BINDINGS.map(b => ({ ...b, icon: b.icon || CAT_ICON[b.cat] }));
 BINDINGS.forEach(b => { I18N.sv.positions[b.id] = b.sv; I18N.en.positions[b.id] = b.en; });
 const DIFF = { easy: 4, normal: 6, hard: 8, extreme: 10 };
@@ -1103,7 +1696,7 @@ const S = {
   level: 3, sugg: [], cat: "all", browseOpen: false,
   face: false, dwellAt: 0, warnId: null,
   traceSec: 60, traceW: 46, traceId: null,
-  ptype: "arrows", lock: false, lockCode: "", conseq: "off", ciShownAt: 0, alarmId: null, memId: null, slipTotal: 0, showing: false
+  suggOpen: false, device: "mobile", blind: false, lastFeel: 0, mile: 0, ptype: "arrows", lock: false, lockCode: "", conseq: "off", ciShownAt: 0, alarmId: null, memId: null, slipTotal: 0, showing: false
 };
 
 /* ============ Helpers ============ */
@@ -1141,6 +1734,7 @@ function go(id) {
   document.querySelectorAll(".stage").forEach(s => s.classList.toggle("active", s.id === id));
   $("sos").classList.toggle("show", ["st-session", "st-puzzle"].includes(id));
   document.body.classList.toggle("in-session", id === "st-session" && hitMode());
+  document.body.dataset.scene = ({ "st-welcome": "welcome", "st-profile": "mesh", "st-items": "mesh", "st-setup": "chains", "st-safety": "chains", "st-brief": "chains", "st-session": "dim", "st-puzzle": "dim", "st-done": "chains", "st-abort": "chains" })[id] || "chains";
   renderStepper();
   const dock = $("cam-dock");
   if (id === "st-brief") { $("face-slot").appendChild(dock); dock.classList.add("inline"); }
@@ -1265,6 +1859,8 @@ function renderSuggestions() {
 }
 function renderBrowse() {
   $("browse").classList.toggle("hidden", !S.browseOpen);
+  $("sugg-wrap").classList.toggle("hidden", !S.suggOpen);
+  $("btn-sugg").textContent = S.suggOpen ? t("suggHide") : t("suggShow") + " (" + S.sugg.length + ")";
   $("btn-browse").textContent = S.browseOpen ? t("browseHide") : t("browseShow") + " (" + POSITIONS.length + ")";
   if (!S.browseOpen) return;
   const cats = $("cat-chips");
@@ -1285,6 +1881,15 @@ function renderPosition() {
   $("pos-name").textContent = data[0];
   $("pos-desc").textContent = data[1];
   $("pos-note").textContent = data[2] ? "⚠️ " + data[2] : "";
+  const tp = (TIPS[S.position] || TIPS.free)[S.lang];
+  const lead = (label, txt) => txt ? `<b>${esc(label)}.</b> ${esc(txt)}` : "";
+  $("pos-how").innerHTML = lead(t("tipHow"), tp[0]);
+  $("pos-watch").innerHTML = lead(t("tipWatch"), tp[1]);
+  $("pos-ease").innerHTML = lead(t("tipEase"), tp[2]);
+  const names = (arr, dict) => (arr || []).map(k => dict[k] || k).join(" / ");
+  const needBits = p ? [names(p.env, t("env")), p.env2 ? names(p.env2, t("env")) : "", names(p.gear, t("gear"))].filter(Boolean) : [];
+  $("pos-need").textContent = p ? t("tipNeed") + ": " + needBits.join(" · ") : "";
+  $("pos-meta").textContent = p ? t("cat_" + p.cat) + " · " + "●".repeat(p.level) + "○".repeat(3 - p.level) + " · " + t("tipMax") + " " + (LEVEL_CAP[p.level] || 30) + " " + t("minutes") : "";
   renderSuggestions();
   applyPosCap();
 }
@@ -1298,6 +1903,7 @@ function renderSafety() {
   if (hitMode()) list.push(t("safetyClick"));
   if (S.face) list.push(t("safetyFace"));
   if (S.lock) list.push(t("safetyLock"), t("safetyLock2"));
+  if (S.blind && hitMode()) list.push(t("safetyBlind"));
   list.forEach((txt, i) => {
     const l = document.createElement("label");
     l.className = "check";
@@ -1340,6 +1946,7 @@ function renderBrief() {
   if (posNote) lines.splice(2, 0, ["⚠️", posNote]);
   if (S.mode === "click") lines.splice(4, 0, ["🖱️", b.click(S.hitSec, capMin())]);
   if (S.mode === "trace") lines.splice(4, 0, ["✍️", t("briefTrace")(S.traceSec, capMin())]);
+  if (S.blind && hitMode()) lines.push(["🙈", t("briefBlind")]);
   lines.push(["🌬️", b.breathe]);
   if (S.face) {
     lines.push(["🙂", t("briefFaceNod")], ["↔️", t("briefFaceHead")], ["↩️", t("briefFaceTilt")]);
@@ -1366,6 +1973,7 @@ function startSession() {
   S.endAt = S.startAt + S.duration * 60000;
   S.capAt = S.startAt + capMin() * 60000;
   S.remaining = S.duration * 60000; S.hits = 0; S.misses = 0; S.slipTotal = 0;
+  if (S.device === "desktop") S.blind = false;
   ensureAudio();
   $("ring-prog").style.strokeDasharray = CIRC;
   $("checkin").classList.remove("show");
@@ -1448,17 +2056,38 @@ function stopAlarm() {
   buzz(0);
 }
 
+/* ---- Känn-feedback för ögonbindelsläget ---- */
+function feelPulse(gap, pitch, ms) {
+  const now = Date.now();
+  if (now - S.lastFeel < gap) return false;
+  S.lastFeel = now;
+  buzz(ms || 20); beep(pitch, 0.05);
+  return true;
+}
+function blindFeelTarget(e) {
+  const tr = $("target").getBoundingClientRect();
+  const d = Math.hypot(e.clientX - (tr.left + tr.width / 2), e.clientY - (tr.top + tr.height / 2));
+  if (d <= tr.width / 2) { buzz([90, 40, 160]); beep(900, 0.18); onHit(); S.lastFeel = Date.now() + 400; return; }
+  feelPulse(Math.min(800, Math.max(90, d * 1.6)), 240 + Math.max(0, 600 - d) * 1.2);
+}
+function twoFingerAbort(e) {
+  if (S.blind && hitMode() && S.stage === "st-session" && e.touches && e.touches.length >= 2) abort();
+}
+
 /* ============ Click task ============ */
 function updateModeUI() {
   $("click-opts").classList.toggle("hidden", S.mode !== "click");
   $("trace-opts").classList.toggle("hidden", S.mode !== "trace");
+  $("blind-opts").classList.toggle("hidden", !hitMode());
   $("mode-hint").textContent = S.mode === "click" ? t("modeHintClick")(capMin())
     : S.mode === "trace" ? t("modeHintTrace")(capMin()) : t("modeHintTime");
 }
 function startClickTask() {
   $("target").onpointerdown = (e) => { e.preventDefault(); e.stopPropagation(); onHit(); };
-  $("field").onpointerdown = () => { S.misses++; };   // missar påverkar inte tiden
-  $("click-hint").textContent = t("clickHint");
+  $("field").classList.toggle("blind", S.blind);
+  $("field").onpointerdown = (e) => { if (S.blind) blindFeelTarget(e); else S.misses++; };   // missar påverkar inte tiden
+  $("field").onpointermove = (e) => { if (S.blind) blindFeelTarget(e); };
+  $("click-hint").textContent = S.blind ? t("clickHintBlind") : t("clickHint");
   S.dwellAt = 0;
   fitAboveSos($("field"), 160, 380);
   placeTarget(true);
@@ -1546,7 +2175,7 @@ function traceNew() {
   const names = Object.keys(SHAPES).filter((n) => n !== TR.last);
   TR.name = pick(names); TR.last = TR.name;
   TR.norm = resample(SHAPES[TR.name](), TRACE_N);
-  TR.idx = 0; TR.maxIdx = 0; TR.offSince = 0; TR.slips = 0; TR.on = true;
+  TR.idx = 0; TR.maxIdx = 0; TR.mile = 0; TR.offSince = 0; TR.slips = 0; TR.on = true;
   traceLayout();
 }
 function traceLayout() {
@@ -1575,12 +2204,17 @@ function traceMove(x, y) {
   }
   if (bd <= tol) {
     TR.on = true; TR.offSince = 0;
+    if (S.blind) feelPulse(130, 320 + (best / (n - 1)) * 520, 22);
     if (best > TR.idx) {
       TR.idx = best;
       if (best > TR.maxIdx) {
         const delta = (best - TR.maxIdx) / (n - 1);
         S.remaining = Math.max(0, S.remaining - delta * S.traceSec * 1000);   // tiden kan bara minska
         TR.maxIdx = best;
+        if (S.blind) {
+          const m = Math.floor((best / (n - 1)) * 4);
+          if (m > TR.mile && m < 4) { TR.mile = m; buzz([70, 40, 70]); beep(700 + m * 120, 0.15); }
+        }
         tick();
         if (S.stage !== "st-session") return;
       }
@@ -1596,6 +2230,7 @@ function traceDone() {
   const n = TR.pts.length, rest = (n - 1 - TR.maxIdx) / (n - 1);
   S.remaining = Math.max(0, S.remaining - rest * S.traceSec * 1000);
   S.hits++;
+  if (S.blind) { buzz([200, 80, 200]); beep(1000, 0.3); }
   TR.doneUntil = Date.now() + 700;
   tick();
   if (S.stage === "st-session") traceNew();
@@ -1627,6 +2262,11 @@ function traceDraw() {
   const P = TR.pts, W = effW();
   ctx.setTransform(TR.dpr, 0, 0, TR.dpr, 0, 0);
   ctx.clearRect(0, 0, TR.w, TR.h);
+  if (S.blind) {
+    ctx.fillStyle = "rgba(0,0,0,.55)"; ctx.fillRect(0, 0, TR.w, TR.h);
+    if (Date.now() < TR.flashUntil) { ctx.fillStyle = "rgba(255,77,94,.12)"; ctx.fillRect(0, 0, TR.w, TR.h); }
+    return;
+  }
   const path = (a, b) => { ctx.beginPath(); ctx.moveTo(P[a][0], P[a][1]); for (let i = a + 1; i <= b; i++) ctx.lineTo(P[i][0], P[i][1]); };
   const dot = (q, r, col) => { ctx.beginPath(); ctx.arc(q[0], q[1], r, 0, Math.PI * 2); ctx.fillStyle = col; ctx.fill(); };
   ctx.lineCap = "round"; ctx.lineJoin = "round";
@@ -1649,7 +2289,7 @@ function tracePos(e) {
 }
 function startTraceTask() {
   const cv = $("trace-canvas");
-  $("trace-hint").textContent = t("traceHint");
+  $("trace-hint").textContent = S.blind ? t("traceHintBlind") : t("traceHint");
   TR.down = false; TR.last = "";
   cv.onpointerdown = (e) => {
     if (S.stage !== "st-session") return;
@@ -1758,7 +2398,19 @@ function renderGuide() {
   const g = t("guide");
   $("guide-body").innerHTML = `<h2>${esc(t("guideTitle"))}</h2><p class="gnote">${esc(t("guideDisc"))}</p>` +
     g.map(sec => `<h3>${esc(sec[0])}</h3><ul>${sec[1].map(x => `<li>${esc(x)}</li>`).join("")}</ul>`).join("") +
+    `<h3>${esc(t("devLabel"))}</h3><div class="devrow">` +
+      [["auto","devAuto"],["mobile","devMobile"],["desktop","devDesktop"]].map(x => `<button class="btn ghost" data-dev="${x[0]}">${esc(t(x[1]))}</button>`).join("") + `</div>` +
     `<h3>${esc(t("guideSrcTitle"))}</h3><ul>${GUIDE_SRC.map(x => `<li><a href="${x[1]}" target="_blank" rel="noopener noreferrer">${esc(x[0])}</a></li>`).join("")}</ul>`;
+}
+function setDevice(v) {
+  if (v === "auto") { try { localStorage.removeItem("sb_device"); } catch (e) {} }
+  else store("device", v);
+  let d = v;
+  if (v === "auto") d = (typeof matchMedia === "function" && (matchMedia("(pointer: coarse)").matches || matchMedia("(hover: none)").matches)) ? "mobile" : "desktop";
+  document.documentElement.dataset.device = d;
+  S.device = d;
+  if (d === "desktop") S.blind = false;
+  updateModeUI(); renderGuide();
 }
 function openGuide() { renderGuide(); $("guide").classList.add("show"); $("guide").scrollTop = 0; }
 function closeGuide() { $("guide").classList.remove("show"); }
@@ -2133,6 +2785,7 @@ document.addEventListener("DOMContentLoaded", () => {
   bindSeg("tsec-seg", (v) => S.traceSec = +v);
   bindSeg("tw-seg", (v) => S.traceW = +v);
   $("btn-reroll").onclick = rollPosition;
+  $("btn-sugg").onclick = () => { S.suggOpen = !S.suggOpen; renderBrowse(); };
   $("btn-browse").onclick = () => { S.browseOpen = !S.browseOpen; renderBrowse(); };
   bindSeg("level-seg", (v) => { S.level = +v; rollPosition(); });
   $("btn-setup-next").onclick = () => {
@@ -2148,8 +2801,20 @@ document.addEventListener("DOMContentLoaded", () => {
   $("btn-numb").onclick = abort;
   $("btn-guide-open").onclick = openGuide;
   $("btn-guide-close").onclick = closeGuide;
+  $("guide-body").addEventListener("click", (e) => { const b = e.target.closest("[data-dev]"); if (b) setDevice(b.dataset.dev); });
+  S.device = document.documentElement.dataset.device || "mobile";
+  if (S.device === "desktop") S.blind = false;
   document.querySelectorAll("[data-guide]").forEach(b => b.onclick = openGuide);
   bindSeg("ptype-seg", (v) => S.ptype = v);
+  bindSeg("blind-seg", (v) => S.blind = v === "on");
+  $("btn-vibtest").onclick = () => {
+    ensureAudio();
+    let ok = false;
+    try { ok = !!(navigator.vibrate && navigator.vibrate([200, 100, 200])); } catch (e) {}
+    beep(600, 0.2);
+    $("vib-result").textContent = ok ? t("vibOk") : t("vibNo");
+  };
+  document.addEventListener("touchstart", twoFingerAbort, { passive: true });
   bindSeg("cons-seg", (v) => S.conseq = v);
   bindSeg("lock-seg", (v) => { S.lock = v === "on"; $("lock-opts").classList.toggle("hidden", !S.lock); if (!S.lock) { S.lockCode = ""; $("lock-code").value = ""; } });
   $("lock-code").addEventListener("input", (e) => { S.lockCode = e.target.value.trim(); });
