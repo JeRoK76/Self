@@ -2503,7 +2503,7 @@ function showVerdict() {
   setTimeout(() => {
     const title = pick(t(kind === "allowed" ? "vAllowed" : kind === "cond" ? "vCond" : "vDenied"));
     let html = `<div class="v-title">${esc(title)}</div>`;
-    if (kind === "cond") html += `<div class="v-line"><b>${esc(t("vCondLabel"))}:</b> ${esc(pick(condPool()))}</div>`;
+    if (kind === "cond" || (kind === "allowed" && customOn() && customConds().length)) html += `<div class="v-line"><b>${esc(t("vCondLabel"))}:</b> ${esc(pick(condPool()))}</div>`;
     if (kind !== "denied") html += `<div class="v-line"><b>${esc(t("vPlaceLabel"))}:</b> ${esc(pick(t("vPlaces")))}</div>`;
     else html += `<div class="v-line">${esc(t("vDeniedAfter"))}</div>`;
     out.className = "verdict-out " + kind;
