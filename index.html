@@ -280,6 +280,13 @@
   #st-session.compact .stat { padding: 6px 14px; min-width: 96px; }
   #st-session.compact .stat b { font-size: 1.1rem; }
   .hidden { display: none !important; }
+  .add-row { display: flex; gap: 6px; margin: 8px 0; }
+  .add-row input { flex: 1; min-width: 0; }
+  #custom-pre { width: 100%; margin: 4px 0; padding: 8px; border-radius: 8px; background: rgba(0,0,0,.35); color: inherit; border: 1px solid rgba(255,255,255,.2); }
+  .clist { list-style: none; margin: 8px 0; padding: 0; }
+  .clist li { display: flex; align-items: center; gap: 8px; padding: 6px 8px; margin: 4px 0; border-radius: 8px; background: rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.12); font-size: .92rem; }
+  .clist li span { flex: 1; overflow-wrap: anywhere; }
+  .clist li button { background: none; border: 0; color: #ff6b7d; font-size: 1.1rem; cursor: pointer; padding: 2px 8px; }
   .verdict { margin: 16px 0; padding: 16px; border-radius: 10px; border: 1px solid rgba(224,33,63,.55); background: rgba(179,18,43,.12); text-align: center; }
   .verdict-out { margin-top: 12px; min-height: 1px; }
   .verdict-out .v-title { font-size: 1.35rem; font-weight: 800; letter-spacing: .04em; margin-bottom: 6px; }
@@ -641,7 +648,9 @@
             <button data-v="on" data-i18n="customOn"></button>
           </div>
           <div id="custom-wrap" class="hidden">
-            <textarea id="custom-conds" rows="4" data-i18n-ph="customPh"></textarea>
+            <div class="add-row"><input type="text" id="custom-input" maxlength="120" data-i18n-ph="customPh"><button class="btn small" id="custom-add" data-i18n="customAdd"></button></div>
+            <select id="custom-pre"></select>
+            <ul class="clist" id="custom-list"></ul>
             <p class="small-note" data-i18n="customHint"></p>
           </div>
 
@@ -1050,7 +1059,9 @@ const I18N = {
     suggShow: "Visa andra förslag", suggHide: "Dölj förslag",
     customOn: "Använd",
     customLabel: "Egna villkor",
-    customPh: "Ett villkor per rad. Blandas med de vanliga.",
+    customAdd: "Lägg till",
+    customPre: "Lägg till ett färdigt förslag…",
+    customPh: "Skriv ett villkor och tryck Enter",
     customHint: "Sparas bara i din webbläsare på den här enheten. Ingen annan ser dem.",
     verdictLabel: "Domen efteråt", verdictOn: "På",
     verdictHint: "När du klarat passet slumpas en dom fram. Den påverkar aldrig låset: koden visas alltid först.",
@@ -1236,7 +1247,9 @@ const I18N = {
     suggShow: "Show other suggestions", suggHide: "Hide suggestions",
     customOn: "Use",
     customLabel: "Your own conditions",
-    customPh: "One condition per line. Mixed in with the standard ones.",
+    customAdd: "Add",
+    customPre: "Add a ready-made suggestion…",
+    customPh: "Type a condition and press Enter",
     customHint: "Saved only in your browser on this device. Nobody else sees them.",
     verdictLabel: "Verdict afterwards", verdictOn: "On",
     verdictHint: "When you finish the session, a verdict is drawn at random. It never affects the lock: the code is always shown first.",
@@ -1782,7 +1795,7 @@ function applyI18n() {
   $("lang-sv").classList.toggle("active", S.lang === "sv");
   $("lang-en").classList.toggle("active", S.lang === "en");
   $("sos").textContent = t("sos");
-  renderChips(); renderSafety(); updateDurationOut(); renderPosition(); updateModeUI(); renderBrowse(); updateFaceUI();
+  renderChips(); renderSafety(); updateDurationOut(); renderPosition(); updateModeUI(); renderBrowse(); updateFaceUI(); renderCustom();
   if (S.stage === "st-brief") renderBrief();
   if ($("guide").classList.contains("show")) renderGuide();
 }
@@ -2450,6 +2463,27 @@ function renderVerdict() {
 function customConds() {
   try { return (localStorage.getItem("sb_conds") || "").split("\n").map(x => x.trim()).filter(Boolean).slice(0, 50); } catch (e) { return []; }
 }
+function saveConds(a) { try { localStorage.setItem("sb_conds", a.join("\n")); } catch (e) {} renderCustom(); }
+function addCond(txt) {
+  txt = (txt || "").trim().replace(/\s+/g, " ");
+  if (!txt) return;
+  const a = customConds();
+  if (a.length >= 50 || a.includes(txt)) return;
+  a.push(txt); saveConds(a);
+}
+function renderCustom() {
+  const ul = $("custom-list"); ul.innerHTML = "";
+  customConds().forEach((c, i) => {
+    const li = document.createElement("li");
+    const sp = document.createElement("span"); sp.textContent = c;
+    const b = document.createElement("button"); b.textContent = "✕"; b.setAttribute("aria-label", "x");
+    b.onclick = () => { const a = customConds(); a.splice(i, 1); saveConds(a); };
+    li.append(sp, b); ul.append(li);
+  });
+  const sel = $("custom-pre"); const have = customConds();
+  sel.innerHTML = `<option value="">${esc(t("customPre"))}</option>` +
+    t("vConds").filter(c => !have.includes(c)).map(c => `<option>${esc(c)}</option>`).join("");
+}
 function customOn() { try { return localStorage.getItem("sb_conds_on") === "1"; } catch (e) { return false; } }
 function setCustom(on) {
   try { localStorage.setItem("sb_conds_on", on ? "1" : "0"); } catch (e) {}
@@ -2913,10 +2947,12 @@ document.addEventListener("DOMContentLoaded", () => {
   bindSeg("ptype-seg", (v) => S.ptype = v);
   bindSeg("verdict-seg", (v) => S.verdict = v === "on");
   $("btn-verdict").onclick = showVerdict;
-  try { $("custom-conds").value = localStorage.getItem("sb_conds") || ""; } catch (e) {}
-  $("custom-seg").querySelectorAll("button").forEach(b => b.addEventListener("click", () => setCustom(b.dataset.v === "on")));
+  bindSeg("custom-seg", (v) => setCustom(v === "on"));
   setCustom(customOn());
-  $("custom-conds").addEventListener("input", () => { try { localStorage.setItem("sb_conds", $("custom-conds").value.slice(0, 4000)); } catch (e) {} });
+  $("custom-add").onclick = () => { addCond($("custom-input").value); $("custom-input").value = ""; $("custom-input").focus(); };
+  $("custom-input").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); $("custom-add").onclick(); } });
+  $("custom-pre").addEventListener("change", (e) => { addCond(e.target.value); renderCustom(); });
+  renderCustom();
   bindSeg("blind-seg", (v) => S.blind = v === "on");
   $("btn-vibtest").onclick = () => {
     ensureAudio();
