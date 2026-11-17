@@ -280,6 +280,16 @@
   #st-session.compact .stat { padding: 6px 14px; min-width: 96px; }
   #st-session.compact .stat b { font-size: 1.1rem; }
   .hidden { display: none !important; }
+  .verdict { margin: 16px 0; padding: 16px; border-radius: 10px; border: 1px solid rgba(224,33,63,.55); background: rgba(179,18,43,.12); text-align: center; }
+  .verdict-out { margin-top: 12px; min-height: 1px; }
+  .verdict-out .v-title { font-size: 1.35rem; font-weight: 800; letter-spacing: .04em; margin-bottom: 6px; }
+  .verdict-out .v-line { margin: 4px 0; font-size: .98rem; }
+  .verdict-out .v-wait { font-size: 1.1rem; letter-spacing: .2em; animation: vpulse 1s infinite; }
+  .verdict-out.allowed .v-title { color: #66e0a3; }
+  .verdict-out.cond .v-title { color: #ffd479; }
+  .verdict-out.denied .v-title { color: #ff6b7d; }
+  @keyframes vpulse { 0%,100% { opacity: .3; } 50% { opacity: 1; } }
+  html[data-device="desktop"] .verdict { border-radius: 2px; border-color: #b8923f; background: rgba(0,0,0,.4); }
   .tip-card { display: block; }
   .tip-head { display: flex; gap: 14px; align-items: center; margin-bottom: 12px; }
   .tip-label { font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; color: #e08a97; font-weight: 700; }
@@ -619,6 +629,22 @@
             <input type="password" id="lock-code" inputmode="text" autocomplete="off" maxlength="12" data-i18n-ph="lockPh">
           </div>
 
+          <h3 data-i18n="verdictLabel"></h3>
+          <div class="seg" id="verdict-seg">
+            <button data-v="off" data-i18n="off"></button>
+            <button data-v="on" class="on" data-i18n="verdictOn"></button>
+          </div>
+          <p class="small-note" data-i18n="verdictHint"></p>
+          <h3 data-i18n="customLabel"></h3>
+          <div class="seg" id="custom-seg">
+            <button data-v="off" class="on" data-i18n="off"></button>
+            <button data-v="on" data-i18n="customOn"></button>
+          </div>
+          <div id="custom-wrap" class="hidden">
+            <textarea id="custom-conds" rows="4" data-i18n-ph="customPh"></textarea>
+            <p class="small-note" data-i18n="customHint"></p>
+          </div>
+
           <p class="small-note" id="cap-note"></p>
 
           <h3 data-i18n="modeLabel"></h3>
@@ -857,6 +883,11 @@
       <p id="done-msg"></p>
       <div class="stats" id="done-stats"></div>
       <div class="lockbox hidden" id="done-lock"></div>
+      <div class="verdict hidden" id="verdict">
+        <button class="btn" id="btn-verdict" data-i18n="verdictBtn"></button>
+        <div class="verdict-out" id="verdict-out"></div>
+        <p class="small-note" data-i18n="verdictNote"></p>
+      </div>
       <h3 data-i18n="afterTitle" style="margin-top:20px"></h3>
       <ul class="brief-list" id="after-done" style="text-align:left"></ul>
       <button class="linkbtn" data-guide data-i18n="guideBtnLong"></button>
@@ -1017,6 +1048,23 @@ const I18N = {
     devLabel: "Visningsläge", devAuto: "Auto", devMobile: "Mobil", devDesktop: "Desktop (dungeon)",
     tipLabel: "Dagens tips", tipHow: "Så gör du", tipWatch: "Tänk på", tipEase: "Variant", tipNeed: "Du behöver", tipMax: "tak i appen",
     suggShow: "Visa andra förslag", suggHide: "Dölj förslag",
+    customOn: "Använd",
+    customLabel: "Egna villkor",
+    customPh: "Ett villkor per rad. Blandas med de vanliga.",
+    customHint: "Sparas bara i din webbläsare på den här enheten. Ingen annan ser dem.",
+    verdictLabel: "Domen efteråt", verdictOn: "På",
+    verdictHint: "När du klarat passet slumpas en dom fram. Den påverkar aldrig låset: koden visas alltid först.",
+    verdictBtn: "Hör domen",
+    verdictNote: "Domen är ett spel och påverkar inget annat. Du kan alltid avstå, och du bestämmer själv över din kropp.",
+    vWait: "Domaren överväger…",
+    vAllowed: ["Du får. Du har gjort dig förtjänt av det.", "Du får. Bra jobbat.", "Tillåtet. Ta det i din takt."],
+    vCond: ["Du får, men på ett villkor.", "Tillåtet, men på mina villkor."],
+    vDenied: ["Nej. Inte idag.", "Nekas. Du får vänta till nästa gång.", "Inte idag. Njut av väntan."],
+    vConds: ["Inom tio minuter, inte en minut senare.", "Med slutna ögon hela tiden.", "Med den hand du brukar använda minst.", "I tystnad, utan musik.", "Efter att du tackat högt.", "Först efter att du räknat ner från tjugo.", "Stående, inte liggande."],
+    vPlaces: ["I badrummet.", "I duschen.", "På sängen, med en handduk under dig.", "På golvet, med en handduk under dig."],
+    vPlaceLabel: "Plats",
+    vCondLabel: "Villkor",
+    vDeniedAfter: "Gå och duscha, drick vatten och vila en stund.",
     sos: "⛔ Avbryt / släpp",
     safety: [
       "Jag har en säkerhetssax eller ett annat snabbt sätt att skära mig loss inom räckhåll.",
@@ -1186,6 +1234,23 @@ const I18N = {
     devLabel: "Display mode", devAuto: "Auto", devMobile: "Mobile", devDesktop: "Desktop (dungeon)",
     tipLabel: "Today's tip", tipHow: "How to", tipWatch: "Watch out for", tipEase: "Variation", tipNeed: "You need", tipMax: "cap in the app",
     suggShow: "Show other suggestions", suggHide: "Hide suggestions",
+    customOn: "Use",
+    customLabel: "Your own conditions",
+    customPh: "One condition per line. Mixed in with the standard ones.",
+    customHint: "Saved only in your browser on this device. Nobody else sees them.",
+    verdictLabel: "Verdict afterwards", verdictOn: "On",
+    verdictHint: "When you finish the session, a verdict is drawn at random. It never affects the lock: the code is always shown first.",
+    verdictBtn: "Hear the verdict",
+    verdictNote: "The verdict is a game and affects nothing else. You can always decline, and you decide over your own body.",
+    vWait: "The judge is considering…",
+    vAllowed: ["You may. You have earned it.", "You may. Well done.", "Permitted. Take your time."],
+    vCond: ["You may, but on one condition.", "Permitted, but on my terms."],
+    vDenied: ["No. Not today.", "Denied. You will have to wait until next time.", "Not today. Enjoy the waiting."],
+    vConds: ["Within ten minutes, not a minute later.", "With your eyes closed the whole time.", "With the hand you use least.", "In silence, without music.", "After thanking me out loud.", "Only after counting down from twenty.", "Standing, not lying down."],
+    vPlaces: ["In the bathroom.", "In the shower.", "On the bed, with a towel under you.", "On the floor, with a towel under you."],
+    vPlaceLabel: "Place",
+    vCondLabel: "Condition",
+    vDeniedAfter: "Go shower, drink some water and rest for a while.",
     sos: "⛔ Stop / release",
     safety: [
       "I have safety shears or another quick way to cut myself free within reach.",
@@ -1696,7 +1761,7 @@ const S = {
   level: 3, sugg: [], cat: "all", browseOpen: false,
   face: false, dwellAt: 0, warnId: null,
   traceSec: 60, traceW: 46, traceId: null,
-  suggOpen: false, device: "mobile", blind: false, lastFeel: 0, mile: 0, ptype: "arrows", lock: false, lockCode: "", conseq: "off", ciShownAt: 0, alarmId: null, memId: null, slipTotal: 0, showing: false
+  verdict: true, verdictBusy: false, suggOpen: false, device: "mobile", blind: false, lastFeel: 0, mile: 0, ptype: "arrows", lock: false, lockCode: "", conseq: "off", ciShownAt: 0, alarmId: null, memId: null, slipTotal: 0, showing: false
 };
 
 /* ============ Helpers ============ */
@@ -2370,6 +2435,46 @@ function finish() {
   renderLock("done-lock", "lockReveal");
   renderAfter("after-done");
   go("st-done");
+  renderVerdict();
+}
+function rnd(n) {
+  try { const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] % n; } catch (e) { return Math.floor(Math.random() * n); }
+}
+function renderVerdict() {
+  const box = $("verdict");
+  box.classList.toggle("hidden", !(S.verdict && S.stage === "st-done"));
+  $("verdict-out").innerHTML = ""; $("verdict-out").className = "verdict-out";
+  $("btn-verdict").classList.remove("hidden");
+  S.verdictBusy = false;
+}
+function customConds() {
+  try { return (localStorage.getItem("sb_conds") || "").split("\n").map(x => x.trim()).filter(Boolean).slice(0, 50); } catch (e) { return []; }
+}
+function customOn() { try { return localStorage.getItem("sb_conds_on") === "1"; } catch (e) { return false; } }
+function setCustom(on) {
+  try { localStorage.setItem("sb_conds_on", on ? "1" : "0"); } catch (e) {}
+  $("custom-wrap").classList.toggle("hidden", !on);
+  document.querySelectorAll("#custom-seg button").forEach(b => b.classList.toggle("on", (b.dataset.v === "on") === on));
+}
+function condPool() { return customOn() ? t("vConds").concat(customConds()) : t("vConds"); }
+function showVerdict() {
+  if (S.verdictBusy) return;
+  S.verdictBusy = true;
+  $("btn-verdict").classList.add("hidden");
+  const out = $("verdict-out");
+  out.className = "verdict-out";
+  out.innerHTML = `<div class="v-wait">${esc(t("vWait"))}</div>`;
+  const r = rnd(100);
+  const kind = r < 40 ? "allowed" : r < 70 ? "cond" : "denied";
+  setTimeout(() => {
+    const title = pick(t(kind === "allowed" ? "vAllowed" : kind === "cond" ? "vCond" : "vDenied"));
+    let html = `<div class="v-title">${esc(title)}</div>`;
+    if (kind === "cond") html += `<div class="v-line"><b>${esc(t("vCondLabel"))}:</b> ${esc(pick(condPool()))}</div>`;
+    if (kind !== "denied") html += `<div class="v-line"><b>${esc(t("vPlaceLabel"))}:</b> ${esc(pick(t("vPlaces")))}</div>`;
+    else html += `<div class="v-line">${esc(t("vDeniedAfter"))}</div>`;
+    out.className = "verdict-out " + kind;
+    out.innerHTML = html;
+  }, 2500);
 }
 function renderLock(id, key) {
   const box = $(id);
@@ -2806,6 +2911,12 @@ document.addEventListener("DOMContentLoaded", () => {
   if (S.device === "desktop") S.blind = false;
   document.querySelectorAll("[data-guide]").forEach(b => b.onclick = openGuide);
   bindSeg("ptype-seg", (v) => S.ptype = v);
+  bindSeg("verdict-seg", (v) => S.verdict = v === "on");
+  $("btn-verdict").onclick = showVerdict;
+  try { $("custom-conds").value = localStorage.getItem("sb_conds") || ""; } catch (e) {}
+  $("custom-seg").querySelectorAll("button").forEach(b => b.addEventListener("click", () => setCustom(b.dataset.v === "on")));
+  setCustom(customOn());
+  $("custom-conds").addEventListener("input", () => { try { localStorage.setItem("sb_conds", $("custom-conds").value.slice(0, 4000)); } catch (e) {} });
   bindSeg("blind-seg", (v) => S.blind = v === "on");
   $("btn-vibtest").onclick = () => {
     ensureAudio();
